@@ -1,4 +1,13 @@
 <title>K-GAPI Δ — Agentic 시대 공공 API 개선 비교</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="K-GAPI Δ는 2026-04 기준선 대비 한국 공공 API의 개선 여부를 라이브 재측정과 증거 기반(evidence-first) 방법론으로 비교합니다.">
+<meta property="og:title" content="K-GAPI Δ — Agentic 시대 공공 API 개선 비교">
+<meta property="og:description" content="2026-04 기준선 대비 라이브 재측정 · 증거 기반(evidence-first) 비교. data.go.kr과 18개 핵심 포털의 Agentic 준비도를 추적합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hollobit.github.io/GAPI2/index.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
 <style>
 :root{
   --bg:#f6f7f9;
@@ -98,6 +107,15 @@ body{
 .nav a:hover{
   color:var(--accent-strong);
   border-color:var(--accent);
+}
+.nav a[aria-current="page"]{
+  color:var(--accent-strong);
+  border-color:var(--accent);
+  font-weight:700;
+  text-decoration:underline;
+}
+@media (max-width:640px){
+  .nav{flex-wrap:wrap;}
 }
 .badge{
   display:inline-block;
@@ -299,6 +317,12 @@ thead th{
 tbody tr:last-child td{border-bottom:none;}
 </style>
 <div class="page">
+  <nav class="nav" aria-label="사이트 내비게이션">
+    <a href="index.html" aria-current="page">홈</a>
+    <a href="dashboard.html">대시보드</a>
+    <a href="guideline.html">가이드라인</a>
+    <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
+  </nav>
   <header class="hero">
     <h1>K-GAPI Δ — Agentic 시대 공공 API 개선 비교</h1>
     <p class="subtitle">한국 data.go.kr 및 핵심 공공 API 포털의 2026-04 기준선 대비 개선 여부와 Agentic 준비도를 공개 증거로 비교합니다.</p>
@@ -332,6 +356,7 @@ tbody tr:last-child td{border-bottom:none;}
       <li><strong>측정불가</strong> — 접근 차단·인증 미보유 등의 사유로 현재 주기에서는 판정할 수 없음. 평균 점수에서 제외되며 감점 사유가 아닙니다.</li>
       <li>모든 증거 샘플에서 <code>serviceKey</code> 등 인증키는 게시 전 마스킹됩니다.</li>
     </ul>
+    <p>2026-04 기준선의 전체 분석(173개 포털·9개국 비교)은 <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">K-GAPI 현황 분석</a> 참조.</p>
   </section>
 
   <footer>

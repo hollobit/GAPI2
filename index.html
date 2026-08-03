@@ -162,7 +162,7 @@ h1{
 .lede strong{color:var(--accent-strong);}
 .cards{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
   gap:1rem;
   margin:1.75rem 0;
 }
@@ -321,6 +321,7 @@ tbody tr:last-child td{border-bottom:none;}
     <a href="index.html" aria-current="page">홈</a>
     <a href="dashboard.html">대시보드</a>
     <a href="guideline.html">가이드라인</a>
+    <a href="calculator.html">ID 계산기</a>
     <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
   </nav>
   <header class="hero">
@@ -345,6 +346,13 @@ tbody tr:last-child td{border-bottom:none;}
       <h2>개선 비교 대시보드</h2>
       <p>18개 포털 라이브 재측정 결과. data.go.kr은 <strong>"오류에도 항상 HTTP 200" 문제를 개선</strong>(이제 400 반환)하고 JSON·MCP를 갖췄지만, OpenAPI·RFC7807 에러·RateLimit 헤더·CORS·헤더 인증은 여전히 미비 — <strong>AI 적합성 D→D(3→5)</strong>. 4계층(루브릭·문제 트래커·등급 이동·준비도 히트맵), 모든 판정에 증거 링크.</p>
       <span class="cta">대시보드 열기 →</span>
+    </a>
+
+    <a class="card" href="calculator.html">
+      <span class="badge badge-live">LIVE · 지금 이용 가능</span>
+      <h2>필요 ID 계산기</h2>
+      <p>이용하려는 포털을 고르면 실제로 몇 개의 <strong>별도 계정(ID)</strong>이 필요한지 즉시 계산합니다. data.go.kr 통합 ID 1개로 끝나는 미국식 모델과 달리, 한국은 173개 포털 중 130개 넘게 별도 가입을 요구하는 파편화 실태를 체감할 수 있습니다.</p>
+      <span class="cta">계산기 열기 →</span>
     </a>
   </div>
 

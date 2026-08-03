@@ -1,0 +1,1 @@
+{"status": 400, "headers": {"Date": "Mon, 03 Aug 2026 15:59:39 GMT", "Content-Type": "text/html", "Content-Length": "12", "Connection": "keep-alive"}, "body": "Bad Request.", "elapsed_ms": 121, "error": null, "curl": "curl -i -X OPTIONS 'https://open.assembly.go.kr/portal/openapi/naMembersInfo?Type=json&pIndex=1&pSize=10&AGE=22'"}

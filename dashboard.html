@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K-GAPI Δ — Agentic 공공 API 개선 대시보드</title>
+<style>
+:root { color-scheme: light dark; }
+body { font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+       margin: 0; padding: 0 0 4rem; background: #0b0e14; color: #e8ebf0; }
+@media (prefers-color-scheme: light) { body { background: #f6f7fb; color: #16181d; } }
+header.top { padding: 2rem 1.5rem 1rem; border-bottom: 1px solid rgba(128,128,128,.3); }
+header.top h1 { margin: 0 0 .3rem; font-size: 1.6rem; }
+.layer { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.layer-hero { background: rgba(255,180,60,.08); border-radius: 12px; }
+.layer h2 { font-size: 1.3rem; margin-bottom: .2rem; }
+.layer-sub { opacity: .75; margin-top: 0; }
+.pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.pillar-card, .problem-card { border: 1px solid rgba(128,128,128,.35); border-radius: 10px; padding: 1rem; background: rgba(128,128,128,.06); }
+.why-agent { font-size: .85rem; opacity: .8; }
+.level-current { font-size: .85rem; }
+.refs { font-size: .8rem; padding-left: 1.1rem; }
+.refs a { color: inherit; }
+.problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.problem-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.badge { padding: .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.badge-good { background: #1e7e34; color: #fff; }
+.badge-mid { background: #b8860b; color: #fff; }
+.badge-bad { background: #a12626; color: #fff; }
+.indicator-mini { font-size: .82rem; padding-left: 1.1rem; }
+.mini-verdict { opacity: .7; }
+.coverage { font-size: .85rem; }
+.coverage-note { opacity: .65; }
+table { border-collapse: collapse; width: 100%; }
+.grade-table td, .grade-table th { padding: .5rem; border-bottom: 1px solid rgba(128,128,128,.25); text-align: left; }
+.star-row { background: rgba(255,180,60,.12); }
+.slope-chart .slope-up { stroke: #2fa84f; stroke-width: 3; }
+.slope-chart .slope-down { stroke: #d64545; stroke-width: 3; }
+.slope-chart .slope-flat { stroke: #8a8a8a; stroke-width: 3; }
+.slope-chart .slope-provisional { stroke: #b8860b; stroke-width: 3; stroke-dasharray: 5 3; }
+.slope-chart circle { fill: currentColor; }
+.slope-chart .grade-label { font-size: 10px; fill: currentColor; }
+.grade-cell { white-space: nowrap; }
+.grade-value { font-weight: 700; }
+.grade-value.grade-provisional { color: #b8860b; }
+.grade-value.grade-unmeasured { color: #8a8a8a; font-style: italic; font-weight: 600; }
+.badge-provisional { background: #b8860b; color: #fff; padding: .1rem .5rem; border-radius: 999px;
+  font-size: .7rem; font-weight: 600; white-space: nowrap; }
+.measured-count { font-size: .75rem; opacity: .7; white-space: nowrap; }
+.seg-empty { fill: rgba(128,128,128,.25); }
+.seg-filled { fill: #3a6ea5; }
+.seg-current { fill: #2fa84f; }
+.seg-label { font-size: 11px; fill: #fff; text-anchor: middle; }
+.heatmap-wrap { overflow-x: auto; }
+.heatmap th, .heatmap td { padding: .35rem .5rem; font-size: .78rem; text-align: center; border: 1px solid rgba(128,128,128,.2); }
+.heatmap th { white-space: nowrap; }
+.heat-cell.cell-0 { background: #a12626; color: #fff; }
+.heat-cell.cell-1 { background: #b8860b; color: #fff; }
+.heat-cell.cell-2 { background: #1e7e34; color: #fff; }
+.heat-cell.cell-na { background: rgba(128,128,128,.25); }
+.heatmap-controls button { padding: .4rem .8rem; border-radius: 6px; border: 1px solid rgba(128,128,128,.4);
+  background: transparent; color: inherit; cursor: pointer; font-size: .85rem; }
+.coverage-summary p { margin: .2rem 0; }
+footer.bottom { max-width: 1100px; margin: 2rem auto 0; padding: 0 1.5rem; opacity: .6; font-size: .8rem; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>K-GAPI Δ — Agentic 시대 공공 API 개선 대시보드</h1>
+  <p>2026-04 K-GAPI 전수조사 대비 2026-08 라이브 재측정. 측정 포털 18/18개.
+  ★ = 대표 포털 data.go.kr(공공데이터포털).</p>
+</header>
+
+    <section id="layer-0" class="layer">
+      <h2>Layer 0 · Agentic 목표 루브릭</h2>
+      <p class="layer-sub">7개 기둥 × Level 0~3 성숙도. data.go.kr의 현재 도달 레벨을 함께 표시한다.</p>
+      <div class="pillar-grid">
+        <article class="pillar-card">
+          <h3>기계 발견성·자기설명 (Machine Discovery &amp; Self-description)</h3>
+          <p class="why-agent">에이전트는 사람이 읽는 HWP/웹페이지를 파싱할 수 없다 — 기계판독 스키마와 진입점이 있어야 API를 스스로 발견·이해·호출할 수 있다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 0"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 0</strong> — 기계판독 명세 전무. 문서가 HWP/PDF/HTML 산문뿐이라 에이전트가 엔드포인트·파라미터를 추론할 수 없다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://spec.openapis.org/oas/v3.0.3" rel="noopener">OpenAPI Specification v3.0.3</a></li><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener">OpenAPI Specification (latest, 3.1)</a></li><li><a href="https://llmstxt.org/" rel="noopener">The /llms.txt file — llmstxt.org</a></li><li><a href="https://www.answer.ai/posts/2024-09-03-llmstxt.html" rel="noopener">llms.txt proposal — Answer.AI (Jeremy Howard, 2024-09)</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/api_design_guidelines_comparison.md" rel="noopener">해외 정부 API 디자인 가이드라인 비교 분석 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>구조화 포맷 (Structured Format)</h3>
+          <p class="why-agent">JSON은 LLM이 바로 파싱·생성하는 네이티브 구조다. XML 기본값은 토큰을 약 2.5배 소모하고 게이트웨이 오류 시 강제 XML로 되돌아가 에이전트 파이프라인을 깨뜨린다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 2"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 2</strong> — JSON이 기본 응답이며 정상/오류 경로 모두 일관된 JSON을 반환한다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://github.com/18F/api-standards" rel="noopener">18F API Standards — Support JSON and only JSON</a></li><li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0138" rel="noopener">EU High-Value Datasets Implementing Regulation (EU) 2023/138</a></li><li><a href="https://semiceu.github.io/DCAT-AP/releases/2.2.0-hvd/" rel="noopener">DCAT-AP for High-Value Datasets</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md" rel="noopener">한국 공공 API 개선 로드맵 §1.1 JSON 기본 전환 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>정직한 HTTP (Honest HTTP)</h3>
+          <p class="why-agent">에이전트는 HTTP 상태코드로 성공/실패를 자동 분기하고 재시도·백오프한다. 오류에 200을 반환하면 표준 HTTP 클라이언트(requests·axios·fetch)가 모두 무력화되고 무한 재호출·잘못된 성공 판정이 발생한다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 1"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 1</strong> — 일부 오류에 상태코드를 쓰지만 불완전·비일관적(예: 500만 있고 401/404/429 없음)이다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://www.rfc-editor.org/rfc/rfc9457.html" rel="noopener">RFC 9457 — Problem Details for HTTP APIs (obsoletes RFC 7807)</a></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener">RFC 9110 — HTTP Semantics (status codes)</a></li><li><a href="https://www.gov.uk/guidance/gds-api-technical-and-data-standards" rel="noopener">UK GDS API Technical and Data Standards</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md" rel="noopener">한국 공공 API 개선 로드맵 §1.2 HTTP 상태코드 정상화 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>에이전트 인증 (Agent Authentication)</h3>
+          <p class="why-agent">자율 에이전트는 서버 간(machine-to-machine) 무인 실행이 기본이다. URL 쿼리에 노출되고 2년마다 수동 갱신하는 API Key는 로그 유출과 운영 중 서비스 중단을 유발한다 — 토큰 자동 갱신과 헤더 전달이 필요하다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 0"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 0</strong> — 인증키를 URL 쿼리 파라미터(?serviceKey=)로 전달하고 수동 갱신만 가능. 서버 로그·브라우저 히스토리·Referrer로 키가 노출된다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://www.rfc-editor.org/rfc/rfc6749" rel="noopener">RFC 6749 — OAuth 2.0 (Client Credentials §4.4)</a></li><li><a href="https://www.rfc-editor.org/rfc/rfc6750" rel="noopener">RFC 6750 — OAuth 2.0 Bearer Token Usage</a></li><li><a href="https://modelcontextprotocol.io/specification/2025-11-25" rel="noopener">MCP Specification 2025-11-25 (Authorization)</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md" rel="noopener">한국 공공 API 개선 로드맵 §2.3/§3.2 API Key 헤더·OAuth 2.0 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>도구 네이티브 접근 (Tool-native Access)</h3>
+          <p class="why-agent">에이전트는 API를 &#x27;도구(tool)&#x27;로 호출한다. MCP 서버나 함수 호출 스키마가 있으면 에이전트가 즉시 도구로 등록해 자연어로 데이터를 조회하지만, 없으면 개발자가 수동 래퍼를 만들어야 해 커버리지가 5% 미만에 머문다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 3"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 3</strong> — 정부/기관이 공식 운영하는 MCP 서버로 카탈로그 전체를 도구로 노출하고 Claude·ChatGPT·Gemini 등 주요 클라이언트와 호환된다(프랑스 data.gouv.fr, 미국 GovInfo 모델).</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://modelcontextprotocol.io/" rel="noopener">Model Context Protocol — Introduction</a></li><li><a href="https://modelcontextprotocol.io/specification/2025-11-25" rel="noopener">MCP Specification 2025-11-25</a></li><li><a href="https://github.com/datagouv/datagouv-mcp" rel="noopener">data.gouv.fr MCP server (DINUM/Etalab)</a></li><li><a href="https://www.govinfo.gov/features/mcp-public-preview" rel="noopener">US GovInfo MCP public preview (GPO)</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/global_mcp_ecosystem.md" rel="noopener">해외 정부 MCP/AI 도구 생태계 조사 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>데이터 제품화 (Data-as-a-Product)</h3>
+          <p class="why-agent">에이전트가 신뢰하고 통합하려면 데이터가 &#x27;제품&#x27;처럼 다뤄져야 한다 — SDK·샘플코드·샌드박스·SLA·명확한 메타데이터가 있어야 에이전트 개발자가 빠르게 검증·연동하고 프로덕션에서 안정적으로 소비한다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 2"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 2</strong> — 공식 SDK/샘플 + 테스트 콘솔(Swagger UI)이나 DEMO_KEY로 회원가입 전 체험이 가능하다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://martinfowler.com/articles/data-mesh-principles.html" rel="noopener">Data Mesh Principles — Data as a Product (Zhamak Dehghani, martinfowler.com)</a></li><li><a href="https://martinfowler.com/articles/designing-data-products.html" rel="noopener">Designing Data Products (martinfowler.com)</a></li><li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0138" rel="noopener">EU High-Value Datasets Implementing Regulation (EU) 2023/138</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md" rel="noopener">한국 공공 API 개선 로드맵 §2.6 샌드박스/테스트 환경 (gapi)</a></li></ul></details>
+        </article>
+        <article class="pillar-card">
+          <h3>통합 정체성·카탈로그 (Unified Identity &amp; Catalog)</h3>
+          <p class="why-agent">에이전트가 여러 API를 조합하려면 단일 신원·단일 진입점이 필요하다. 전체 커버에 ID 130개가 필요한 파편화 구조에서는 에이전트가 수십 개 계정을 관리할 수 없어 실질적 자동화가 불가능하다.</p>
+          <svg viewBox="0 0 372 22" width="372" height="22" role="img" aria-label="현재 레벨 2"><rect x="0" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 0</title></rect><text x="45.0" y="15.0" class="seg-label">0</text><rect x="94" y="0" width="90" height="22" rx="4" class="seg-filled"><title>Level 1</title></rect><text x="139.0" y="15.0" class="seg-label">1</text><rect x="188" y="0" width="90" height="22" rx="4" class="seg-current"><title>Level 2</title></rect><text x="233.0" y="15.0" class="seg-label">2</text><rect x="282" y="0" width="90" height="22" rx="4" class="seg-empty"><title>Level 3</title></rect><text x="327.0" y="15.0" class="seg-label">3</text></svg>
+          <p class="level-current">data.go.kr 현재: <strong>Level 2</strong> — 주요 포털이 단일 SSO/공통 키와 통합 API 카탈로그로 묶여 있고, 즉시 키 발급 등 가입이 간소하다.</p>
+          <details><summary>레퍼런스</summary><ul class="refs"><li><a href="https://api.gouv.fr/guides/doctrine-api" rel="noopener">France api.gouv.fr — Doctrine des API (single sign-on / catalog)</a></li><li><a href="https://www.numerique.gouv.fr/offre-accompagnement/reference-recommandations-partage-donnees-api-administration/" rel="noopener">France DINUM API doctrine — numerique.gouv.fr</a></li><li><a href="https://www.gov.uk/guidance/gds-api-technical-and-data-standards" rel="noopener">UK GDS API Technical and Data Standards (API catalogue api.gov.uk)</a></li><li><a href="file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md" rel="noopener">한국 공공 API 개선 로드맵 §2.4 통합 인증 API SSO (gapi)</a></li></ul></details>
+        </article></div>
+    </section>
+
+    <section id="layer-1" class="layer layer-hero">
+      <h2>Layer 1 · 문제 개선 스코어카드</h2>
+      <p class="layer-sub">2026-04 K-GAPI 전수조사가 지적한 문제를 data.go.kr 기준으로 재측정했다.</p>
+      <div class="problem-grid">
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>CORS 미지원 (2026-04: 0%)</h3>
+            <span class="badge badge-bad">미개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>cors_https</code>: 1 → 1 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/cors_https.trace.txt" rel="noopener">증거</a></li></ul>
+          <p class="coverage">전체 커버리지: <strong>3/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>XML 기본 응답 (2026-04: 59%)</h3>
+            <span class="badge badge-mid">부분</span>
+          </div>
+          <ul class="indicator-mini"><li><code>data_format</code>: 1 → 0 <span class="mini-verdict">(후퇴)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li><li><code>json_native</code>: 1 → 2 <span class="mini-verdict">(개선)</span> — <a href="evidence/data-go-kr/json_native.trace.txt" rel="noopener">증거</a></li></ul>
+          <p class="coverage">전체 커버리지: <strong>0/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>항상 200 반환 (오류도 HTTP 200)</h3>
+            <span class="badge badge-good">개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>http_semantics</code>: 0 → 2 <span class="mini-verdict">(개선)</span> — <a href="evidence/data-go-kr/http_semantics.trace.txt" rel="noopener">증거</a></li></ul>
+          <p class="coverage">전체 커버리지: <strong>8/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>OpenAPI 미제공 (2026-04: ~2%)</h3>
+            <span class="badge badge-bad">미개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>machine_schema</code>: 0 → 0 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/machine_schema.trace.txt" rel="noopener">증거</a></li></ul>
+          <p class="coverage">전체 커버리지: <strong>5/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>RateLimit 헤더 없음</h3>
+            <span class="badge badge-bad">미개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>rate_limit_transparency</code>: 0 → 0 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/rate_limit_transparency.trace.txt" rel="noopener">증거</a></li></ul>
+          <p class="coverage">전체 커버리지: <strong>0/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>정부 MCP 서버 없음</h3>
+            <span class="badge badge-good">개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>tool_native</code>:  → 2 <span class="mini-verdict">(개선)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li></ul>
+          <p class="coverage">전체 커버리지: <strong>6/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-head">
+            <h3>API Key in URL (쿼리 파라미터 노출)</h3>
+            <span class="badge badge-bad">미개선</span>
+          </div>
+          <ul class="indicator-mini"><li><code>programmatic_auth</code>: 1 → 0 <span class="mini-verdict">(후퇴)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li></ul>
+          <p class="coverage">전체 커버리지: <strong>0/18 개선</strong>
+            <span class="coverage-note">(측정 18/18개 포털 중)</span></p>
+        </article></div>
+    </section>
+
+    <section id="layer-2" class="layer">
+      <h2>Layer 2 · 등급 이동</h2>
+      <p class="layer-sub">포털별 사용자중심성(UF)·AI적합성(AI) 7지표 합산 점수의 Before → After 이동.
+        일부 지표가 측정불가라 스킵된 경우 "부분측정" 배지와 측정 개수를 함께 표시한다 —
+        등급 하락이 실제 퇴보가 아니라 미측정 때문일 수 있음을 나타낸다.</p>
+      <table class="grade-table">
+        <thead><tr><th>포털</th><th>UF 추이</th><th>UF 등급</th><th>AI 추이</th><th>AI 등급</th></tr></thead>
+        <tbody>
+        <tr class="star-row">
+          <td>data-go-kr ★</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="30.0" x2="210" y2="30.0" class="slope-flat"/>
+      <circle cx="10" cy="30.0" r="4" class="dot-before"/>
+      <circle cx="210" cy="30.0" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="35.7" class="slope-up"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="35.7" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>ecos</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 C로 이동">
+      <line x1="10" y1="21.4" x2="210" y2="27.1" class="slope-down"/>
+      <circle cx="10" cy="21.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="27.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">B → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="38.6" x2="210" y2="41.4" class="slope-down"/>
+      <circle cx="10" cy="38.6" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>ex</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="27.1" x2="210" y2="32.9" class="slope-down"/>
+      <circle cx="10" cy="27.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="41.4" class="slope-flat"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>gyeonggi</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="27.1" x2="210" y2="27.1" class="slope-flat"/>
+      <circle cx="10" cy="27.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="27.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="35.7" class="slope-up"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="35.7" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>kipris</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="27.1" x2="210" y2="30.0" class="slope-down"/>
+      <circle cx="10" cy="27.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="30.0" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="41.4" class="slope-flat"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>kma</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="30.0" x2="210" y2="32.9" class="slope-down"/>
+      <circle cx="10" cy="30.0" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 C로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="32.9" class="slope-up"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">D → <span class="grade-value">C</span></td>
+        </tr>
+        <tr>
+          <td>koreaexim</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 C로 이동">
+      <line x1="10" y1="24.3" x2="210" y2="27.1" class="slope-provisional"/>
+      <circle cx="10" cy="24.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="27.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">B → <span class="grade-value grade-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">C</span> <span class="badge badge-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(UF 측정 6/7)</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="38.6" class="slope-provisional"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="38.6" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value grade-provisional" title="AI 5/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">D</span> <span class="badge badge-provisional" title="AI 5/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(AI 측정 5/7)</span></td>
+        </tr>
+        <tr>
+          <td>kosis</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 C로 이동">
+      <line x1="10" y1="24.3" x2="210" y2="30.0" class="slope-down"/>
+      <circle cx="10" cy="24.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="30.0" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">B → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="41.4" class="slope-flat"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>krx</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="32.9" x2="210" y2="32.9" class="slope-flat"/>
+      <circle cx="10" cy="32.9" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="41.4" class="slope-flat"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>localdata</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="35.7" x2="210" y2="35.7" class="slope-provisional"/>
+      <circle cx="10" cy="35.7" r="4" class="dot-before"/>
+      <circle cx="210" cy="35.7" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value grade-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">D</span> <span class="badge badge-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(UF 측정 6/7)</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="E에서 E로 이동">
+      <line x1="10" y1="47.1" x2="210" y2="47.1" class="slope-provisional"/>
+      <circle cx="10" cy="47.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="47.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">E</text>
+      <text x="200" y="59" class="grade-label">E</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="E">E → <span class="grade-value grade-provisional" title="AI 4/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">E</span> <span class="badge badge-provisional" title="AI 4/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(AI 측정 4/7)</span></td>
+        </tr>
+        <tr>
+          <td>neis</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 C로 이동">
+      <line x1="10" y1="24.3" x2="210" y2="32.9" class="slope-down"/>
+      <circle cx="10" cy="24.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">B → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="41.4" class="slope-flat"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>nhis</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 E로 이동">
+      <line x1="10" y1="38.6" x2="210" y2="44.3" class="slope-provisional"/>
+      <circle cx="10" cy="38.6" r="4" class="dot-before"/>
+      <circle cx="210" cy="44.3" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">E</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="E">D → <span class="grade-value grade-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">E</span> <span class="badge badge-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(UF 측정 6/7)</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="E에서 E로 이동">
+      <line x1="10" y1="44.3" x2="210" y2="47.1" class="slope-provisional"/>
+      <circle cx="10" cy="44.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="47.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">E</text>
+      <text x="200" y="59" class="grade-label">E</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="E">E → <span class="grade-value grade-provisional" title="AI 4/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">E</span> <span class="badge badge-provisional" title="AI 4/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(AI 측정 4/7)</span></td>
+        </tr>
+        <tr>
+          <td>open-assembly</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="27.1" x2="210" y2="32.9" class="slope-down"/>
+      <circle cx="10" cy="27.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value">C</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="38.6" class="slope-up"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="38.6" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>open-law</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 D로 이동">
+      <line x1="10" y1="32.9" x2="210" y2="38.6" class="slope-down"/>
+      <circle cx="10" cy="32.9" r="4" class="dot-before"/>
+      <circle cx="210" cy="38.6" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">C → <span class="grade-value">D</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="E에서 D로 이동">
+      <line x1="10" y1="44.3" x2="210" y2="41.4" class="slope-provisional"/>
+      <circle cx="10" cy="44.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="41.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">E</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">E → <span class="grade-value grade-provisional" title="AI 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">D</span> <span class="badge badge-provisional" title="AI 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(AI 측정 6/7)</span></td>
+        </tr>
+        <tr>
+          <td>opendart</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 B로 이동">
+      <line x1="10" y1="24.3" x2="210" y2="21.4" class="slope-up"/>
+      <circle cx="10" cy="24.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="21.4" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">B</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="B">B → <span class="grade-value">B</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 D로 이동">
+      <line x1="10" y1="38.6" x2="210" y2="38.6" class="slope-flat"/>
+      <circle cx="10" cy="38.6" r="4" class="dot-before"/>
+      <circle cx="210" cy="38.6" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">D → <span class="grade-value">D</span></td>
+        </tr>
+        <tr>
+          <td>safemap</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 C로 이동">
+      <line x1="10" y1="27.1" x2="210" y2="32.9" class="slope-provisional"/>
+      <circle cx="10" cy="27.1" r="4" class="dot-before"/>
+      <circle cx="210" cy="32.9" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">C</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="C">C → <span class="grade-value grade-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">C</span> <span class="badge badge-provisional" title="UF 6/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(UF 측정 6/7)</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 E로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="47.1" class="slope-provisional"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="47.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">E</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="E">D → <span class="grade-value grade-provisional" title="AI 5/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">E</span> <span class="badge badge-provisional" title="AI 5/7개 지표만 측정됨(나머지는 측정불가). 등급 하락이 실측 저하가 아니라 미측정 지표 때문일 수 있습니다.">부분측정</span> <span class="measured-count">(AI 측정 5/7)</span></td>
+        </tr>
+        <tr>
+          <td>seoul</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="B에서 B로 이동">
+      <line x1="10" y1="24.3" x2="210" y2="24.3" class="slope-flat"/>
+      <circle cx="10" cy="24.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="24.3" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">B</text>
+      <text x="200" y="59" class="grade-label">B</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="B">B → <span class="grade-value">B</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="D에서 E로 이동">
+      <line x1="10" y1="41.4" x2="210" y2="47.1" class="slope-down"/>
+      <circle cx="10" cy="41.4" r="4" class="dot-before"/>
+      <circle cx="210" cy="47.1" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">D</text>
+      <text x="200" y="59" class="grade-label">E</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="E">D → <span class="grade-value">E</span></td>
+        </tr>
+        <tr>
+          <td>tago</td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="C에서 D로 이동">
+      <line x1="10" y1="30.0" x2="210" y2="35.7" class="slope-down"/>
+      <circle cx="10" cy="30.0" r="4" class="dot-before"/>
+      <circle cx="210" cy="35.7" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">C</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">C → <span class="grade-value">D</span></td>
+          <td><svg viewBox="0 0 220 60" width="220" height="60" class="slope-chart" role="img"
+      aria-label="E에서 D로 이동">
+      <line x1="10" y1="44.3" x2="210" y2="35.7" class="slope-up"/>
+      <circle cx="10" cy="44.3" r="4" class="dot-before"/>
+      <circle cx="210" cy="35.7" r="4" class="dot-after"/>
+      <text x="10" y="59" class="grade-label">E</text>
+      <text x="200" y="59" class="grade-label">D</text>
+    </svg></td>
+          <td class="grade-cell" data-grade="D">E → <span class="grade-value">D</span></td>
+        </tr></tbody>
+      </table>
+    </section>
+
+    <section id="layer-3" class="layer">
+      <h2>Layer 3 · AI/Agent 준비도</h2>
+      <p class="layer-sub">포털 × 지표 히트맵 (버튼으로 before/after 토글) — 점수 0(빨강)~2(초록), 회색은 측정불가.</p>
+      <div class="heatmap-controls">
+        <button type="button" id="toggle-before-after" data-state="after">before/after 토글 (현재: after)</button>
+      </div>
+      <div class="heatmap-wrap">
+        <table class="heatmap" id="heatmap-table">
+          <thead><tr><th>포털</th><th>approval_speed</th><th>cors_https</th><th>data_format</th><th>data_product</th><th>doc_quality</th><th>error_handling</th><th>error_self_desc</th><th>http_semantics</th><th>json_native</th><th>llms_txt</th><th>machine_schema</th><th>programmatic_auth</th><th>rate_limit</th><th>rate_limit_transparency</th><th>sdk_samples</th><th>signup_ease</th><th>tool_native</th><th>unified_identity</th></tr></thead>
+          <tbody><tr><td>data-go-kr</td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td></tr><tr><td>ecos</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>ex</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>gyeonggi</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>kipris</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>kma</td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>koreaexim</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>kosis</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>krx</td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>localdata</td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>neis</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>nhis</td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>open-assembly</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>open-law</td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>opendart</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>safemap</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="측정불가"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>seoul</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td></tr><tr><td>tago</td><td class="heat-cell cell-2" data-before="2" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="2"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-0" data-before="0" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-1" data-before="1" data-after="1"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="0"><span class="heat-value"></span></td><td class="heat-cell cell-na" data-before="" data-after="2"><span class="heat-value"></span></td></tr></tbody>
+        </table>
+      </div>
+      <div class="coverage-summary">
+        <p>공식 MCP 서버 보유(도구 네이티브 접근 Level 최대): <strong>6/18</strong></p>
+        <p>MCP(공식+비공식 래퍼) 존재: <strong>6/18</strong></p>
+        <p>OpenAPI 3.x 스펙 제공(fetch 성공): <strong>0/18</strong></p>
+      </div>
+    </section>
+<footer class="bottom">
+  <p>단일 자기완결 HTML — 외부 CDN/서버 의존 없음. 데이터는 아래 인라인 JSON에서 임베드됨.</p>
+</footer>
+<script type="application/json" id="diff-data">{"meta": {"portals_measured": ["data-go-kr", "ecos", "ex", "gyeonggi", "kipris", "kma", "koreaexim", "kosis", "krx", "localdata", "neis", "nhis", "open-assembly", "open-law", "opendart", "safemap", "seoul", "tago"], "portals_total": 18, "portals_unmeasured": [], "tested_at_range": ["2026-08-03", "2026-08-03"]}, "portals": {"data-go-kr": {"ai_after": 5, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "signup_ease": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 2, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 2, "honest_http": 1, "machine_discovery": 0, "structured_format": 2, "tool_native": 3, "unified_identity": 2}, "uf_after": 7, "uf_after_skipped": 0, "uf_before": 7, "uf_grade_after": "C", "uf_grade_before": "C"}, "ecos": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 4, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 2, "tool_native": 0, "unified_identity": 2}, "uf_after": 8, "uf_after_skipped": 0, "uf_before": 10, "uf_grade_after": "C", "uf_grade_before": "B"}, "ex": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 0, "structured_format": 0, "tool_native": 0, "unified_identity": 2}, "uf_after": 6, "uf_after_skipped": 0, "uf_before": 8, "uf_grade_after": "C", "uf_grade_before": "C"}, "gyeonggi": {"ai_after": 5, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "error_self_desc": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "http_semantics": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 0, "structured_format": 2, "tool_native": 0, "unified_identity": 2}, "uf_after": 8, "uf_after_skipped": 0, "uf_before": 8, "uf_grade_after": "C", "uf_grade_before": "C"}, "kipris": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "error_self_desc": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 1, "structured_format": 0, "tool_native": 0, "unified_identity": 1}, "uf_after": 7, "uf_after_skipped": 0, "uf_before": 8, "uf_grade_after": "C", "uf_grade_before": "C"}, "kma": {"ai_after": 6, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "C", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 1, "structured_format": 2, "tool_native": 3, "unified_identity": 2}, "uf_after": 6, "uf_after_skipped": 0, "uf_before": 7, "uf_grade_after": "C", "uf_grade_before": "C"}, "koreaexim": {"ai_after": 4, "ai_after_skipped": 2, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "data_format": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": "측정불가", "before": 1, "delta": null, "verdict": "측정불가"}, "error_self_desc": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "http_semantics": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "json_native": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "llms_txt": {"after": "측정불가", "before": null, "delta": null, "verdict": "측정불가"}, "machine_schema": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 2, "structured_format": 3, "tool_native": 0, "unified_identity": 2}, "uf_after": 8, "uf_after_skipped": 1, "uf_before": 9, "uf_grade_after": "C", "uf_grade_before": "B"}, "kosis": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 2, "tool_native": 3, "unified_identity": 2}, "uf_after": 7, "uf_after_skipped": 0, "uf_before": 9, "uf_grade_after": "C", "uf_grade_before": "B"}, "krx": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "signup_ease": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 2, "honest_http": 1, "machine_discovery": 0, "structured_format": 1, "tool_native": 0, "unified_identity": 1}, "uf_after": 6, "uf_after_skipped": 0, "uf_before": 6, "uf_grade_after": "C", "uf_grade_before": "C"}, "localdata": {"ai_after": 1, "ai_after_skipped": 3, "ai_before": 1, "ai_grade_after": "E", "ai_grade_before": "E", "indicators": {"approval_speed": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "cors_https": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "data_format": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": "측정불가", "before": 1, "delta": null, "verdict": "측정불가"}, "error_self_desc": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "http_semantics": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "json_native": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "llms_txt": {"after": "측정불가", "before": null, "delta": null, "verdict": "측정불가"}, "machine_schema": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 0, "tool_native": 0, "unified_identity": 2}, "uf_after": 5, "uf_after_skipped": 1, "uf_before": 5, "uf_grade_after": "D", "uf_grade_before": "D"}, "neis": {"ai_after": 3, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 2, "tool_native": 0, "unified_identity": 2}, "uf_after": 6, "uf_after_skipped": 0, "uf_before": 9, "uf_grade_after": "C", "uf_grade_before": "B"}, "nhis": {"ai_after": 1, "ai_after_skipped": 3, "ai_before": 2, "ai_grade_after": "E", "ai_grade_before": "E", "indicators": {"approval_speed": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": "측정불가", "before": 1, "delta": null, "verdict": "측정불가"}, "error_self_desc": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "http_semantics": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": "측정불가", "before": null, "delta": null, "verdict": "측정불가"}, "machine_schema": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "programmatic_auth": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 0, "tool_native": 0, "unified_identity": 0}, "uf_after": 2, "uf_after_skipped": 1, "uf_before": 4, "uf_grade_after": "E", "uf_grade_before": "D"}, "open-assembly": {"ai_after": 4, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 0, "structured_format": 2, "tool_native": 0, "unified_identity": 2}, "uf_after": 6, "uf_after_skipped": 0, "uf_before": 8, "uf_grade_after": "C", "uf_grade_before": "C"}, "open-law": {"ai_after": 3, "ai_after_skipped": 1, "ai_before": 2, "ai_grade_after": "D", "ai_grade_before": "E", "indicators": {"approval_speed": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "cors_https": {"after": "측정불가", "before": 1, "delta": null, "verdict": "측정불가"}, "data_format": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 1, "structured_format": 0, "tool_native": 3, "unified_identity": 2}, "uf_after": 4, "uf_after_skipped": 0, "uf_before": 6, "uf_grade_after": "D", "uf_grade_before": "C"}, "opendart": {"ai_after": 4, "ai_after_skipped": 0, "ai_before": 4, "ai_grade_after": "D", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 2, "honest_http": 0, "machine_discovery": 1, "structured_format": 2, "tool_native": 3, "unified_identity": 2}, "uf_after": 10, "uf_after_skipped": 0, "uf_before": 9, "uf_grade_after": "B", "uf_grade_before": "B"}, "safemap": {"ai_after": 1, "ai_after_skipped": 2, "ai_before": 3, "ai_grade_after": "E", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": "측정불가", "before": 1, "delta": null, "verdict": "측정불가"}, "error_self_desc": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "http_semantics": {"after": "측정불가", "before": 0, "delta": null, "verdict": "측정불가"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 0, "machine_discovery": 0, "structured_format": 0, "tool_native": 0, "unified_identity": 2}, "uf_after": 6, "uf_after_skipped": 1, "uf_before": 8, "uf_grade_after": "C", "uf_grade_before": "C"}, "seoul": {"ai_after": 1, "ai_after_skipped": 0, "ai_before": 3, "ai_grade_after": "E", "ai_grade_before": "D", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_format": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "error_self_desc": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "http_semantics": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "json_native": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "signup_ease": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "tool_native": {"after": 2, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 0, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 0, "structured_format": 1, "tool_native": 3, "unified_identity": 2}, "uf_after": 9, "uf_after_skipped": 0, "uf_before": 9, "uf_grade_after": "B", "uf_grade_before": "B"}, "tago": {"ai_after": 5, "ai_after_skipped": 0, "ai_before": 2, "ai_grade_after": "D", "ai_grade_before": "E", "indicators": {"approval_speed": {"after": 2, "before": 2, "delta": 0, "verdict": "유지"}, "cors_https": {"after": 1, "before": 0, "delta": 1, "verdict": "개선"}, "data_format": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "data_product": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "doc_quality": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "error_handling": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "error_self_desc": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "http_semantics": {"after": 2, "before": 0, "delta": 2, "verdict": "개선"}, "json_native": {"after": 2, "before": 1, "delta": 1, "verdict": "개선"}, "llms_txt": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "machine_schema": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "programmatic_auth": {"after": 0, "before": 1, "delta": -1, "verdict": "후퇴"}, "rate_limit": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "sdk_samples": {"after": 0, "before": 0, "delta": 0, "verdict": "미개선"}, "signup_ease": {"after": 1, "before": 1, "delta": 0, "verdict": "미개선"}, "tool_native": {"after": 0, "before": null, "delta": null, "verdict": "신규"}, "unified_identity": {"after": 2, "before": null, "delta": null, "verdict": "신규"}}, "rubric_levels": {"agent_auth": 0, "data_product": 0, "honest_http": 1, "machine_discovery": 0, "structured_format": 2, "tool_native": 0, "unified_identity": 2}, "uf_after": 5, "uf_after_skipped": 0, "uf_before": 7, "uf_grade_after": "D", "uf_grade_before": "C"}}, "problem_tracker": [{"coverage": {"improved": 3, "label": "3/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"cors_https": {"after": 1, "before": 1, "delta": 0, "evidence_ref": "evidence/data-go-kr/cors_https.trace.txt", "note": "CORS=False, https=True", "verdict": "미개선"}}, "mapped_indicators": ["cors_https"], "problem": "CORS 미지원 (2026-04: 0%)", "rollup": "미개선"}, {"coverage": {"improved": 0, "label": "0/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"data_format": {"after": 0, "before": 1, "delta": -1, "evidence_ref": null, "note": "config format.default=xml", "verdict": "후퇴"}, "json_native": {"after": 2, "before": 1, "delta": 1, "evidence_ref": "evidence/data-go-kr/json_native.trace.txt", "note": "Content-Type=application/json, JSON 파싱 성공", "verdict": "개선"}}, "mapped_indicators": ["json_native", "data_format"], "problem": "XML 기본 응답 (2026-04: 59%)", "rollup": "부분"}, {"coverage": {"improved": 8, "label": "8/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"http_semantics": {"after": 2, "before": 0, "delta": 2, "evidence_ref": "evidence/data-go-kr/http_semantics.trace.txt", "note": "잘못된 키에 대해 status=400 반환 (semantic HTTP status)", "verdict": "개선"}}, "mapped_indicators": ["http_semantics"], "problem": "항상 200 반환 (오류도 HTTP 200)", "rollup": "개선"}, {"coverage": {"improved": 5, "label": "5/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"machine_schema": {"after": 0, "before": 0, "delta": 0, "evidence_ref": "evidence/data-go-kr/machine_schema.trace.txt", "note": "openapi_guess 후보 4개 중 스키마 문서를 찾지 못함", "verdict": "미개선"}}, "mapped_indicators": ["machine_schema"], "problem": "OpenAPI 미제공 (2026-04: ~2%)", "rollup": "미개선"}, {"coverage": {"improved": 0, "label": "0/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"rate_limit_transparency": {"after": 0, "before": 0, "delta": 0, "evidence_ref": "evidence/data-go-kr/rate_limit_transparency.trace.txt", "note": "rate-limit 헤더 발견=False", "verdict": "미개선"}}, "mapped_indicators": ["rate_limit_transparency"], "problem": "RateLimit 헤더 없음", "rollup": "미개선"}, {"coverage": {"improved": 6, "label": "6/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"tool_native": {"after": 2, "before": null, "delta": null, "evidence_ref": null, "note": "mcp_server 존재: https://github.com/Koomook/data-go-mcp-servers", "verdict": "개선"}}, "mapped_indicators": ["tool_native"], "problem": "정부 MCP 서버 없음", "rollup": "개선"}, {"coverage": {"improved": 0, "label": "0/18 개선", "measured": 18, "total": 18}, "dagokr_detail": {"programmatic_auth": {"after": 0, "before": 1, "delta": -1, "evidence_ref": null, "note": "auth.type=api_key_query", "verdict": "후퇴"}}, "mapped_indicators": ["programmatic_auth"], "problem": "API Key in URL (쿼리 파라미터 노출)", "rollup": "미개선"}]}</script>
+<script type="application/json" id="rubric-data">{"version": "1.0", "generated": "2026-08-03", "description": "K-GAPI Δ Agentic 성숙도 루브릭. 7개 기둥 × Level 0~3. 지표명은 probe REGISTRY 키와 정확히 일치. 가이드라인 문서와 대시보드 채점이 공유하는 단일 소스.", "pillars": [{"id": "machine_discovery", "name": "기계 발견성·자기설명 (Machine Discovery & Self-description)", "why_agent": "에이전트는 사람이 읽는 HWP/웹페이지를 파싱할 수 없다 — 기계판독 스키마와 진입점이 있어야 API를 스스로 발견·이해·호출할 수 있다.", "indicators": ["machine_schema", "llms_txt"], "levels": {"0": "기계판독 명세 전무. 문서가 HWP/PDF/HTML 산문뿐이라 에이전트가 엔드포인트·파라미터를 추론할 수 없다.", "1": "부분적 구조화 문서(포털 내 표 형태 파라미터 설명 등)는 있으나 표준 OpenAPI 문서나 llms.txt는 없다.", "2": "유효한 OpenAPI 3.x 명세를 제공해 함수 호출/코드젠이 가능하다. 다만 사이트 수준 AI 진입점(llms.txt)은 없다.", "3": "OpenAPI 3.x 명세 + llms.txt(또는 동급 AI 진입점)를 함께 제공해 에이전트가 카탈로그부터 개별 엔드포인트까지 자기설명적으로 발견한다."}, "references": [{"title": "OpenAPI Specification v3.0.3", "url": "https://spec.openapis.org/oas/v3.0.3"}, {"title": "OpenAPI Specification (latest, 3.1)", "url": "https://spec.openapis.org/oas/latest.html"}, {"title": "The /llms.txt file — llmstxt.org", "url": "https://llmstxt.org/"}, {"title": "llms.txt proposal — Answer.AI (Jeremy Howard, 2024-09)", "url": "https://www.answer.ai/posts/2024-09-03-llmstxt.html"}, {"title": "해외 정부 API 디자인 가이드라인 비교 분석 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/api_design_guidelines_comparison.md"}]}, {"id": "structured_format", "name": "구조화 포맷 (Structured Format)", "why_agent": "JSON은 LLM이 바로 파싱·생성하는 네이티브 구조다. XML 기본값은 토큰을 약 2.5배 소모하고 게이트웨이 오류 시 강제 XML로 되돌아가 에이전트 파이프라인을 깨뜨린다.", "indicators": ["json_native", "data_format"], "levels": {"0": "XML 전용 또는 XML 기본값. JSON은 없거나 별도 파라미터로만 가능하며 오류 시 XML로 강제 회귀한다.", "1": "JSON을 지원하나 기본값은 XML이라 ?type=json 등 명시가 필요하고, 일부 경로에서 여전히 XML을 반환한다.", "2": "JSON이 기본 응답이며 정상/오류 경로 모두 일관된 JSON을 반환한다.", "3": "JSON 기본 + 콘텐츠 협상(Accept 헤더)으로 포맷 선택, ISO 8601 날짜·UTF-8 등 표준 데이터 표현을 준수하고 최상위 객체로 메타데이터 확장이 가능하다."}, "references": [{"title": "18F API Standards — Support JSON and only JSON", "url": "https://github.com/18F/api-standards"}, {"title": "EU High-Value Datasets Implementing Regulation (EU) 2023/138", "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0138"}, {"title": "DCAT-AP for High-Value Datasets", "url": "https://semiceu.github.io/DCAT-AP/releases/2.2.0-hvd/"}, {"title": "한국 공공 API 개선 로드맵 §1.1 JSON 기본 전환 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md"}]}, {"id": "honest_http", "name": "정직한 HTTP (Honest HTTP)", "why_agent": "에이전트는 HTTP 상태코드로 성공/실패를 자동 분기하고 재시도·백오프한다. 오류에 200을 반환하면 표준 HTTP 클라이언트(requests·axios·fetch)가 모두 무력화되고 무한 재호출·잘못된 성공 판정이 발생한다.", "indicators": ["http_semantics", "error_self_desc", "rate_limit_transparency"], "levels": {"0": "모든 상황에서 200 OK를 반환하고 실제 오류를 응답 바디에만 담는다. 상태코드로 성공/실패를 구분할 수 없다.", "1": "일부 오류에 상태코드를 쓰지만 불완전·비일관적(예: 500만 있고 401/404/429 없음)이다.", "2": "표준 HTTP 상태코드(400/401/403/404/409/429/500)를 상황에 맞게 일관되게 사용한다.", "3": "표준 상태코드 + RFC 9457(구 7807) Problem Details 구조화 오류(type/title/status/detail/instance) + 429와 함께 Retry-After/RateLimit 헤더로 백프레셔를 신호한다."}, "references": [{"title": "RFC 9457 — Problem Details for HTTP APIs (obsoletes RFC 7807)", "url": "https://www.rfc-editor.org/rfc/rfc9457.html"}, {"title": "RFC 9110 — HTTP Semantics (status codes)", "url": "https://www.rfc-editor.org/rfc/rfc9110.html"}, {"title": "UK GDS API Technical and Data Standards", "url": "https://www.gov.uk/guidance/gds-api-technical-and-data-standards"}, {"title": "한국 공공 API 개선 로드맵 §1.2 HTTP 상태코드 정상화 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md"}]}, {"id": "agent_auth", "name": "에이전트 인증 (Agent Authentication)", "why_agent": "자율 에이전트는 서버 간(machine-to-machine) 무인 실행이 기본이다. URL 쿼리에 노출되고 2년마다 수동 갱신하는 API Key는 로그 유출과 운영 중 서비스 중단을 유발한다 — 토큰 자동 갱신과 헤더 전달이 필요하다.", "indicators": ["programmatic_auth"], "levels": {"0": "인증키를 URL 쿼리 파라미터(?serviceKey=)로 전달하고 수동 갱신만 가능. 서버 로그·브라우저 히스토리·Referrer로 키가 노출된다.", "1": "API Key를 HTTP 헤더(Authorization / X-API-Key)로 전달할 수 있으나 여전히 장기 정적 키다.", "2": "OAuth 2.0 Client Credentials 등 토큰 기반 M2M 인증을 제공해 단기 토큰을 자동 발급·갱신한다.", "3": "OAuth 2.0/OIDC 기반 + scope 기반 최소권한, 자동 토큰 갱신, MCP 인가 흐름과 호환되는 표준 인증을 제공한다."}, "references": [{"title": "RFC 6749 — OAuth 2.0 (Client Credentials §4.4)", "url": "https://www.rfc-editor.org/rfc/rfc6749"}, {"title": "RFC 6750 — OAuth 2.0 Bearer Token Usage", "url": "https://www.rfc-editor.org/rfc/rfc6750"}, {"title": "MCP Specification 2025-11-25 (Authorization)", "url": "https://modelcontextprotocol.io/specification/2025-11-25"}, {"title": "한국 공공 API 개선 로드맵 §2.3/§3.2 API Key 헤더·OAuth 2.0 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md"}]}, {"id": "tool_native", "name": "도구 네이티브 접근 (Tool-native Access)", "why_agent": "에이전트는 API를 '도구(tool)'로 호출한다. MCP 서버나 함수 호출 스키마가 있으면 에이전트가 즉시 도구로 등록해 자연어로 데이터를 조회하지만, 없으면 개발자가 수동 래퍼를 만들어야 해 커버리지가 5% 미만에 머문다.", "indicators": ["tool_native"], "levels": {"0": "MCP 서버·함수 호출 스키마가 전무. 에이전트가 API에 접근하려면 사람이 수동으로 래퍼 코드를 작성해야 한다.", "1": "비공식 커뮤니티 MCP/툴 래퍼가 일부 존재하나 유지·책임 주체가 불명확하고 부분 커버리지다.", "2": "OpenAPI 명세 기반으로 MCP 서버/함수 호출 도구를 안정적으로 생성할 수 있는 상태(자동 생성 가능).", "3": "정부/기관이 공식 운영하는 MCP 서버로 카탈로그 전체를 도구로 노출하고 Claude·ChatGPT·Gemini 등 주요 클라이언트와 호환된다(프랑스 data.gouv.fr, 미국 GovInfo 모델)."}, "references": [{"title": "Model Context Protocol — Introduction", "url": "https://modelcontextprotocol.io/"}, {"title": "MCP Specification 2025-11-25", "url": "https://modelcontextprotocol.io/specification/2025-11-25"}, {"title": "data.gouv.fr MCP server (DINUM/Etalab)", "url": "https://github.com/datagouv/datagouv-mcp"}, {"title": "US GovInfo MCP public preview (GPO)", "url": "https://www.govinfo.gov/features/mcp-public-preview"}, {"title": "해외 정부 MCP/AI 도구 생태계 조사 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/global_mcp_ecosystem.md"}]}, {"id": "data_product", "name": "데이터 제품화 (Data-as-a-Product)", "why_agent": "에이전트가 신뢰하고 통합하려면 데이터가 '제품'처럼 다뤄져야 한다 — SDK·샘플코드·샌드박스·SLA·명확한 메타데이터가 있어야 에이전트 개발자가 빠르게 검증·연동하고 프로덕션에서 안정적으로 소비한다.", "indicators": ["data_product", "sdk_samples"], "levels": {"0": "SDK·샘플코드·샌드박스가 없고 데이터가 부산물처럼 방치된다. 검증하려면 실서버에 직접 호출해야 한다.", "1": "샘플코드나 커뮤니티 SDK가 일부 있으나 공식 지원·샌드박스·SLA가 없다.", "2": "공식 SDK/샘플 + 테스트 콘솔(Swagger UI)이나 DEMO_KEY로 회원가입 전 체험이 가능하다.", "3": "데이터를 제품으로 관리 — 공식 다국어 SDK, 샌드박스, SLA/유지관리 주체 명시, 재사용 친화 라이선스, 풍부한 메타데이터(DCAT-AP)로 EU HVD 수준의 제품화를 달성한다."}, "references": [{"title": "Data Mesh Principles — Data as a Product (Zhamak Dehghani, martinfowler.com)", "url": "https://martinfowler.com/articles/data-mesh-principles.html"}, {"title": "Designing Data Products (martinfowler.com)", "url": "https://martinfowler.com/articles/designing-data-products.html"}, {"title": "EU High-Value Datasets Implementing Regulation (EU) 2023/138", "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0138"}, {"title": "한국 공공 API 개선 로드맵 §2.6 샌드박스/테스트 환경 (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md"}]}, {"id": "unified_identity", "name": "통합 정체성·카탈로그 (Unified Identity & Catalog)", "why_agent": "에이전트가 여러 API를 조합하려면 단일 신원·단일 진입점이 필요하다. 전체 커버에 ID 130개가 필요한 파편화 구조에서는 에이전트가 수십 개 계정을 관리할 수 없어 실질적 자동화가 불가능하다.", "indicators": ["unified_identity", "signup_ease"], "levels": {"0": "포털마다 별도 가입·별도 키가 필요하고 통합 카탈로그가 없다(전체 커버에 다수 ID 필요). 가입 절차도 무겁다.", "1": "일부 포털이 공통 게이트웨이/카탈로그에 연결되나 대부분은 원본 기관 별도 가입이 필요하다.", "2": "주요 포털이 단일 SSO/공통 키와 통합 API 카탈로그로 묶여 있고, 즉시 키 발급 등 가입이 간소하다.", "3": "국가 단일 신원 페더레이션(OAuth/OIDC 기반)과 통합 카탈로그로 1~3개 ID면 전 포털 접근 가능하고, 무인증 Key-Free 탐색 접근까지 제공(프랑스 FranceConnect, 싱가포르 SingPass, 영국 api.gov.uk 모델)."}, "references": [{"title": "France api.gouv.fr — Doctrine des API (single sign-on / catalog)", "url": "https://api.gouv.fr/guides/doctrine-api"}, {"title": "France DINUM API doctrine — numerique.gouv.fr", "url": "https://www.numerique.gouv.fr/offre-accompagnement/reference-recommandations-partage-donnees-api-administration/"}, {"title": "UK GDS API Technical and Data Standards (API catalogue api.gov.uk)", "url": "https://www.gov.uk/guidance/gds-api-technical-and-data-standards"}, {"title": "한국 공공 API 개선 로드맵 §2.4 통합 인증 API SSO (gapi)", "url": "file:///Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md"}]}]}</script>
+<script>
+(function () {
+  var btn = document.getElementById('toggle-before-after');
+  if (!btn) return;
+  function paint() {
+    var state = btn.getAttribute('data-state');
+    var cells = document.querySelectorAll('#heatmap-table td.heat-cell');
+    cells.forEach(function (cell) {
+      var raw = state === 'before' ? cell.getAttribute('data-before') : cell.getAttribute('data-after');
+      var span = cell.querySelector('.heat-value');
+      span.textContent = (raw === null || raw === 'None') ? '·' : raw;
+      cell.classList.remove('cell-0', 'cell-1', 'cell-2', 'cell-na');
+      if (raw === null || raw === 'None' || raw === '측정불가') {
+        cell.classList.add('cell-na');
+      } else {
+        cell.classList.add('cell-' + raw);
+      }
+    });
+    btn.textContent = 'before/after 토글 (현재: ' + state + ')';
+  }
+  btn.addEventListener('click', function () {
+    btn.setAttribute('data-state', btn.getAttribute('data-state') === 'after' ? 'before' : 'after');
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "dgk_api_detail.html": {
+    "bytes": 202994,
+    "raw_tokens_est": 57998,
+    "text_chars": 5223,
+    "text_tokens_est": 2872
+  },
+  "dgk_login.html": {
+    "bytes": 14487,
+    "raw_tokens_est": 4139,
+    "text_chars": 336,
+    "text_tokens_est": 184
+  },
+  "dgk_main.html": {
+    "bytes": 169052,
+    "raw_tokens_est": 48300,
+    "text_chars": 2301,
+    "text_tokens_est": 1265
+  },
+  "dgk_search.html": {
+    "bytes": 464835,
+    "raw_tokens_est": 132810,
+    "text_chars": 7727,
+    "text_tokens_est": 4249
+  },
+  "dgk_signup.html": {
+    "bytes": 21024,
+    "raw_tokens_est": 6006,
+    "text_chars": 482,
+    "text_tokens_est": 265
+  },
+  "fr_datagouv_spec.html": {
+    "bytes": 237978,
+    "raw_tokens_est": 67993,
+    "text_chars": 237906,
+    "text_tokens_est": 59476
+  },
+  "sg_datagovsg.html": {
+    "bytes": 5766,
+    "raw_tokens_est": 1647,
+    "text_chars": 5764,
+    "text_tokens_est": 1441
+  },
+  "usa_apidatagov.html": {
+    "bytes": 13697,
+    "raw_tokens_est": 3913,
+    "text_chars": 2294,
+    "text_tokens_est": 573
+  },
+  "usa_signup.html": {
+    "bytes": 11916,
+    "raw_tokens_est": 3404,
+    "text_chars": 1040,
+    "text_tokens_est": 260
+  }
+}

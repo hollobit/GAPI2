@@ -1,0 +1,373 @@
+<title>이용 절차 분석 — 사람·AI 에이전트가 data.go.kr를 쓰기까지 | K-GAPI Δ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="공공데이터포털(data.go.kr)에서 데이터·API를 실제로 쓰기까지 사람과 AI 에이전트가 거쳐야 하는 단계 수, 인간 개입 횟수, 토큰 비용을 실측 기반으로 분석하고 해외 사례와 개선 방향을 제안합니다.">
+<meta property="og:title" content="이용 절차 분석 — 사람·AI 에이전트가 data.go.kr를 쓰기까지">
+<meta property="og:description" content="OpenAPI 활용신청까지 최대 20+ 액션, 인간 개입 3~5회, 검색 1페이지 ≈13만 토큰. 실측 기반 여정 분석과 Agent Access Layer 개선 제안.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hollobit.github.io/GAPI2/journey.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+<style>
+:root{
+  --bg:#f6f7f9;
+  --bg-elevated:#ffffff;
+  --text:#1b2430;
+  --text-muted:#5b6572;
+  --border:#e2e5ea;
+  --accent:#0f6e5e;
+  --accent-strong:#0a4f43;
+  --accent-soft:#e5f3ef;
+  --warn:#b3452f;
+  --warn-soft:#f9ece8;
+  --mid:#9a6b15;
+  --mid-soft:#f7efdd;
+  --link:#0b5fae;
+  --code-bg:#eef1f4;
+  --disabled-bg:#eceef1;
+  --disabled-text:#8a92a0;
+  --shadow: 0 1px 2px rgba(20,30,40,0.04), 0 8px 24px rgba(20,30,40,0.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12161c;
+    --bg-elevated:#1a2028;
+    --text:#e7ebf0;
+    --text-muted:#9aa5b1;
+    --border:#2a323d;
+    --accent:#3fcfab;
+    --accent-strong:#7fe3c8;
+    --accent-soft:#173330;
+    --warn:#e07856;
+    --warn-soft:#3a231c;
+    --mid:#d9a84e;
+    --mid-soft:#33290f;
+    --link:#6fb2f2;
+    --code-bg:#222a34;
+    --disabled-bg:#1c222b;
+    --disabled-text:#616a76;
+    --shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161c;
+  --bg-elevated:#1a2028;
+  --text:#e7ebf0;
+  --text-muted:#9aa5b1;
+  --border:#2a323d;
+  --accent:#3fcfab;
+  --accent-strong:#7fe3c8;
+  --accent-soft:#173330;
+  --warn:#e07856;
+  --warn-soft:#3a231c;
+  --mid:#d9a84e;
+  --mid-soft:#33290f;
+  --link:#6fb2f2;
+  --code-bg:#222a34;
+  --disabled-bg:#1c222b;
+  --disabled-text:#616a76;
+  --shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35);
+}
+:root[data-theme="light"]{
+  --bg:#f6f7f9;
+  --bg-elevated:#ffffff;
+  --text:#1b2430;
+  --text-muted:#5b6572;
+  --border:#e2e5ea;
+  --accent:#0f6e5e;
+  --accent-strong:#0a4f43;
+  --accent-soft:#e5f3ef;
+  --warn:#b3452f;
+  --warn-soft:#f9ece8;
+  --mid:#9a6b15;
+  --mid-soft:#f7efdd;
+  --link:#0b5fae;
+  --code-bg:#eef1f4;
+  --disabled-bg:#eceef1;
+  --disabled-text:#8a92a0;
+  --shadow: 0 1px 2px rgba(20,30,40,0.04), 0 8px 24px rgba(20,30,40,0.06);
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI","Malgun Gothic","Noto Sans KR",sans-serif;
+  line-height:1.7;
+  font-size:16px;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+.page{max-width:820px;margin:0 auto;padding:2.5rem 1.25rem 5rem;}
+.nav{display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem;font-size:.95rem;}
+.nav a{color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:.35rem .75rem;border-radius:999px;background:var(--bg-elevated);transition:color .15s ease, border-color .15s ease;}
+.nav a:hover{color:var(--accent-strong);border-color:var(--accent);}
+.nav a[aria-current="page"]{color:var(--accent-strong);border-color:var(--accent);font-weight:700;text-decoration:underline;}
+@media (max-width:640px){.nav{flex-wrap:wrap;}}
+header.hero{margin-bottom:2rem;}
+h1{font-size:1.85rem;line-height:1.35;margin:0 0 .6rem;letter-spacing:-.01em;}
+.subtitle{color:var(--text-muted);font-size:1.02rem;margin:0 0 1.4rem;}
+.lede{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;box-shadow:var(--shadow);color:var(--text);font-size:.98rem;}
+.lede strong{color:var(--accent-strong);}
+article h2{font-size:1.3rem;margin:2.4rem 0 .8rem;padding-top:.4rem;color:var(--accent-strong);}
+article h3{font-size:1.08rem;margin:1.7rem 0 .6rem;}
+article p{margin:.7rem 0;}
+article ul{padding-left:1.3rem;margin:.7rem 0;}
+article li{margin:.35rem 0;}
+article code{background:var(--code-bg);padding:.08rem .38rem;border-radius:5px;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;font-size:.87em;}
+article a{color:var(--link);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--link) 40%, transparent);text-underline-offset:2px;}
+article a:hover{text-decoration-color:var(--link);}
+article strong{color:var(--text);}
+article blockquote{margin:1rem 0;padding:.85rem 1.1rem;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;font-size:.94rem;color:var(--text);}
+.table-wrap{overflow-x:auto;margin:1rem 0;border:1px solid var(--border);border-radius:10px;}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:480px;}
+th,td{text-align:left;padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;}
+thead th{background:var(--code-bg);font-weight:700;white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin:1.4rem 0;}
+.kpi{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;box-shadow:var(--shadow);}
+.kpi .num{font-size:1.45rem;font-weight:800;letter-spacing:-.01em;line-height:1.25;}
+.kpi .num.bad{color:var(--warn);}
+.kpi .num.good{color:var(--accent-strong);}
+.kpi .lbl{font-size:.8rem;color:var(--text-muted);margin-top:.15rem;line-height:1.45;}
+/* step timeline */
+.steps{list-style:none;margin:1.1rem 0;padding:0;}
+.steps li{position:relative;padding:.55rem 0 .55rem 2.4rem;border-left:2px solid var(--border);margin-left:.9rem;}
+.steps li:last-child{border-left-color:transparent;}
+.steps .dot{position:absolute;left:-0.83rem;top:.72rem;width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;background:var(--accent-soft);color:var(--accent-strong);border:1.5px solid var(--accent);}
+.steps li.blocked .dot{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
+.steps li.partial .dot{background:var(--mid-soft);color:var(--mid);border-color:var(--mid);}
+.steps .st-title{font-weight:700;font-size:.95rem;}
+.steps .st-note{font-size:.87rem;color:var(--text-muted);margin-top:.1rem;}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;padding:.08rem .5rem;border-radius:999px;vertical-align:middle;margin-left:.4rem;white-space:nowrap;}
+.tag-auto{background:var(--accent-soft);color:var(--accent-strong);border:1px solid var(--accent);}
+.tag-partial{background:var(--mid-soft);color:var(--mid);border:1px solid var(--mid);}
+.tag-human{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);}
+.tag-wait{background:var(--disabled-bg);color:var(--disabled-text);border:1px solid var(--border);}
+/* horizontal bars */
+.bars{margin:1rem 0;}
+.bar-row{display:grid;grid-template-columns:11.5rem 1fr 5.5rem;gap:.6rem;align-items:center;margin:.45rem 0;font-size:.87rem;}
+@media (max-width:640px){.bar-row{grid-template-columns:8rem 1fr 4.6rem;font-size:.8rem;}}
+.bar-track{background:var(--code-bg);border-radius:6px;height:1.05rem;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--accent);min-width:2px;}
+.bar-fill.bad{background:var(--warn);}
+.bar-fill.mid{background:var(--mid);}
+.bar-val{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-muted);white-space:nowrap;}
+.bar-label{color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* case cards */
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0;}
+@media (max-width:640px){.cases{grid-template-columns:1fr;}}
+.case{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:1.05rem 1.15rem;box-shadow:var(--shadow);}
+.case h3{margin:.1rem 0 .45rem;font-size:1rem;}
+.case p{margin:.3rem 0;font-size:.89rem;color:var(--text-muted);}
+.case .takeaway{color:var(--accent-strong);font-weight:600;font-size:.87rem;margin-top:.5rem;}
+section.note{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;margin:1.75rem 0;box-shadow:var(--shadow);}
+section.note h2{font-size:1rem;margin:0 0 .6rem;color:var(--text);padding-top:0;}
+section.note ul{margin:.3rem 0 0;padding-left:1.2rem;color:var(--text-muted);font-size:.92rem;}
+section.note li{margin:.35rem 0;}
+section.note code{background:var(--code-bg);padding:.05rem .35rem;border-radius:5px;font-size:.85em;}
+footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:.85rem;}
+</style>
+<div class="page">
+  <nav class="nav" aria-label="사이트 내비게이션">
+    <a href="index.html">홈</a>
+    <a href="dashboard.html">대시보드</a>
+    <a href="journey.html" aria-current="page">이용 절차</a>
+    <a href="guideline.html">가이드라인</a>
+    <a href="calculator.html">ID 계산기</a>
+    <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
+  </nav>
+
+  <header class="hero">
+    <h1>이용 절차 분석 — 사람·AI 에이전트가 data.go.kr를 쓰기까지</h1>
+    <p class="subtitle">공공데이터포털에서 데이터·OpenAPI를 실제로 응용에 쓰기까지 몇 단계를 거쳐야 하고, 그 과정에서 AI 에이전트는 얼마나 많은 토큰을 추가로 태워야 하는지 — 2026-08-04 실측과 절차 분해로 정량화했습니다.</p>
+  </header>
+
+  <section class="lede">
+    <p>핵심 결론: 데이터는 열려 있지만 <strong>접근권을 얻는 절차가 닫혀 있습니다</strong>. 단순 파일 다운로드는 3~5단계로 끝나지만, OpenAPI 하나를 시험 호출하기까지는 화면 기준 9~13단계(세부 액션 20+개)에 <strong>인간 개입 3~5회</strong>가 필요하고, 그중 <strong>휴대폰 본인인증은 에이전트가 원천적으로 통과할 수 없는 하드 블록</strong>입니다. 에이전트가 브라우저 자동화로 이 여정을 원문 HTML 기반으로 완주하려면 <strong>추정 80만~120만 토큰</strong>이 필요합니다 — 싱가포르(data.gov.sg)의 무인증 JSON API라면 첫 데이터 획득까지 약 2천 토큰이면 충분합니다.</p>
+  </section>
+
+  <article>
+    <div class="kpis" aria-label="핵심 지표 요약">
+      <div class="kpi"><div class="num bad">20+</div><div class="lbl">OpenAPI 활용신청까지 세부 액션 수 (화면 기준 9~13단계)</div></div>
+      <div class="kpi"><div class="num bad">3~5회</div><div class="lbl">여정 중 인간 개입 필요 횟수 (본인인증·약관·심의)</div></div>
+      <div class="kpi"><div class="num bad">≈13.3만</div><div class="lbl">검색 결과 1페이지의 원문 HTML 토큰 (465KB 실측)</div></div>
+      <div class="kpi"><div class="num bad">사실상 불가</div><div class="lbl">에이전트 단독 완전 자율 이용 (본인인증 하드 블록)</div></div>
+    </div>
+
+    <h2 id="scenarios">1. 시나리오별 여정 총량 — 무엇을 하려느냐에 따라 벽의 높이가 다르다</h2>
+    <p>같은 포털이라도 이용 시나리오에 따라 절차 부담이 크게 다릅니다. 네 가지 대표 시나리오로 분해하면 다음과 같습니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>시나리오</th><th>주요 단계 수</th><th>세부 액션</th><th>인간 개입</th><th>자동화 가능성</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A. 단순 파일 다운로드</strong><br>공개 CSV/JSON 내려받기</td><td>3~5</td><td>5~8</td><td>0~1회</td><td>높음 — 대부분 자동화 가능</td></tr>
+          <tr><td><strong>B. OpenAPI 시험 이용</strong><br>개발계정 활용신청 → 첫 호출</td><td>9~13</td><td>20+</td><td>3~5회</td><td>중간 — 발견~인가 구간 30~50%</td></tr>
+          <tr><td><strong>C. 상용 서비스 운영</strong><br>운영계정 전환·트래픽 증량 포함</td><td>14~20</td><td>30+</td><td>5~8회+</td><td>낮음 — 20~40%</td></tr>
+          <tr><td><strong>D. 다중 API 조합</strong><br>여행 추천 에이전트: 날씨·관광지·숙박·행사·교통·주차·충전소·음식점·축제·응급의료 10종</td><td>시나리오 B × 10</td><td><strong>60~100+</strong></td><td>10회+ (API별 반복)</td><td>매우 낮음 — 일괄 신청 불가</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bars" aria-label="시나리오별 세부 액션 수 비교">
+      <div class="bar-row"><span class="bar-label">A. 파일 다운로드</span><span class="bar-track"><span class="bar-fill" style="width:7%"></span></span><span class="bar-val">5~8 액션</span></div>
+      <div class="bar-row"><span class="bar-label">B. OpenAPI 시험</span><span class="bar-track"><span class="bar-fill mid" style="width:22%"></span></span><span class="bar-val">20+ 액션</span></div>
+      <div class="bar-row"><span class="bar-label">C. 상용 운영</span><span class="bar-track"><span class="bar-fill mid" style="width:33%"></span></span><span class="bar-val">30+ 액션</span></div>
+      <div class="bar-row"><span class="bar-label">D. 10개 API 조합</span><span class="bar-track"><span class="bar-fill bad" style="width:100%"></span></span><span class="bar-val">60~100+</span></div>
+    </div>
+    <blockquote>시나리오 D가 결정적입니다. 실제 응용(여행 추천, 생활 안전, 지역 상권 분석 등)은 거의 항상 <strong>여러 API의 조합</strong>인데, data.go.kr에는 묶음 신청·일괄 승인 개념이 없어 API마다 검색→신청→승인→키 관리를 반복해야 합니다. 인간에게는 "귀찮음"이지만, 에이전트에게는 <strong>선형적으로 누적되는 비용이자 실패 확률</strong>입니다.</blockquote>
+
+    <h2 id="journey">2. OpenAPI 활용신청 상세 여정 — 어디서 사람이 필요하고, 어디서 에이전트가 멈추는가</h2>
+    <p>가장 흔한 시나리오 B(OpenAPI 시험 이용)를 단계별로 분해했습니다. 각 단계에 에이전트 관점의 자동화 판정을 붙였습니다:
+      <span class="tag tag-auto">자동화 가능</span>
+      <span class="tag tag-partial">부분 가능</span>
+      <span class="tag tag-human">인간 필요</span>
+      <span class="tag tag-wait">대기</span></p>
+    <ol class="steps">
+      <li><span class="dot">1</span><div class="st-title">포털 접속·키워드 검색 <span class="tag tag-auto">자동화 가능</span></div><div class="st-note">단, 검색 결과 페이지가 465KB(≈13.3만 토큰)의 스크립트 중심 HTML — 가시 텍스트는 그중 약 1.7%뿐이라 에이전트는 브라우저 렌더링 또는 대규모 파싱이 필요합니다.</div></li>
+      <li class="partial"><span class="dot">2</span><div class="st-title">후보 API 비교·선정 <span class="tag tag-partial">부분 가능</span></div><div class="st-note">유사 API가 기관별로 난립(전국 단위 vs 지자체별 분할)해 있고, 카탈로그를 기계가독 형태로 한 번에 받을 공식 방법이 없어 페이지를 순회해야 합니다.</div></li>
+      <li class="partial"><span class="dot">3</span><div class="st-title">상세 페이지에서 스펙 확인 <span class="tag tag-partial">부분 가능</span></div><div class="st-note">상세 페이지 203KB(≈5.8만 토큰). 요청/응답 명세가 HWP·DOCX 첨부로 제공되는 경우가 많아 표준 OpenAPI 스펙 파싱이 불가능한 API가 다수입니다.</div></li>
+      <li class="partial"><span class="dot">4</span><div class="st-title">회원가입 (아이디·이메일 인증) <span class="tag tag-partial">부분 가능</span></div><div class="st-note">폼 입력 자체는 자동화 가능하지만, 계정이 '개인'에게 귀속됩니다 — 서비스·에이전트 명의 계정 개념이 없습니다.</div></li>
+      <li class="blocked"><span class="dot">5</span><div class="st-title">휴대폰 본인인증 / 아이핀 <span class="tag tag-human">인간 필요 — 하드 블록</span></div><div class="st-note">실명 기반 본인확인은 에이전트가 대행할 수 없고, 대행해서도 안 되는 설계입니다. 이 지점에서 완전 자율 여정은 구조적으로 종료됩니다.</div></li>
+      <li class="blocked"><span class="dot">6</span><div class="st-title">이용약관·활용 조건 동의 <span class="tag tag-human">인간 필요</span></div><div class="st-note">법적 책임 주체가 동의해야 하며, 약관이 기계가독(machine-readable) 형태가 아니라 에이전트가 조건을 해석·판단하기 어렵습니다.</div></li>
+      <li class="partial"><span class="dot">7</span><div class="st-title">활용신청서 작성 (활용 목적 등) <span class="tag tag-partial">부분 가능</span></div><div class="st-note">자유서술 입력은 채울 수 있으나, 신청을 제출할 관리용 API가 없어 화면 자동화에 의존해야 합니다.</div></li>
+      <li><span class="dot">8</span><div class="st-title">승인 대기 — 자동승인 vs 심의승인 <span class="tag tag-wait">대기</span></div><div class="st-note">API마다 자동/심의 여부가 다르고 기준이 사전에 기계가독으로 공개되지 않습니다. 심의는 수 시간~수 일.</div></li>
+      <li><span class="dot">9</span><div class="st-title">serviceKey 발급 확인 <span class="tag tag-auto">자동화 가능</span></div><div class="st-note">단, 키 조회도 화면 로그인 후에만 가능 — 키 발급·회전(rotation)용 API가 없습니다.</div></li>
+      <li><span class="dot">10</span><div class="st-title">키 활성화 대기 <span class="tag tag-wait">대기</span></div><div class="st-note">발급 직후 일정 시간 동안 인증 실패가 정상 동작인 경우가 있어, 에이전트는 "키가 잘못된 것인지 아직 안 열린 것인지" 구분할 수 없습니다.</div></li>
+      <li><span class="dot">11</span><div class="st-title">첫 호출·시행착오 <span class="tag tag-auto">자동화 가능 (비용 큼)</span></div><div class="st-note">URL 인코딩된 키 이중 인코딩 문제, XML 기본 응답, 표준화되지 않은 에러 포맷 등으로 재시도 루프가 발생 — 호출당 시행착오 토큰이 추가됩니다.</div></li>
+      <li class="partial"><span class="dot">12</span><div class="st-title">쿼터 관리 (개발계정 일일 한도) <span class="tag tag-partial">부분 가능</span></div><div class="st-note">사용량 조회·증량 신청 모두 화면 전용. 표준 RateLimit 헤더가 없어 에이전트는 한도 초과를 사후에야 알게 됩니다.</div></li>
+      <li class="blocked"><span class="dot">13</span><div class="st-title">운영계정 전환 신청 (상용화 시) <span class="tag tag-human">인간 필요</span></div><div class="st-note">별도 심사·서류가 필요한 인간 중심 절차입니다. 장애 시 문의도 전화·게시판 등 인간 채널을 전제합니다.</div></li>
+    </ol>
+
+    <h2 id="tokens">3. 토큰 비용 실측 — 에이전트에게 이 여정은 얼마인가</h2>
+    <p>2026-08-04에 여정의 실제 페이지들을 그대로 받아(<code>curl</code>) 크기를 측정하고 토큰으로 환산했습니다. 원문은 <a href="evidence/journey/measurements.json">measurements.json</a>과 <code>evidence/journey/</code>의 HTML 스냅샷으로 공개합니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>페이지 (여정 단계)</th><th>실측 크기</th><th>원문 HTML 토큰≈</th><th>가시 텍스트 토큰≈</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>data.go.kr 메인 (단계 1)</td><td>169 KB</td><td>48,300</td><td>1,265</td><td>가시 정보율 ≈2.6%</td></tr>
+          <tr><td>data.go.kr 검색 결과 (단계 1~2)</td><td><strong>465 KB</strong></td><td><strong>132,810</strong></td><td>4,249</td><td>JS 렌더 필요 · 가시 정보율 ≈3.2%</td></tr>
+          <tr><td>data.go.kr API 상세 (단계 3)</td><td>203 KB</td><td>57,998</td><td>2,872</td><td>스펙 본문은 HWP/DOCX 첨부인 경우 다수</td></tr>
+          <tr><td>data.go.kr 로그인·회원가입 (단계 4~5)</td><td>14 + 21 KB</td><td>10,145</td><td>449</td><td>이후 본인인증에서 자동화 중단</td></tr>
+          <tr><td>🇺🇸 api.data.gov 메인 + 키 신청 폼</td><td>14 + 12 KB</td><td>7,317</td><td>833</td><td>폼 1개 제출로 통합 키 즉시 발급</td></tr>
+          <tr><td>🇸🇬 data.gov.sg 카탈로그 API 응답</td><td>5.8 KB</td><td>1,647</td><td>—</td><td>무로그인 · 순수 JSON</td></tr>
+          <tr><td>🇫🇷 data.gouv.fr 전체 API 스펙 (swagger.json)</td><td>238 KB</td><td>67,993</td><td>—</td><td>기계가독 스펙 — 1회 취득 후 캐시 가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>여정 전체로 환산하면</h3>
+    <p>시나리오 B(20+ 액션)를 에이전트가 브라우저 자동화로 완주한다고 가정하면:</p>
+    <ul>
+      <li><strong>원문 HTML을 읽으며 진행</strong>: 액션당 평균 4만~6만 토큰 × 20+ 액션 + 재시도 ≈ <strong>80만~120만 토큰</strong>. 대형 모델 컨텍스트(20만 토큰)를 여러 번 갈아끼워야 하는 규모입니다.</li>
+      <li><strong>접근성 트리·텍스트 추출 최적화 시</strong>: 액션당 1.5천~4천 토큰 ≈ <strong>3만~8만 토큰</strong>. 그래도 본인인증(단계 5)에서 인간에게 제어를 넘겨야 하므로 "무인 완주"는 불가능합니다.</li>
+      <li><strong>시나리오 D(10개 API)</strong>: 위 비용 × 10 — 최적화해도 <strong>수십만 토큰 + 인간 개입 10회+</strong>.</li>
+    </ul>
+    <div class="bars" aria-label="첫 데이터 획득까지 추정 토큰 비교 (로그 아님, 상한 기준 상대 비교)">
+      <div class="bar-row"><span class="bar-label">🇸🇬 data.gov.sg</span><span class="bar-track"><span class="bar-fill" style="width:2%"></span></span><span class="bar-val">≈2천</span></div>
+      <div class="bar-row"><span class="bar-label">🇺🇸 api.data.gov</span><span class="bar-track"><span class="bar-fill" style="width:4%"></span></span><span class="bar-val">≈5천~1만</span></div>
+      <div class="bar-row"><span class="bar-label">🇫🇷 data.gouv.fr (MCP)</span><span class="bar-track"><span class="bar-fill" style="width:5%"></span></span><span class="bar-val">≈1만</span></div>
+      <div class="bar-row"><span class="bar-label">🇰🇷 data.go.kr (최적화)</span><span class="bar-track"><span class="bar-fill mid" style="width:30%"></span></span><span class="bar-val">3만~8만</span></div>
+      <div class="bar-row"><span class="bar-label">🇰🇷 data.go.kr (원문 HTML)</span><span class="bar-track"><span class="bar-fill bad" style="width:100%"></span></span><span class="bar-val">80만~120만</span></div>
+    </div>
+    <p>결론적으로 첫 데이터 획득까지의 에이전트 비용은 해외 선도 포털 대비 <strong>최소 수십 배, 비최적화 시 수백 배</strong>입니다. 게다가 이 비용을 다 치러도 인간 개입 없이는 끝나지 않습니다.</p>
+
+    <h2 id="barriers">4. 왜 이렇게 되었나 — 여섯 가지 구조적 장벽</h2>
+    <p>절차가 긴 것은 표면이고, 원인은 포털이 <strong>인간 방문자만을 전제로 설계</strong>되었기 때문입니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>장벽</th><th>내용</th><th>에이전트에 미치는 영향</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>인간 중심 계정 체계</strong></td><td>자격증명이 개인에게 귀속. 서비스·조직·에이전트 계정 없음</td><td>위임·자동 갱신 불가, 본인인증 하드 블록</td></tr>
+          <tr><td>2</td><td><strong>관리 API 부재</strong></td><td>활용신청·키 발급·쿼터 증량을 위한 표준 엔드포인트 없음</td><td>모든 절차를 화면 스크래핑으로 대행 → 토큰 폭증·취약</td></tr>
+          <tr><td>3</td><td><strong>승인 정책 비일관</strong></td><td>API마다 자동승인/심의 기준이 다르고 비공개</td><td>결과 예측 불가 → 계획 수립 불가</td></tr>
+          <tr><td>4</td><td><strong>문서 포맷 파편화</strong></td><td>스펙이 HWP·DOCX·HTML·일부만 Swagger로 혼재</td><td>스펙 파싱 실패 → 시행착오 호출로 비용 전가</td></tr>
+          <tr><td>5</td><td><strong>서비스 보증 불안정</strong></td><td>제공기관 백엔드 장애가 포털 통제 밖에서 발생</td><td>표준 상태 정보 없이는 자동 복구 판단 불가</td></tr>
+          <tr><td>6</td><td><strong>인간 의존 에스컬레이션</strong></td><td>장애·문의 채널이 전화·게시판 전제</td><td>무인 운영의 마지막 고리가 끊김</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>자동화 가능성 종합 평가</h3>
+    <div class="bars" aria-label="구간별 자동화 가능 비율 추정">
+      <div class="bar-row"><span class="bar-label">키 취득 후 운영 구간</span><span class="bar-track"><span class="bar-fill" style="width:80%"></span></span><span class="bar-val">70~90%</span></div>
+      <div class="bar-row"><span class="bar-label">발견 → 인가 구간</span><span class="bar-track"><span class="bar-fill mid" style="width:40%"></span></span><span class="bar-val">30~50%</span></div>
+      <div class="bar-row"><span class="bar-label">상용 배포 전 과정</span><span class="bar-track"><span class="bar-fill mid" style="width:30%"></span></span><span class="bar-val">20~40%</span></div>
+      <div class="bar-row"><span class="bar-label">완전 자율 (무인)</span><span class="bar-track"><span class="bar-fill bad" style="width:4%"></span></span><span class="bar-val">사실상 0</span></div>
+    </div>
+    <p>즉, 병목은 데이터 호출부가 아니라 <strong>"발견 → 계약 → 인가"라는 중간 구간</strong>입니다. 이 구간을 처리할 인프라가 현재 비어 있습니다.</p>
+
+    <h2 id="global">5. 해외는 어떻게 하고 있나</h2>
+    <div class="cases">
+      <div class="case">
+        <h3>🇺🇸 미국 — api.data.gov (GSA)</h3>
+        <p>이메일 폼 1개 제출로 <strong>즉시 발급되는 단일 API 키</strong>로 수백 개 연방 API를 호출. 표준 rate limit(기본 시간당 1,000회)과 표준 에러 포맷을 게이트웨이가 일괄 제공.</p>
+        <p>GovInfo는 <strong>정부 공식 MCP 서버</strong>를 공개해 에이전트가 도구 호출로 바로 접근.</p>
+        <p class="takeaway">교훈: "우산형 게이트웨이 + 통합 키"가 신청 절차 자체를 1단계로 압축한다.</p>
+      </div>
+      <div class="case">
+        <h3>🇫🇷 프랑스 — data.gouv.fr</h3>
+        <p>카탈로그 전체가 <a href="https://www.data.gouv.fr/api/1/swagger.json" target="_blank" rel="noopener">swagger.json</a>으로 기계가독 공개, 대부분의 조회는 키 없이 호출 가능. 4만여 데이터셋을 다루는 <strong>정부 공식 MCP 서버(datagouv-mcp)</strong>를 운영.</p>
+        <p class="takeaway">교훈: 스펙의 기계가독화 + 공식 MCP만으로 에이전트 여정이 "스펙 1회 취득 → 즉시 호출"로 줄어든다.</p>
+      </div>
+      <div class="case">
+        <h3>🇸🇬 싱가포르 — data.gov.sg</h3>
+        <p>실시간 API 다수가 <strong>무인증·무신청</strong>. 응답은 순수 JSON(카탈로그 조회 실측 5.8KB). 개발자 문서가 곧 스펙.</p>
+        <p class="takeaway">교훈: 저위험 공공데이터는 신청 절차 자체를 없애는 것이 최선의 최적화다.</p>
+      </div>
+      <div class="case">
+        <h3>🇬🇧 영국 — GDS API 표준 + api.gov.uk</h3>
+        <p>전 부처에 OpenAPI 스펙 공개·버저닝·OAuth 2.0 등 <strong>공통 API 기술표준을 의무화</strong>하고 api.gov.uk에 카탈로그를 집약.</p>
+        <p class="takeaway">교훈: 포털 개선이 아니라 "표준 강제"가 기관 간 편차(승인·문서 파편화)를 없앤다.</p>
+      </div>
+      <div class="case">
+        <h3>🇪🇺 EU — data.europa.eu</h3>
+        <p>27개국 카탈로그를 <strong>DCAT-AP 표준 메타데이터</strong>로 연합(federation)하고 SPARQL·REST로 기계 탐색 제공. High-Value Datasets는 API 제공을 법으로 의무화.</p>
+        <p class="takeaway">교훈: 메타데이터 표준화가 되면 "발견" 단계는 에이전트에게 공짜가 된다.</p>
+      </div>
+      <div class="case">
+        <h3>공통 트렌드 (2025~2026)</h3>
+        <p>① 정부 공식 MCP 서버(프랑스·미국 GovInfo 등) ② OpenAPI-first 의무화 ③ <code>llms.txt</code>·기계가독 약관 실험 ④ 샌드박스 공용 키.</p>
+        <p class="takeaway">방향은 하나: "사람이 읽는 포털"에서 "기계가 계약하는 플랫폼"으로.</p>
+      </div>
+    </div>
+
+    <h2 id="proposal">6. 개선 제안 — Agent Access Layer</h2>
+    <p>필요한 것은 화면 개편이 아니라, 데이터 발견과 API 호출 사이의 비어 있는 구간(인가·계약·운영관리)을 담당할 <strong>에이전트 접근 계층(Agent Access Layer)</strong>입니다. 6개 층위로 제안합니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>층위</th><th>제안</th><th>해소되는 장벽</th><th>해외 선례</th></tr></thead>
+        <tbody>
+          <tr><td><strong>L1 계정 체계</strong></td><td>조직·서비스·에이전트 계정 유형 신설, 인간 관리자가 권한을 위임하는 구조 (본인인증은 위임 시점 1회로 집약)</td><td>#1 인간 중심 계정</td><td>OAuth 2.0 client credentials 관행</td></tr>
+          <tr><td><strong>L2 관리 API</strong></td><td>활용신청·키 발급/회전·쿼터 조회/증량용 표준 API (OAuth 2.0 scope 기반)</td><td>#2 관리 API 부재</td><td>api.data.gov 셀프서비스 키</td></tr>
+          <tr><td><strong>L3 스펙 표준화</strong></td><td>OpenAPI Specification·JSON Schema·DCAT 메타데이터·RFC 7807 에러 모델을 전 제공기관에 의무화</td><td>#4 문서 파편화, #5 보증</td><td>영국 GDS 표준, EU DCAT-AP</td></tr>
+          <tr><td><strong>L4 패키지 인가</strong></td><td>관련 API 묶음(예: "여행 패키지")을 단일 계약으로 일괄 승인 — 60~100 액션을 1회 신청으로</td><td>시나리오 D 조합 비용</td><td>api.data.gov 통합 키</td></tr>
+          <tr><td><strong>L5 공용 샌드박스</strong></td><td>신청 없이 쓰는 저쿼터 공용 시험 키 — "먼저 써보고 나중에 계약"</td><td>#3 승인 예측 불가</td><td>싱가포르 무인증 API</td></tr>
+          <tr><td><strong>L6 자동 승인</strong></td><td>저위험 API는 기준(개인정보 무관·출처표시·쿼터 준수) 충족 시 기계 판정으로 즉시 승인</td><td>#3 승인 비일관</td><td>프랑스 무키 조회 API</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>단계적 로드맵</h3>
+    <ul>
+      <li><strong>단기 (6개월)</strong> — L5 공용 샌드박스 키 + 인기 상위 API부터 OpenAPI 스펙 병행 게시 + 정부 공식 MCP 서버 파일럿(프랑스 datagouv-mcp 모델). 기존 시스템 개조 없이 게이트웨이 앞단에서 가능한 것들입니다.</li>
+      <li><strong>중기 (6~18개월)</strong> — L2 관리 API와 L6 자동 승인 도입, RFC 7807 에러·RateLimit 헤더 표준화(<a href="guideline.html">가이드라인</a> 기둥 1·5와 동일 방향).</li>
+      <li><strong>장기 (18개월+)</strong> — L1 에이전트 계정 체계와 L4 패키지 인가. 법·제도(전자서명·본인확인 제도) 정비가 함께 필요한 영역입니다.</li>
+    </ul>
+    <blockquote>이 여섯 층위 중 <strong>어느 하나만 도입해도 여정이 눈에 띄게 줄어듭니다.</strong> 예컨대 L5(샌드박스 키) 하나만으로 시나리오 B의 앞 10단계가 "스펙 읽기 → 즉시 시험 호출" 2단계로 압축되고, 에이전트 토큰 비용은 실측 기준 수만 토큰에서 수천 토큰 수준으로 내려갑니다.</blockquote>
+  </article>
+
+  <section class="note">
+    <h2>방법론 · 한계</h2>
+    <ul>
+      <li><strong>단계 수·개입 횟수</strong> — 시나리오별 절차 분해 분석(2026-08)에 기반. 화면 단계(사용자가 인지하는 단위)와 세부 액션(클릭·입력·판단 단위)을 구분해 집계했습니다.</li>
+      <li><strong>페이지 실측</strong> — 2026-08-04, <code>curl</code>로 실제 응답을 저장해 크기를 측정했습니다. 스냅샷과 수치는 <code>evidence/journey/</code>에 공개합니다.</li>
+      <li><strong>토큰 환산</strong> — 원문 HTML은 <code>바이트 ÷ 3.5</code>, 가시 텍스트는 한글 비중을 반영해 문자당 0.55(한글 위주)/0.25(영문 위주) 토큰으로 추정한 근사치입니다. 토크나이저·모델에 따라 ±30% 이상 달라질 수 있으며, 순위(상대 비교)에 영향을 주는 수준은 아닙니다.</li>
+      <li><strong>여정 총 토큰</strong> — 브라우저 자동화 에이전트가 각 액션에서 페이지 컨텍스트를 소비한다는 가정의 추정 범위입니다. 실제 값은 에이전트 구현(스크린샷·접근성 트리·DOM)에 따라 달라집니다.</li>
+      <li>승인 소요 시간·쿼터 등 로그인 이후 구간은 계정 없이 실측할 수 없어 공식 안내·절차 문서 기반(doc)으로 판정했습니다.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>전종홍 (hollobit) · 실측일 2026-08-04 · <a href="index.html">K-GAPI Δ 홈</a> · <a href="dashboard.html">개선 비교 대시보드</a> · <a href="guideline.html">Agentic 가이드라인</a></p>
+    <p class="copyright">Copyright (c) 2026, Analyzed by Jonghong Jeon, hollobit@etri.re.kr</p>
+  </footer>
+</div>

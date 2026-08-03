@@ -1,0 +1,478 @@
+
+
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta id="_csrf" name="_csrf" content="b1de1c13-4bce-4936-b21f-0ec57cab0da3"/>
+    <meta id="_csrf_header" name="_csrf_header" content="X-XSRF-TOKEN"/>
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/guide/favicon_180.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/img/guide/favicon_512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon/favicon_192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/guide/favicon_32.png">
+    <title>공공데이터포털</title>
+
+    <!-- css -->
+    <link href="/assets/common/css/import.css" media="all" rel="stylesheet" type="text/css">
+    <link href="/assets/common/component/component.css" media="all" rel="stylesheet" type="text/css">
+    <link href="/assets/common/portal/css/layout.css" rel="stylesheet" type="text/css">
+    <link href="/assets/common/portal/css/contents.css" rel="stylesheet" type="text/css">
+    <link href="/assets/common/css/login.css" rel="stylesheet" type="text/css">
+
+    <!-- js -->
+    <script src="/assets/common/js/jquery-3.7.1.min.js"></script>
+    <script src="/assets/common/js/plugin/slick.min.js"></script>
+    <script src="/assets/common/js/plugin/swiper-bundle.min.js"></script>
+    <script src="/assets/common/js/component/ui-script.js"></script>
+    <script src="/assets/common/portal/js/custom.js"></script>
+    <script src="/js/prompt-scripts.js"></script>
+    <script src="/js/ext/bootstrap.bundle.min.js"></script>
+</head>
+<body id="login">
+
+    <div id="wrapper">
+    
+        <!-- masthead -->
+        <div id="krds-masthead">
+            <div class="toggle-wrap">
+                <div class="toggle-head">
+                    <div class="inner">
+                         <span class="nuri-txt">이 누리집은 대한민국 공식 전자정부 누리집입니다.</span>
+                        <!-- <span class="nuri-txt">이 누리집은 공공데이터포털 고도화구축 개발사이트입니다.</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- //masthead -->
+
+        <!-- login header -->
+        <header id="login-header">
+            <div class="inner">
+                <h2 class="logo">
+                    <a href="https://www.data.go.kr" title="메인으로 바로가기-portal"><span class="sr-only">DATA.GO.KR 공공데이터포털</span></a>
+                    
+                </h2>
+            </div>
+        </header>
+        <!-- //login header -->
+        
+        <div class="wrap">
+            <div class="inner">
+                
+                <div id="contents">
+                
+					
+
+
+
+			
+                    <div class="contents login">
+                        <div class="login-container">
+						<form name="signupForm" id="signupForm" method="get" action="/sso/user-certify">
+                            <div class="login-title-wrap">
+                                <h1 class="h-tit">회원가입</h1>
+                                <p>회원가입을 하시면 공공데이터포털을 통해 국가가 보유하고 있는 공공데이터와 오픈API 등 모든 정보를 자유롭게 이용하실 수 있습니다.</p>
+                            </div>
+                            
+                            <ol class="krds-step-wrap"  id="commonStep">
+                                <li class="active">
+                                    <span>
+                                        <em class="sr-only">현재단계</em>
+                                        <i class="step">1단계</i>
+                                        <span class="step-tit">회원구분</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="step">2단계</i>
+                                        <span class="step-tit">약관동의</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="step">3단계</i>
+                                        <span class="step-tit">정보입력</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="step">4단계</i>
+                                        <span class="step-tit">본인인증</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="step">5단계</i>
+                                        <span class="step-tit">가입완료</span>
+                                    </span>
+                                </li>
+                            </ol>
+
+                            <ol class="krds-step-wrap" id="corpStep" style="display: none;">
+                                <li class="active">
+                                    <span>
+                                        <em class="sr-only">현재단계</em>
+                                        <i class="step">1단계</i>
+                                        <span class="step-tit">회원구분</span>
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span>
+                                        <i class="step">2단계</i>
+                                        <span class="step-tit">약관동의</span>
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span>
+                                        <i class="step">3단계</i>
+                                        <span class="step-tit">정보입력</span>
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span>
+                                        <i class="step">4단계</i>
+                                        <span class="step-tit">본인인증</span>
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span>
+                                        <i class="step">5단계</i>
+                                        <span class="step-tit">정보입력(기업)</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="step">6단계</i>
+                                        <span class="step-tit">가입완료</span>
+                                    </span>
+                                </li>
+                            </ol>
+                            
+                            
+                           <div id="step1" class="signup-area">
+                                <div class="signup-title">
+                                    <div class="title-step" id="commonTitleStep"><strong>1단계</strong> / 5단계</div>
+                                    <div class="title-step" id="corpTitleStep" style="display: none;"><strong>1단계</strong> / 6단계</div>
+                                    <h2>회원구분</h2>
+                                </div>
+                                <div class="signup-type">
+                                    <a href="#!" id="commonTypeRadio" class="item signType" data-value="COMMON">
+                                        <span><i class="svg-icon ico-signup1"></i>
+                                        </span>
+                                        <div class="txt">
+                                            <p>일반회원</p>
+                                            <span>만 14세 이상 내국인</span>
+                                        </div>
+                                    </a>
+                                    <a href="#!" id="childTypeRadio" class="item signType" data-value="CHILD">
+                                        <span><i class="svg-icon ico-signup2"></i>
+                                        </span>
+                                        <div class="txt">
+                                            <p>어린이 회원</p>
+                                            <span>만 14세 미만 내국인</span>
+                                        </div>
+                                    </a>
+                                    <a href="#!" id="corpTypeRadio" class="item signType" data-value="CORP">
+                                        <span><i class="svg-icon ico-signup3"></i>
+                                        </span>
+                                        <div class="txt">
+                                            <p>기업회원</p>
+                                            <span>국세청에 등록된 사업자</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <!-- 가입확인 영역 -->
+                                <div class="wrt-section">
+                                    <h2 class="title">회원가입 여부 확인</h2>
+                                    <div class="wrt-container">
+                                        <div class="fieldset">
+                                            <div class="form-group">
+                                                <div class="form-tit required">
+                                                    <label for="checkNameInput">이름</label>
+                                                </div>
+                                                <p class="form-hint">실명으로 가입하지 않은 경우 공공데이터 제공신청, 분쟁조정신청 등 일부 서비스에 대해 불이익이 있을 수 있습니다.</p>
+                                                <div class="form-conts">
+                                                    <input type="text" id="checkNameInput" name="name" class="krds-input" placeholder="이름을 입력해주세요." value="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="form-tit required">
+                                                    <label for="checkEmailInput">이메일</label>
+                                                </div>
+                                                <p class="form-hint">이메일 주소 입력은 영문키 상태에서 기재해주시기 바랍니다.</p>
+                                                <div class="form-conts">
+                                                    <input type="text" id="checkEmailInput" name="email" class="krds-input" placeholder="aaa@aaa.com" value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- //가입확인 영역 -->
+                                
+                                <div class="btn-group right m-right">
+                                    <button type="button" id="gotoStep2Btn" class="krds-btn large primary auto">가입확인</button>
+                                </div>
+                            </div>
+                            
+                        </form>
+                        </div>
+                    </div>
+
+<script src="/assets/common/js/CookieManager.js"></script>
+<script src="/assets/common/js/InputValidator.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    	const signup = new CommonSignup();
+    });
+    
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    class CommonSignup {
+        // class variables
+        hasUserValidated = false;
+        hasUserIdUniqueCheck = false;
+        isPasswordValid = false;
+        isPasswordsEqual = false;
+        hasEmailValidated = false;
+        hasCorpAuthChecked = false;
+        hasCorpJoinedBefore = false;
+        isCorpAccnt = false;
+        
+        selectedSignType = '';
+        
+        buttons;
+        commonTypeRadio;
+        childTypeRadio;
+        corpTypeRadio;
+        nameHelpMessage;
+        emailHelpMessage;
+
+        checkNameInput;
+        checkEmailInput;
+        gotoStep2Btn;
+
+        commonStep;
+        corpStep;
+        commonTitleStep;
+        corpTitleStep;
+        constructor() {
+            this.signupForm = document.getElementById("signupForm");
+
+            this.buttons = document.querySelectorAll('.signType');
+            this.commonTypeRadio = document.getElementById("commonTypeRadio");
+            this.childTypeRadio = document.getElementById("childTypeRadio");
+            this.corpTypeRadio = document.getElementById("corpTypeRadio");
+            this.nameHelpMessage = document.getElementById("nameHelpMessage");
+            this.emailHelpMessage = document.getElementById("emailHelpMessage");
+
+            this.checkNameInput = document.getElementById("checkNameInput");
+            this.checkEmailInput = document.getElementById("checkEmailInput");
+            this.gotoStep2Btn = document.getElementById("gotoStep2Btn");
+            this.signupType = document.getElementById("signupType");
+
+            this.commonStep = document.getElementById("commonStep");
+            this.corpStep = document.getElementById("corpStep");
+            this.commonTitleStep = document.getElementById("commonTitleStep");
+            this.corpTitleStep = document.getElementById("corpTitleStep");
+
+            this.initEvent();
+        }
+        
+        initEvent() {
+        	const _this = this;
+            
+        	_this.buttons.forEach(btn => {
+        		btn.addEventListener('click', (e) => this.handleSelect(e));
+        	});
+        	
+
+            _this.gotoStep2Btn.addEventListener('click', (ev) => {
+                _this.gotoStep2();
+            });
+
+            _this.commonTypeRadio.addEventListener('click', (ev) => {
+                _this.corpTitleStep.style.display='none';
+                _this.corpStep.style.display='none';
+                _this.commonTitleStep.style.display='';
+                _this.commonStep.style.display='';
+            });
+
+            _this.childTypeRadio.addEventListener('click', (ev) => {
+                _this.corpTitleStep.style.display='none';
+                _this.corpStep.style.display='none';
+                _this.commonTitleStep.style.display='';
+                _this.commonStep.style.display='';
+            });
+
+            _this.corpTypeRadio.addEventListener('click', (ev) => {
+                _this.corpTitleStep.style.display='';
+                _this.corpStep.style.display='';
+                _this.commonTitleStep.style.display='none';
+                _this.commonStep.style.display='none';
+            });
+
+            
+            this.commonTypeRadio.click();
+
+            CookieManager.delete('userInfo');
+            CookieManager.delete('sign_step');
+            sessionStorage.clear();
+
+        }
+        
+        handleSelect(e) {
+        	e.preventDefault();
+        	
+        	const target = e.currentTarget;
+        	
+        	this.buttons.forEach(b => b.classList.remove('active'));
+        	target.classList.add('active');
+        	
+        	this.selectedSignType = target.dataset.value;
+        	
+        	//alert(this.selectedSignType);
+        }
+
+        async checkUserExist(name, email) {
+            const urlFormat = "/signup/user-exists?name={0}&email={1}"
+            const url = urlFormat.format(name, email);
+
+            try {
+                const response = await fetch(url);
+                if(response.status != 200) {
+                    throw new Error("Status not OK");
+                }
+                const userAlreadyExist = await response.json();
+                if(userAlreadyExist === true) {
+                    return false;
+                }
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
+        
+        checkUserInputValid(name, email) {
+            let yn = true;
+
+            if (EMAIL_REGEX.test(email) === false) {
+                yn = false;
+            }
+
+            return yn;
+        }
+        
+        async gotoStep2() {
+            const name = this.checkNameInput.value;
+            const email = this.checkEmailInput.value;
+            const _this = this;
+
+            if (this.selectedSignType === null || this.selectedSignType === '') {
+            	const signup = document.querySelector('.signup-title');
+            	if (signup) {
+	            	signup.scrollIntoView({
+	            		behavior: 'smooth',
+	            		block: 'start'
+	            	});
+            	}
+            	return alert("회원구분을 선택해주세요.");
+            }
+            
+            if (!InputValidator.isNotEmpty(name)) {
+            	this.checkNameInput.focus();
+            	return alert("이름을 입력해주세요.");
+            }
+            
+            if (!InputValidator.isNotEmpty(email)) {
+            	this.checkEmailInput.focus();
+            	return alert("이메일을 입력해주세요.");
+            }
+            
+            const checkValid = _this.checkUserInputValid(name, email);
+
+            if(checkValid === false) {
+            	this.checkEmailInput.focus();
+                return alert("이메일을 올바른 형식으로 작성해주세요.");
+            }
+            
+
+            const checkExist = await _this.checkUserExist(name, email);
+
+            if(checkExist === true) {
+                //this.signupType.value = this.selectedSignType;
+                
+                const userInfo = {
+                    selectedSignType: this.selectedSignType,
+                    mberNm: name,
+                    mberEmail: email
+                };
+                const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                const url = '/sso/signupData';
+                try{
+                    const response = await fetch(url,{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+                        },
+                        body: JSON.stringify(userInfo)
+                    });
+
+                    if(!response.ok) {
+                        throw new Error(`서버에러 발생: `);
+                    }
+
+                    const result = await response.json();
+
+                    if(result.status === "success"){
+                        alert("회원가입이 가능한 회원입니다. 다음단계로 넘어갑니다.");
+                        sessionStorage.setItem('selectedSignType', this.selectedSignType);
+                        sessionStorage.setItem('sign_step','2');
+                        sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+                        /*if(this.selectedSignType==="CORP"){
+                            location.href = "/sso/corp-certify";
+                        }else{*/
+                            location.href = "/sso/terms-agree";
+                        /*}*/
+
+
+                    }
+
+                }catch (error){
+                    console.error("통신 실패:",error);
+                    alert("데이터 저장 중 오류가 발생했습니다.");
+                }
+
+
+
+
+
+                
+                //document.signupForm.submit();
+
+            } else if(checkExist === false) {
+                return alert("이미 존재하는 회원입니다.");
+            } else {
+                return alert("다시 시도해주세요.");
+            }
+        }
+    }
+</script>
+					
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

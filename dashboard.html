@@ -315,7 +315,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
       <div class="problem-grid">
         <article class="problem-card">
           <div class="problem-head">
-            <h3>CORS 미지원 (2026-04: 0%)</h3>
+            <h3>CORS 미지원 (2026-04: 0%) <a class="h2-help" href="help.html#prob-cors" title="웹 앱이 직접 호출하지 못해 프록시 서버가 강제됩니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-bad">미개선</span>
           </div>
           <ul class="indicator-mini"><li><code title="cors_https">CORS·HTTPS</code>: 1 → 1 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/cors_https.trace.txt" class="ev-link" rel="noopener">증거</a></li></ul>
@@ -325,7 +325,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>XML 기본 응답 (2026-04: 59%)</h3>
+            <h3>XML 기본 응답 (2026-04: 59%) <a class="h2-help" href="help.html#prob-xml" title="모든 이용자가 같은 변환 비용을 반복 지불합니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-mid">부분</span>
           </div>
           <ul class="indicator-mini"><li><code title="data_format">기본 포맷</code>: 1 → 0 <span class="mini-verdict">(후퇴)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li><li><code title="json_native">JSON 네이티브</code>: 1 → 2 <span class="mini-verdict">(개선)</span> — <a href="evidence/data-go-kr/json_native.trace.txt" class="ev-link" rel="noopener">증거</a></li></ul>
@@ -335,7 +335,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>항상 200 반환 (오류도 HTTP 200)</h3>
+            <h3>항상 200 반환 (오류도 HTTP 200) <a class="h2-help" href="help.html#prob-always200" title="오류에도 200을 주면 자동 복구 체계 전체가 무력화됩니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-mid">부분</span>
           </div>
           <ul class="indicator-mini"><li><code title="http_semantics">HTTP 상태코드</code>: 0 → 2 <span class="mini-verdict">(개선)</span> — <a href="evidence/data-go-kr/http_semantics.trace.txt" class="ev-link" rel="noopener">증거</a></li></ul>
@@ -345,7 +345,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>OpenAPI 미제공 (2026-04: ~2%)</h3>
+            <h3>OpenAPI 미제공 (2026-04: ~2%) <a class="h2-help" href="help.html#prob-openapi" title="명세가 없어 에이전트 토큰 비용이 수십 배로 늘어납니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-bad">미개선</span>
           </div>
           <ul class="indicator-mini"><li><code title="machine_schema">기계가독 스키마</code>: 0 → 0 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/machine_schema.trace.txt" class="ev-link" rel="noopener">증거</a></li></ul>
@@ -355,7 +355,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>RateLimit 헤더 없음</h3>
+            <h3>RateLimit 헤더 없음 <a class="h2-help" href="help.html#prob-ratelimit" title="한도 초과를 실패 후에야 알게 됩니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-bad">미개선</span>
           </div>
           <ul class="indicator-mini"><li><code title="rate_limit_transparency">한도 투명성</code>: 0 → 0 <span class="mini-verdict">(미개선)</span> — <a href="evidence/data-go-kr/rate_limit_transparency.trace.txt" class="ev-link" rel="noopener">증거</a></li></ul>
@@ -365,7 +365,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>정부 MCP 서버 없음</h3>
+            <h3>정부 MCP 서버 없음 <a class="h2-help" href="help.html#prob-mcp" title="수요가 비공식 래퍼 79종으로 흘러가고 있습니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-bad">미개선</span>
           </div>
           <ul class="indicator-mini"><li><code title="tool_native">도구 네이티브(MCP)</code>:  → 1 <span class="mini-verdict">(미개선)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li></ul>
@@ -375,7 +375,7 @@ nav.topnav { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .
         </article>
         <article class="problem-card">
           <div class="problem-head">
-            <h3>API Key in URL (쿼리 파라미터 노출)</h3>
+            <h3>API Key in URL (쿼리 파라미터 노출) <a class="h2-help" href="help.html#prob-keyinurl" title="쿼리 키는 로그·Referer로 유출되고 회전이 안 됩니다 · 클릭하면 자세한 설명과 해결 방법">?</a></h3>
             <span class="badge badge-bad">미개선</span>
           </div>
           <ul class="indicator-mini"><li><code title="programmatic_auth">프로그램 인증</code>: 1 → 0 <span class="mini-verdict">(후퇴)</span> — <span class="no-evidence">증거 없음(측정불가)</span></li></ul>

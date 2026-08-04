@@ -791,25 +791,85 @@ td{font-variant-numeric:tabular-nums;}
     </ul>
     <div class="table-wrap"><table>
       <thead><tr><th>지표</th><th>왜 중요한가</th><th>측정 방법</th><th>0점</th><th>1점</th><th>2점</th></tr></thead>
-      <tbody><tr id="ind-http_semantics"><td><strong>HTTP 상태코드</strong><br><code style="font-size:.72em">http_semantics</code></td><td>오류가 나도 HTTP 200/201을 반환하면 기계는 실패를 알 수 없다. 에이전트 자동 재시도·복구의 전제 조건.</td><td>잘못된 키로 실제 호출해 상태코드 관찰 (live)</td><td>200에 오류 본문</td><td>일부 4xx</td><td>일관된 4xx</td></tr>
-<tr id="ind-json_native"><td><strong>JSON 네이티브</strong><br><code style="font-size:.72em">json_native</code></td><td>XML 전용이면 모든 클라이언트가 변환 계층을 얹어야 한다. LLM·에이전트 도구는 JSON을 기본 가정.</td><td>실호출 Content-Type·본문 확인 (live/doc)</td><td>XML만</td><td>JSON 선택</td><td>JSON 기본</td></tr>
-<tr id="ind-error_self_desc"><td><strong>오류 자기설명</strong><br><code style="font-size:.72em">error_self_desc</code></td><td>오류 본문이 기계가독이어야 에이전트가 원인(키 오류 vs 파라미터 오류)을 구분해 스스로 고친다.</td><td>오류 응답 본문 구조 분석 (live)</td><td>불투명/HTML</td><td>자체 구조화</td><td>RFC 7807</td></tr>
-<tr id="ind-machine_schema"><td><strong>기계가독 스키마</strong><br><code style="font-size:.72em">machine_schema</code></td><td>OpenAPI 명세가 있으면 에이전트가 문서를 읽지 않고 스펙 1회 취득으로 호출법을 안다 — 토큰 비용 수십 배 차이.</td><td>관용 경로(/openapi.json 등) fetch + 문서 확인 (live/doc)</td><td>없음/HWP</td><td>부분(내부 명세)</td><td>공식 OpenAPI 3.x</td></tr>
-<tr id="ind-programmatic_auth"><td><strong>프로그램 인증</strong><br><code style="font-size:.72em">programmatic_auth</code></td><td>URL 쿼리의 키는 로그·Referer로 유출되고 회전이 어렵다. 헤더/OAuth2는 자동화·보안의 표준.</td><td>문서 + 실호출 (doc/live)</td><td>쿼리 키/세션</td><td>—</td><td>헤더 키/OAuth2/무인증</td></tr>
-<tr id="ind-rate_limit_transparency"><td><strong>한도 투명성</strong><br><code style="font-size:.72em">rate_limit_transparency</code></td><td>남은 호출량을 헤더로 알려줘야 에이전트가 한도 초과 전에 속도를 조절한다.</td><td>응답 헤더 검사 (live)</td><td>헤더 없음</td><td>문서 명시</td><td>RateLimit 헤더</td></tr>
-<tr id="ind-cors_https"><td><strong>CORS·HTTPS</strong><br><code style="font-size:.72em">cors_https</code></td><td>CORS가 없으면 브라우저 앱은 프록시 서버를 강제로 만들어야 한다.</td><td>Origin 헤더 부착 실호출 (live)</td><td>둘 다 없음</td><td>하나만</td><td>CORS+HTTPS</td></tr>
-<tr id="ind-signup_ease"><td><strong>가입 용이성</strong><br><code style="font-size:.72em">signup_ease</code></td><td>실명 본인인증은 에이전트가 통과할 수 없는 하드 블록이다.</td><td>가입 절차 문서 (doc)</td><td>인증서/법인</td><td>휴대폰</td><td>이메일/무가입</td></tr>
-<tr id="ind-approval_speed"><td><strong>승인 속도</strong><br><code style="font-size:.72em">approval_speed</code></td><td>수동 심의는 예측 불가능한 대기를 만든다 — 자동화 계획 수립 불가.</td><td>절차 문서 (doc)</td><td>수동 심의</td><td>자동 지연</td><td>즉시/불요</td></tr>
-<tr id="ind-data_format"><td><strong>기본 포맷</strong><br><code style="font-size:.72em">data_format</code></td><td>기본값이 XML이면 모든 신규 사용자가 같은 전환 비용을 반복 지불한다.</td><td>문서+실호출 (doc/live)</td><td>파일/기타</td><td>XML(JSON 선택)</td><td>JSON 기본</td></tr>
-<tr id="ind-doc_quality"><td><strong>문서 품질</strong><br><code style="font-size:.72em">doc_quality</code></td><td>HWP 첨부 명세는 사람도 기계도 파싱하기 어렵다.</td><td>문서 형태 심층 평가 (doc)</td><td>HWP/DOC 첨부</td><td>HTML</td><td>인터랙티브(Swagger)</td></tr>
-<tr id="ind-rate_limit"><td><strong>호출 한도</strong><br><code style="font-size:.72em">rate_limit</code></td><td>일 1,000회로는 실서비스가 불가능해 증량 신청(수동)이 강제된다.</td><td>문서 (doc)</td><td><1,000/일</td><td>≥1,000</td><td>≥10,000/무제한</td></tr>
-<tr id="ind-error_handling"><td><strong>오류 처리</strong><br><code style="font-size:.72em">error_handling</code></td><td>같은 실수에 다른 오류가 나오면 학습·자동화가 불가능하다.</td><td>실호출 표본 (live)</td><td>비일관</td><td>부분</td><td>일관</td></tr>
-<tr id="ind-sdk_samples"><td><strong>SDK·샘플</strong><br><code style="font-size:.72em">sdk_samples</code></td><td>공식 SDK 부재는 커뮤니티(비공식)에 품질·보안을 떠넘기는 것.</td><td>저장소 확인 (doc)</td><td>없음</td><td>커뮤니티</td><td>공식</td></tr>
-<tr id="ind-tool_native"><td><strong>도구 네이티브(MCP) †</strong><br><code style="font-size:.72em">tool_native</code></td><td>에이전트가 화면이 아닌 도구 호출로 접근하는 시대의 관문. 커뮤니티 79종이 수요를 증명.</td><td>생태계 전수 조사 (doc)</td><td>없음</td><td>커뮤니티 래퍼</td><td>정부 공식</td></tr>
-<tr id="ind-llms_txt"><td><strong>llms.txt 제공 †</strong><br><code style="font-size:.72em">llms_txt</code></td><td>사이트가 AI에게 자기 구조를 설명하는 사실상 표준. 215개 중 0곳.</td><td>origin fetch + 오탐 수동 검증 (live)</td><td>없음</td><td>—</td><td>유효 파일</td></tr>
-<tr id="ind-data_product"><td><strong>데이터 제품화 †</strong><br><code style="font-size:.72em">data_product</code></td><td>버전·신선도·SLA 메타데이터가 있어야 데이터를 '제품'으로 신뢰하고 쓴다.</td><td>문서 (doc)</td><td>없음</td><td>부분</td><td>버전·신선도·SLA</td></tr>
-<tr id="ind-unified_identity"><td><strong>통합 계정 †</strong><br><code style="font-size:.72em">unified_identity</code></td><td>215개 포털 중 159개가 별도 가입 — 미국식 단일 키 모델과의 격차 그 자체.</td><td>절차 문서 (doc)</td><td>포털별 가입</td><td>부분 SSO</td><td>단일 정부 ID</td></tr></tbody>
+      <tbody><tr id="ind-http_semantics"><td><strong>HTTP 상태코드</strong><br><code style="font-size:.72em">http_semantics</code><br><a href="#fix-http_semantics" style="font-size:.78em">개선 →</a></td><td>오류가 나도 HTTP 200/201을 반환하면 기계는 실패를 알 수 없다. 에이전트 자동 재시도·복구의 전제 조건.</td><td>잘못된 키로 실제 호출해 상태코드 관찰 (live)</td><td>200에 오류 본문</td><td>일부 4xx</td><td>일관된 4xx</td></tr>
+<tr id="ind-json_native"><td><strong>JSON 네이티브</strong><br><code style="font-size:.72em">json_native</code><br><a href="#fix-json_native" style="font-size:.78em">개선 →</a></td><td>XML 전용이면 모든 클라이언트가 변환 계층을 얹어야 한다. LLM·에이전트 도구는 JSON을 기본 가정.</td><td>실호출 Content-Type·본문 확인 (live/doc)</td><td>XML만</td><td>JSON 선택</td><td>JSON 기본</td></tr>
+<tr id="ind-error_self_desc"><td><strong>오류 자기설명</strong><br><code style="font-size:.72em">error_self_desc</code><br><a href="#fix-error_self_desc" style="font-size:.78em">개선 →</a></td><td>오류 본문이 기계가독이어야 에이전트가 원인(키 오류 vs 파라미터 오류)을 구분해 스스로 고친다.</td><td>오류 응답 본문 구조 분석 (live)</td><td>불투명/HTML</td><td>자체 구조화</td><td>RFC 7807</td></tr>
+<tr id="ind-machine_schema"><td><strong>기계가독 스키마</strong><br><code style="font-size:.72em">machine_schema</code><br><a href="#fix-machine_schema" style="font-size:.78em">개선 →</a></td><td>OpenAPI 명세가 있으면 에이전트가 문서를 읽지 않고 스펙 1회 취득으로 호출법을 안다 — 토큰 비용 수십 배 차이.</td><td>관용 경로(/openapi.json 등) fetch + 문서 확인 (live/doc)</td><td>없음/HWP</td><td>부분(내부 명세)</td><td>공식 OpenAPI 3.x</td></tr>
+<tr id="ind-programmatic_auth"><td><strong>프로그램 인증</strong><br><code style="font-size:.72em">programmatic_auth</code><br><a href="#fix-programmatic_auth" style="font-size:.78em">개선 →</a></td><td>URL 쿼리의 키는 로그·Referer로 유출되고 회전이 어렵다. 헤더/OAuth2는 자동화·보안의 표준.</td><td>문서 + 실호출 (doc/live)</td><td>쿼리 키/세션</td><td>—</td><td>헤더 키/OAuth2/무인증</td></tr>
+<tr id="ind-rate_limit_transparency"><td><strong>한도 투명성</strong><br><code style="font-size:.72em">rate_limit_transparency</code><br><a href="#fix-rate_limit_transparency" style="font-size:.78em">개선 →</a></td><td>남은 호출량을 헤더로 알려줘야 에이전트가 한도 초과 전에 속도를 조절한다.</td><td>응답 헤더 검사 (live)</td><td>헤더 없음</td><td>문서 명시</td><td>RateLimit 헤더</td></tr>
+<tr id="ind-cors_https"><td><strong>CORS·HTTPS</strong><br><code style="font-size:.72em">cors_https</code><br><a href="#fix-cors_https" style="font-size:.78em">개선 →</a></td><td>CORS가 없으면 브라우저 앱은 프록시 서버를 강제로 만들어야 한다.</td><td>Origin 헤더 부착 실호출 (live)</td><td>둘 다 없음</td><td>하나만</td><td>CORS+HTTPS</td></tr>
+<tr id="ind-signup_ease"><td><strong>가입 용이성</strong><br><code style="font-size:.72em">signup_ease</code><br><a href="#fix-signup_ease" style="font-size:.78em">개선 →</a></td><td>실명 본인인증은 에이전트가 통과할 수 없는 하드 블록이다.</td><td>가입 절차 문서 (doc)</td><td>인증서/법인</td><td>휴대폰</td><td>이메일/무가입</td></tr>
+<tr id="ind-approval_speed"><td><strong>승인 속도</strong><br><code style="font-size:.72em">approval_speed</code><br><a href="#fix-approval_speed" style="font-size:.78em">개선 →</a></td><td>수동 심의는 예측 불가능한 대기를 만든다 — 자동화 계획 수립 불가.</td><td>절차 문서 (doc)</td><td>수동 심의</td><td>자동 지연</td><td>즉시/불요</td></tr>
+<tr id="ind-data_format"><td><strong>기본 포맷</strong><br><code style="font-size:.72em">data_format</code><br><a href="#fix-data_format" style="font-size:.78em">개선 →</a></td><td>기본값이 XML이면 모든 신규 사용자가 같은 전환 비용을 반복 지불한다.</td><td>문서+실호출 (doc/live)</td><td>파일/기타</td><td>XML(JSON 선택)</td><td>JSON 기본</td></tr>
+<tr id="ind-doc_quality"><td><strong>문서 품질</strong><br><code style="font-size:.72em">doc_quality</code><br><a href="#fix-doc_quality" style="font-size:.78em">개선 →</a></td><td>HWP 첨부 명세는 사람도 기계도 파싱하기 어렵다.</td><td>문서 형태 심층 평가 (doc)</td><td>HWP/DOC 첨부</td><td>HTML</td><td>인터랙티브(Swagger)</td></tr>
+<tr id="ind-rate_limit"><td><strong>호출 한도</strong><br><code style="font-size:.72em">rate_limit</code><br><a href="#fix-rate_limit" style="font-size:.78em">개선 →</a></td><td>일 1,000회로는 실서비스가 불가능해 증량 신청(수동)이 강제된다.</td><td>문서 (doc)</td><td><1,000/일</td><td>≥1,000</td><td>≥10,000/무제한</td></tr>
+<tr id="ind-error_handling"><td><strong>오류 처리</strong><br><code style="font-size:.72em">error_handling</code><br><a href="#fix-error_handling" style="font-size:.78em">개선 →</a></td><td>같은 실수에 다른 오류가 나오면 학습·자동화가 불가능하다.</td><td>실호출 표본 (live)</td><td>비일관</td><td>부분</td><td>일관</td></tr>
+<tr id="ind-sdk_samples"><td><strong>SDK·샘플</strong><br><code style="font-size:.72em">sdk_samples</code><br><a href="#fix-sdk_samples" style="font-size:.78em">개선 →</a></td><td>공식 SDK 부재는 커뮤니티(비공식)에 품질·보안을 떠넘기는 것.</td><td>저장소 확인 (doc)</td><td>없음</td><td>커뮤니티</td><td>공식</td></tr>
+<tr id="ind-tool_native"><td><strong>도구 네이티브(MCP) †</strong><br><code style="font-size:.72em">tool_native</code><br><a href="#fix-tool_native" style="font-size:.78em">개선 →</a></td><td>에이전트가 화면이 아닌 도구 호출로 접근하는 시대의 관문. 커뮤니티 79종이 수요를 증명.</td><td>생태계 전수 조사 (doc)</td><td>없음</td><td>커뮤니티 래퍼</td><td>정부 공식</td></tr>
+<tr id="ind-llms_txt"><td><strong>llms.txt 제공 †</strong><br><code style="font-size:.72em">llms_txt</code><br><a href="#fix-llms_txt" style="font-size:.78em">개선 →</a></td><td>사이트가 AI에게 자기 구조를 설명하는 사실상 표준. 215개 중 0곳.</td><td>origin fetch + 오탐 수동 검증 (live)</td><td>없음</td><td>—</td><td>유효 파일</td></tr>
+<tr id="ind-data_product"><td><strong>데이터 제품화 †</strong><br><code style="font-size:.72em">data_product</code><br><a href="#fix-data_product" style="font-size:.78em">개선 →</a></td><td>버전·신선도·SLA 메타데이터가 있어야 데이터를 '제품'으로 신뢰하고 쓴다.</td><td>문서 (doc)</td><td>없음</td><td>부분</td><td>버전·신선도·SLA</td></tr>
+<tr id="ind-unified_identity"><td><strong>통합 계정 †</strong><br><code style="font-size:.72em">unified_identity</code><br><a href="#fix-unified_identity" style="font-size:.78em">개선 →</a></td><td>215개 포털 중 159개가 별도 가입 — 미국식 단일 키 모델과의 격차 그 자체.</td><td>절차 문서 (doc)</td><td>포털별 가입</td><td>부분 SSO</td><td>단일 정부 ID</td></tr></tbody>
     </table></div>
+
+    <h2 id="fixes">5. 지표별 개선 가이드 — 무엇을 어떻게 바꾸나</h2>
+    <p>API 제공 기관 실무자를 위한 처방입니다. 대부분은 <strong>게이트웨이 설정 또는 반나절 작업</strong> 수준이며, 예제는 그대로 응용할 수 있는 형태로 실었습니다. 각 지표 표의 "개선 →" 링크와 연결됩니다.</p>
+    <h3 id="fix-http_semantics">HTTP 상태코드 <code style="font-size:.7em">http_semantics</code></h3><p>게이트웨이/컨트롤러에서 오류를 상태코드로 매핑하세요. 백엔드 수정 없이 게이트웨이 응답 변환만으로도 가능합니다(data.go.kr이 실제로 이 방식으로 개선).</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># 잘못된 키 → 401, 없는 자원 → 404, 파라미터 오류 → 400
+HTTP/1.1 401 Unauthorized
+Content-Type: application/problem+json
+
+{&quot;type&quot;:&quot;/errors/invalid-key&quot;,&quot;title&quot;:&quot;등록되지 않은 인증키&quot;,&quot;status&quot;:401}</pre></div>
+    <h3 id="fix-json_native">JSON 네이티브 <code style="font-size:.7em">json_native</code></h3><p>기본 응답을 JSON으로 바꾸고 XML은 &type=xml 옵션으로 유지하세요. 기존 이용자 호환을 위해 6개월 병행 공지 후 기본값을 전환하는 방식이 안전합니다.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">GET /api/forecast?region=서울          → JSON (기본)
+GET /api/forecast?region=서울&amp;type=xml → XML (호환)</pre></div>
+    <h3 id="fix-error_self_desc">오류 자기설명 <code style="font-size:.7em">error_self_desc</code></h3><p>RFC 7807(application/problem+json)을 채택하세요. 오류 코드표 HWP 대신 응답 자체가 원인·해결책을 설명하게 합니다.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">{&quot;type&quot;:&quot;https://api.example.go.kr/errors/quota&quot;,
+ &quot;title&quot;:&quot;일일 호출 한도 초과&quot;,&quot;status&quot;:429,
+ &quot;detail&quot;:&quot;한도 1000회를 초과했습니다. 09:00(KST)에 초기화됩니다.&quot;,
+ &quot;instance&quot;:&quot;/req/12345&quot;}</pre></div>
+    <h3 id="fix-machine_schema">기계가독 스키마 <code style="font-size:.7em">machine_schema</code></h3><p>기존 문서를 OpenAPI 3.x YAML로 옮기고 /openapi.json 관용 경로에 게시하세요. Swagger Editor로 시작하면 반나절 작업입니다. 신규 API는 스펙 우선(spec-first)으로.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># https://api.example.go.kr/openapi.json 에 게시
+openapi: 3.0.3
+info: {title: 단기예보 조회, version: 2.0.0}
+paths:
+  /getVilageFcst:
+    get:
+      parameters: [{name: nx, in: query, required: true, schema: {type: integer}}]</pre></div>
+    <h3 id="fix-programmatic_auth">프로그램 인증 <code style="font-size:.7em">programmatic_auth</code></h3><p>키를 URL 쿼리에서 Authorization 헤더로 이전하세요. 로그·Referer 유출이 사라지고 표준 클라이언트와 호환됩니다. 쿼리 방식은 유예기간 병행.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># 이전: GET /api?serviceKey=abc123  (로그에 평문 잔존)
+# 이후:
+GET /api HTTP/1.1
+Authorization: Bearer abc123</pre></div>
+    <h3 id="fix-rate_limit_transparency">한도 투명성 <code style="font-size:.7em">rate_limit_transparency</code></h3><p>IETF RateLimit 헤더 3종을 게이트웨이에서 부착하세요. Kong/nginx 플러그인 설정 수준의 작업입니다.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">HTTP/1.1 200 OK
+RateLimit-Limit: 1000
+RateLimit-Remaining: 847
+RateLimit-Reset: 3600</pre></div>
+    <h3 id="fix-cors_https">CORS·HTTPS <code style="font-size:.7em">cors_https</code></h3><p>공개 데이터 API라면 CORS를 전면 허용해도 안전합니다(인증은 헤더 키가 담당). 게이트웨이 한 줄 설정입니다.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># nginx
+add_header Access-Control-Allow-Origin *;
+add_header Access-Control-Allow-Headers Authorization;</pre></div>
+    <h3 id="fix-signup_ease">가입 용이성 <code style="font-size:.7em">signup_ease</code></h3><p>조회성 API는 이메일 가입만으로, 저위험 API는 무가입 공용 샌드박스 키로 여세요. 본인인증은 개인정보 취급 API로 한정.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">위험도 3단계 정책 예:
+  공개 통계·날씨  → 가입 불요(샌드박스 키)
+  일반 조회      → 이메일 인증
+  개인정보 연계  → 본인인증 유지</pre></div>
+    <h3 id="fix-approval_speed">승인 속도 <code style="font-size:.7em">approval_speed</code></h3><p>자동승인 기준(개인정보 무관·출처표시·쿼터 준수)을 공개하고 충족 시 즉시 발급하세요. 심의는 예외로, 사유·기한을 명시.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">활용신청 → 기준 자동판정(1초) → 즉시 키 발급
+         → 기준 미충족 시에만 심의(사유+최대 3일 기한 고지)</pre></div>
+    <h3 id="fix-data_format">기본 포맷 <code style="font-size:.7em">data_format</code></h3><p>json_native와 동일 — 신규 API는 JSON 전용으로 시작하고, 파일 중심 포털은 최소한 카탈로그·메타데이터를 JSON API로 제공하세요.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">GET /catalog/datasets?page=1  → {&quot;datasets&quot;:[...], &quot;total&quot;: 451}</pre></div>
+    <h3 id="fix-doc_quality">문서 품질 <code style="font-size:.7em">doc_quality</code></h3><p>HWP 첨부를 Swagger UI(OpenAPI 스펙 렌더)로 대체하세요. 스펙(machine_schema)을 만들면 문서는 자동 생성됩니다 — 한 작업으로 두 지표 개선.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">docs.example.go.kr → Swagger UI로 스펙 렌더
++ &#x27;지금 실행해보기(Try it out)&#x27; 버튼 = 샘플 코드 불필요</pre></div>
+    <h3 id="fix-rate_limit">호출 한도 <code style="font-size:.7em">rate_limit</code></h3><p>기본 한도를 실서비스 가능 수준(일 1만+)으로 올리고, 증량은 신청 즉시 자동 처리하세요. 남용은 한도가 아닌 RateLimit 헤더+429로 제어.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">기본 10,000/일 → 초과 시 429 + Retry-After → 증량 신청 API로 즉시 상향</pre></div>
+    <h3 id="fix-error_handling">오류 처리 <code style="font-size:.7em">error_handling</code></h3><p>오류 응답을 단일 스키마로 통일하고 전 API에 강제하세요(게이트웨이 응답 검증). error_self_desc의 RFC 7807 채택이 곧 해법입니다.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">모든 오류 = problem+json 단일 스키마
+게이트웨이에서 스키마 위반 응답을 감지해 변환/경고</pre></div>
+    <h3 id="fix-sdk_samples">SDK·샘플 <code style="font-size:.7em">sdk_samples</code></h3><p>OpenAPI 스펙만 있으면 openapi-generator로 다국어 SDK가 자동 생성됩니다. 잘 만든 커뮤니티 SDK(예: PublicDataReader)를 공식 인정하는 것도 방법.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">openapi-generator generate -i openapi.json -g python -o sdk-python
+# python/js/java SDK를 CI에서 자동 배포</pre></div>
+    <h3 id="fix-tool_native">도구 네이티브(MCP) <code style="font-size:.7em">tool_native</code></h3><p>OpenAPI 스펙이 있으면 MCP 서버는 얇은 래퍼입니다. 프랑스 datagouv-mcp(공개 소스)를 참고해 대표 API 10종으로 파일럿을 시작하세요.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># fastmcp 예시
+@mcp.tool()
+def get_forecast(region: str) -&gt; dict:
+    &quot;&quot;&quot;단기예보 조회&quot;&quot;&quot;
+    return api.call(&#x27;/getVilageFcst&#x27;, region=region)</pre></div>
+    <h3 id="fix-llms_txt">llms.txt <code style="font-size:.7em">llms_txt</code></h3><p>사이트 루트에 llms.txt 텍스트 파일 하나를 두는 것으로 충분합니다 — API 목록·스펙 위치·인증 방법을 AI가 읽도록.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto"># https://api.example.go.kr/llms.txt
+# 단기예보 API
+&gt; 기상청 단기예보 조회 서비스
+- 스펙: /openapi.json
+- 인증: Authorization 헤더 (발급: /signup)</pre></div>
+    <h3 id="fix-data_product">데이터 제품화 <code style="font-size:.7em">data_product</code></h3><p>데이터셋 메타데이터에 버전·갱신주기·최종갱신·SLA를 DCAT 표준 필드로 명시하세요.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">{&quot;dct:modified&quot;:&quot;2026-08-01&quot;,&quot;dct:accrualPeriodicity&quot;:&quot;P1D&quot;,
+ &quot;version&quot;:&quot;2.1&quot;,&quot;sla&quot;:&quot;가용성 99.5%, 지연 최대 1시간&quot;}</pre></div>
+    <h3 id="fix-unified_identity">통합 계정 <code style="font-size:.7em">unified_identity</code></h3><p>신규 포털은 자체 가입 대신 data.go.kr 키 위임(E-GEN 모델: 'data.go.kr 회원가입 필수, 별도 계정 없음')을 채택하세요. 장기적으론 정부 통합 개발자 ID.</p><div class="table-wrap"><pre style="margin:0;padding: .9rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;line-height:1.55;overflow-x:auto">E-GEN 방식: 자체 회원DB 없음 → data.go.kr serviceKey 그대로 수용
+→ 이용자 추가 가입 0회, 포털은 회원관리 비용 0</pre></div>
 
     <h2 id="method">4. 측정 방법론 — 판정을 신뢰할 수 있는 이유</h2>
     <ul>

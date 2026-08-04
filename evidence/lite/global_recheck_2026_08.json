@@ -1,0 +1,792 @@
+[
+ {
+  "country": "AU",
+  "uf_after": 8.5,
+  "ai_after": 10.0,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.2,
+    "after": 1.2,
+    "verified": true,
+    "evidence": "data.gov.au CKAN package_search returned HTTP 200 JSON with no key/token of any kind"
+   },
+   "approval_speed": {
+    "before": 1.3,
+    "after": 1.3,
+    "verified": false,
+    "evidence": "not live-checkable on a keyless endpoint; baseline carried"
+   },
+   "data_format": {
+    "before": 1.8,
+    "after": 1.8,
+    "verified": true,
+    "evidence": "content-type application/json;charset=utf-8, well-formed CKAN JSON envelope"
+   },
+   "doc_quality": {
+    "before": 1.3,
+    "after": 1.3,
+    "verified": false,
+    "evidence": "api.gov.au catalogue alive (HTTP 200); no machine spec at /openapi.json (404); CKAN help_show returns prose docstrings only"
+   },
+   "rate_limit": {
+    "before": 1.2,
+    "after": 1.2,
+    "verified": false,
+    "evidence": "10 rapid sequential requests all 200, no throttling seen and no published limit; inconclusive"
+   },
+   "error_handling": {
+    "before": 1.3,
+    "after": 1.2,
+    "verified": true,
+    "evidence": "package_show of nonexistent id returns 302 text/html instead of JSON 404; validation error correctly 409 JSON"
+   },
+   "sdk_samples": {
+    "before": 0.5,
+    "after": 0.5,
+    "verified": false,
+    "evidence": "not live-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 1.5,
+    "after": 1.5,
+    "verified": false,
+    "evidence": "no OpenAPI at api.gov.au/openapi.json (404); CKAN help_show is prose, not schema; baseline carried"
+   },
+   "http_semantics": {
+    "before": 1.6,
+    "after": 1.4,
+    "verified": true,
+    "evidence": "404 case degrades to 302+HTML; unknown action returns 400 with bare JSON string; only 409 validation is fully correct"
+   },
+   "json_native": {
+    "before": 1.7,
+    "after": 1.7,
+    "verified": true,
+    "evidence": "JSON default on all action endpoints, no format negotiation needed"
+   },
+   "error_self_desc": {
+    "before": 1.3,
+    "after": 1.2,
+    "verified": true,
+    "evidence": "409 gives typed {\"error\":{\"__type\":\"Validation Error\"}}, but 400 unknown-action body is a bare quoted string and not-found is HTML"
+   },
+   "programmatic_auth": {
+    "before": 1.4,
+    "after": 1.4,
+    "verified": false,
+    "evidence": "public read path is anonymous; write/auth path not exercised"
+   },
+   "rate_limit_transparency": {
+    "before": 0.9,
+    "after": 0.8,
+    "verified": true,
+    "evidence": "zero RateLimit/X-RateLimit headers on any response; only CloudFront cache headers present"
+   },
+   "cors_https": {
+    "before": 1.8,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "access-control-allow-origin: * plus access-control-expose-headers: *; OPTIONS preflight 200 with GET,HEAD,PUT,POST,PATCH,DELETE,OPTIONS; HTTPS with HSTS max-age=31536000"
+   }
+  },
+  "notable": [
+   "CORS materially improved over baseline: wildcard ACAO plus wildcard expose-headers and a working preflight, served via CloudFront — browser and agent clients can call data.gov.au cross-origin with no proxy",
+   "Regression in not-found semantics: /api/3/action/package_show?id=<missing> answers 302 with text/html (Google Tag Manager page) rather than a JSON 404, which breaks naive agent error handling",
+   "api.gov.au still resolves 200 but remains a catalogue/standards site, not a live gateway, and exposes no OpenAPI document; no new national API initiative found since 2026-04"
+  ],
+  "method_note": "Live spot-check of the flagship portal (data.gov.au CKAN) only, 2026-08-04/05 UTC, browser UA. Baseline dimensions are 10-portal averages, so single-portal evidence was applied as a partial-weight nudge (0.1-0.2) rather than a full re-score; dimensions with no live signal carry baseline at verified:false. Probes: package_search 200, unknown action 400, package_show missing id 302, rows=notanumber 409, OPTIONS preflight, 10-request burst, api.gov.au and /openapi.json reachability, 1 web search for new initiatives."
+ },
+ {
+  "country": "CA",
+  "uf_after": 7.77,
+  "ai_after": 8.55,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.22,
+    "after": 1.22,
+    "verified": true,
+    "evidence": "open.canada.ca CKAN package_search returned HTTP 200 JSON with no key or registration"
+   },
+   "approval_speed": {
+    "before": 1.22,
+    "after": 1.22,
+    "verified": false,
+    "evidence": "not live-checkable on a keyless endpoint; baseline carried"
+   },
+   "data_format": {
+    "before": 1.44,
+    "after": 1.44,
+    "verified": true,
+    "evidence": "content-type application/json;charset=utf-8, bilingual en/fr field structure intact"
+   },
+   "doc_quality": {
+    "before": 1.11,
+    "after": 1.11,
+    "verified": false,
+    "evidence": "open.canada.ca/data/en/api reachable (200); api.canada.ca fails to resolve (curl exit, status 000), confirming GC API Store still has no successor"
+   },
+   "rate_limit": {
+    "before": 1.11,
+    "after": 1.11,
+    "verified": false,
+    "evidence": "10 rapid sequential requests all 200, no documented limit; inconclusive"
+   },
+   "error_handling": {
+    "before": 0.78,
+    "after": 1.0,
+    "verified": true,
+    "evidence": "package_show of nonexistent id returns clean 404 with {\"error\":{\"__type\":\"Not Found Error\",\"message\":\"Not found\"}}; rows=notanumber returns 409 Validation Error"
+   },
+   "sdk_samples": {
+    "before": 0.67,
+    "after": 0.67,
+    "verified": false,
+    "evidence": "not live-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 1.0,
+    "after": 1.0,
+    "verified": false,
+    "evidence": "no OpenAPI document found; CKAN help_show returns prose docstrings; baseline carried"
+   },
+   "http_semantics": {
+    "before": 1.22,
+    "after": 1.4,
+    "verified": true,
+    "evidence": "correct status differentiation observed: 200 success, 400 unknown action, 404 not found, 409 validation failure"
+   },
+   "json_native": {
+    "before": 1.67,
+    "after": 1.67,
+    "verified": true,
+    "evidence": "JSON default on all action endpoints including error paths"
+   },
+   "error_self_desc": {
+    "before": 0.78,
+    "after": 1.0,
+    "verified": true,
+    "evidence": "errors carry machine-readable __type discriminators (\"Not Found Error\", \"Validation Error\") plus per-field messages; only the 400 unknown-action body is an untyped string"
+   },
+   "programmatic_auth": {
+    "before": 1.44,
+    "after": 1.44,
+    "verified": false,
+    "evidence": "public read path is anonymous; write/auth path not exercised"
+   },
+   "rate_limit_transparency": {
+    "before": 0.44,
+    "after": 0.44,
+    "verified": true,
+    "evidence": "no RateLimit/X-RateLimit headers on any response; confirms baseline near-zero"
+   },
+   "cors_https": {
+    "before": 1.89,
+    "after": 1.6,
+    "verified": true,
+    "evidence": "GET with Origin: https://example.com returns NO Access-Control-Allow-Origin (only Access-Control-Allow-Methods and Vary: Origin); OPTIONS preflight returns 403 Forbidden, so cross-origin browser calls fail. HTTPS with HSTS includeSubDomains is solid"
+   }
+  },
+  "notable": [
+   "Error semantics are the clear 2026-08 improvement: open.canada.ca now returns properly differentiated 400/404/409 with typed __type discriminators, where the 2026-04 baseline recorded inconsistent per-agency error behaviour",
+   "CORS is effectively broken for browser and browser-based agent clients: the server advertises Access-Control-Allow-Methods but never emits Access-Control-Allow-Origin, and the OPTIONS preflight is rejected 403 — a downgrade from the baseline's optimistic 1.89",
+   "GC API Store successor still absent — api.canada.ca does not resolve; the 2023-09 shutdown remains unremediated and no replacement gateway surfaced in search",
+   "Response carries an extremely large Content-Security-Policy header on API responses, adding meaningful per-call overhead for programmatic consumers"
+  ],
+  "method_note": "Live spot-check of the flagship portal (open.canada.ca CKAN) only, 2026-08-04/05 UTC, browser UA. Baseline dimensions are 9-portal averages, so single-portal evidence was applied as a partial-weight nudge (0.2-0.3) rather than a full re-score; dimensions with no live signal carry baseline at verified:false. Probes: package_search 200, unknown action 400, package_show missing id 404, rows=notanumber 409, OPTIONS preflight, GET with Origin header, 10-request burst, api.canada.ca reachability, 1 web search for new initiatives."
+ },
+ {
+  "country": "SG",
+  "uf_after": 11.0,
+  "ai_after": 12.3,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.36,
+    "after": 1.36,
+    "verified": true,
+    "evidence": "api-open.data.gov.sg/v2/real-time/api/psi and api.data.gov.sg/v1/environment/air-temperature both HTTP 200 with no key/token"
+   },
+   "approval_speed": {
+    "before": 1.55,
+    "after": 1.55,
+    "verified": false,
+    "evidence": "not live-checkable; baseline carried"
+   },
+   "data_format": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "content-type: application/json on v1 and v2"
+   },
+   "doc_quality": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": false,
+    "evidence": "SwaggerHub/OpenAPI not re-audited; baseline carried"
+   },
+   "rate_limit": {
+    "before": 1.55,
+    "after": 1.55,
+    "verified": false,
+    "evidence": "no throttling hit in spot-check; tier policy not observable"
+   },
+   "error_handling": {
+    "before": 1.55,
+    "after": 1.55,
+    "verified": true,
+    "evidence": "net-neutral: excellent 400 on bad param, but 403 instead of 404 on unknown path"
+   },
+   "sdk_samples": {
+    "before": 1.09,
+    "after": 1.09,
+    "verified": false,
+    "evidence": "not live-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": false,
+    "evidence": "OpenAPI specs not re-fetched; baseline carried"
+   },
+   "http_semantics": {
+    "before": 2.0,
+    "after": 1.91,
+    "verified": true,
+    "evidence": "unknown path returns 403 'Missing Authentication Token' (AWS APIGW default) not 404, on both v1 and v2"
+   },
+   "json_native": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "JSON-only responses confirmed on v1 and v2"
+   },
+   "error_self_desc": {
+    "before": 1.55,
+    "after": 1.59,
+    "verified": true,
+    "evidence": "bad date param -> 400 {code:4,name:ERROR_PARAMS,errorMsg:'Date format must be YYYY-MM-DD...'} — actionable"
+   },
+   "programmatic_auth": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "APEX Cloud documents JWT + OAuth 2.1 w/ Corppass + API Key (already max)"
+   },
+   "rate_limit_transparency": {
+    "before": 1.27,
+    "after": 1.15,
+    "verified": true,
+    "evidence": "zero RateLimit-*/X-RateLimit-*/Retry-After headers in full header dumps of v1 and v2"
+   },
+   "cors_https": {
+    "before": 1.82,
+    "after": 1.84,
+    "verified": true,
+    "evidence": "v2: access-control-allow-origin:* + HSTS max-age=31536000; v1: ACAO:* + allow-methods GET,OPTIONS"
+   }
+  },
+  "notable": [
+   "data.gov.sg real-time APIs remain fully keyless — v2 (api-open.data.gov.sg) and legacy v1 (api.data.gov.sg) both live and 200",
+   "APEX Cloud now documents OAuth 2.1 with Corppass alongside JWT and API Key (baseline recorded OAuth 2.0/FAPI 2.0); docs updated Jun 29 2026",
+   "APEX feature set adds API Cross-Zone Bridging, Lifecycle Portal, API Spec Designer — no AI/MCP/LLM surface mentioned, so government_official_mcp:false still holds",
+   "Main defect: gateway returns 403 'Missing Authentication Token' for nonexistent routes, which misleads agents into thinking auth is required on a keyless API"
+  ],
+  "method_note": "curl with browser UA + Origin header against api-open.data.gov.sg v2 (psi, air-temperature) and api.data.gov.sg v1 (air-temperature); probed valid path, unknown path, and invalid param. Source-data caveat: SG user_friendliness dimensions sum to 10.83 but the file states total_avg 11.0; since no UF dimension changed, uf_after is reported as the unchanged baseline 11.0."
+ },
+ {
+  "country": "JP",
+  "uf_after": 9.34,
+  "ai_after": 8.29,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.44,
+    "after": 1.56,
+    "verified": true,
+    "evidence": "both probed APIs keyless: data.e-gov CKAN package_search and laws.e-gov /api/2/keyword returned 200 with no credentials"
+   },
+   "approval_speed": {
+    "before": 1.44,
+    "after": 1.44,
+    "verified": false,
+    "evidence": "agency review timelines not live-checkable; baseline carried"
+   },
+   "data_format": {
+    "before": 1.78,
+    "after": 1.78,
+    "verified": true,
+    "evidence": "application/json on both CKAN and law API v2; baseline already near max"
+   },
+   "doc_quality": {
+    "before": 1.22,
+    "after": 1.22,
+    "verified": false,
+    "evidence": "per-agency docs not re-audited; baseline carried"
+   },
+   "rate_limit": {
+    "before": 1.56,
+    "after": 1.56,
+    "verified": false,
+    "evidence": "no throttling hit in spot-check; baseline carried"
+   },
+   "error_handling": {
+    "before": 0.89,
+    "after": 0.89,
+    "verified": true,
+    "evidence": "correct status codes but weak bodies — law API 400 has no human-readable reason, CKAN returns bare JSON string; nets to baseline"
+   },
+   "sdk_samples": {
+    "before": 0.89,
+    "after": 0.89,
+    "verified": false,
+    "evidence": "not live-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 0.78,
+    "after": 0.78,
+    "verified": false,
+    "evidence": "openapi.json and swagger.json both 404 under /api/2/, but spec may live on developers.digital.go.jp — inconclusive, baseline carried"
+   },
+   "http_semantics": {
+    "before": 1.22,
+    "after": 1.39,
+    "verified": true,
+    "evidence": "law API v2: 404 on unknown path, 400 on bad param — fully correct; CKAN: 400 on unknown action"
+   },
+   "json_native": {
+    "before": 1.89,
+    "after": 1.89,
+    "verified": true,
+    "evidence": "JSON confirmed on both probed APIs; already near max"
+   },
+   "error_self_desc": {
+    "before": 0.78,
+    "after": 0.78,
+    "verified": true,
+    "evidence": "law API 400 = Spring default {timestamp,status,error,path} with no message; CKAN returns bare quoted string not standard CKAN error envelope"
+   },
+   "programmatic_auth": {
+    "before": 1.78,
+    "after": 1.78,
+    "verified": false,
+    "evidence": "keyed/OAuth endpoints not probed; baseline carried"
+   },
+   "rate_limit_transparency": {
+    "before": 0.56,
+    "after": 0.56,
+    "verified": true,
+    "evidence": "no RateLimit-* or Retry-After headers on either probed endpoint — confirms baseline"
+   },
+   "cors_https": {
+    "before": 1.0,
+    "after": 1.11,
+    "verified": true,
+    "evidence": "split: laws.e-gov /api/2 returns access-control-allow-origin:* with proper Vary; data.e-gov CKAN returns no CORS header despite Origin sent"
+   }
+  },
+  "notable": [
+   "Portal migration completed since baseline: www.data.go.jp now 301-redirects to data.e-gov.go.jp (e-Govデータポータル); the CKAN API base moved to https://data.e-gov.go.jp/data/api/3/action/ — the old data.go.jp API path in the baseline is now a redirect",
+   "CKAN catalog alive and substantial: package_search reports count 18,191 datasets, success:true",
+   "e-Gov 법령 API v2 measurably outperforms the JP average — correct 404/400 semantics plus CORS wildcard, making it the strongest JP endpoint for agent consumption",
+   "デジタル庁 ガバメントAI (源内) entered large-scale demonstration from May 2026 across ~180,000 government employees, with domestic LLM trial recruitment run Dec 2025–Jan 2026 — internal AI adoption, no external API surface yet, so no dimension credited",
+   "e-Gov APIカタログ (api-catalog.e-gov.go.jp) live at HTTP 200, but remains a catalog rather than a gateway; no evidence found that the FY2026 central gateway has shipped, so governance central_gateway stays unchanged"
+  ],
+  "method_note": "curl with browser UA + Origin header against data.e-gov.go.jp CKAN package_search and laws.e-gov.go.jp /api/2/keyword; probed valid call, unknown path/action, and invalid param, plus redirect tracing on www.data.go.jp. Two WebSearches covering デジタル庁 AI/データ連携 and the 行政APIカタログ/gateway FY2026 plan. Upward adjustments are portal-weighted: a verified portal moved to its observed score against the 9-portal average rather than shifting the whole average."
+ },
+ {
+  "country": "UK",
+  "uf_after": 10.36,
+  "ai_after": 11.82,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.27,
+    "after": 1.27,
+    "verified": false,
+    "evidence": "account creation not testable without registering; baseline carried"
+   },
+   "approval_speed": {
+    "before": 1.18,
+    "after": 1.18,
+    "verified": false,
+    "evidence": "not observable via spot-check; baseline carried"
+   },
+   "data_format": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "JSON on all 6 live endpoints: postcodes.io, gov.uk/api/content, gov.uk/api/search.json, api.beta.ons.gov.uk, api.tfl.gov.uk, lex.lab.i.ai.gov.uk"
+   },
+   "doc_quality": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "api.gov.uk catalogue 200 (37 orgs); content-api.publishing.service.gov.uk docs 200; Lex API Swagger UI at /docs 200"
+   },
+   "rate_limit": {
+    "before": 1.45,
+    "after": 1.45,
+    "verified": false,
+    "evidence": "quota generosity not measurable without sustained load; baseline carried"
+   },
+   "error_handling": {
+    "before": 1.27,
+    "after": 1.27,
+    "verified": true,
+    "evidence": "mixed as baseline: postcodes.io 404 {\"status\":404,\"error\":\"Invalid postcode\"}, Companies House 401 JSON; but gov.uk/api/content 404 returns an HTML error page, not JSON"
+   },
+   "sdk_samples": {
+    "before": 1.45,
+    "after": 1.45,
+    "verified": false,
+    "evidence": "SDK breadth not spot-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "api.gov.uk index alive; lex.lab.i.ai.gov.uk/openapi.json serves OpenAPI 3.1.0 — new official spec but not a measurable shift across the 11-portal average"
+   },
+   "http_semantics": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "correct codes throughout: 200 valid, 404 bad postcode and unknown route, 401 missing auth with www-authenticate header"
+   },
+   "json_native": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "content-type application/json on every live JSON endpoint tested"
+   },
+   "error_self_desc": {
+    "before": 1.27,
+    "after": 1.27,
+    "verified": true,
+    "evidence": "Companies House {\"error\":\"Empty Authorization header\",\"type\":\"ch:service\"} is self-describing; gov.uk Content API 404 emits an HTML page with no machine-readable error"
+   },
+   "programmatic_auth": {
+    "before": 1.64,
+    "after": 1.64,
+    "verified": true,
+    "evidence": "Companies House returns 401 with www-authenticate on missing Authorization; TfL, ONS, postcodes.io, Lex all keyless; DBT production MCP uses GOV.UK SSO"
+   },
+   "rate_limit_transparency": {
+    "before": 1.18,
+    "after": 1.18,
+    "verified": true,
+    "evidence": "no RateLimit/X-RateLimit headers on any of postcodes.io, gov.uk content, gov.uk search, ONS beta, TfL, Lex"
+   },
+   "cors_https": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "access-control-allow-origin: * returned with Origin: https://example.com on all 8 HTTPS endpoints tested"
+   }
+  },
+  "notable": [
+   "i.AI Lex API (lex.lab.i.ai.gov.uk) is live on a gov.uk domain with OpenAPI 3.1.0, Swagger UI and MCP integration — an official agent-facing legal API not present in the 2026-04 baseline; repo i-dot-ai/lex pushed 2026-07-31",
+   "parliament-mcp (i.AI official) still actively maintained: not archived, last push 2026-08-02, 27 stars",
+   "DBT put an MCP server for its Data Hub CRM into production behind GOV.UK SSO (digitaltrade.blog.gov.uk, 2026-05-14) — first documented production gov MCP with SSO-scoped auth",
+   "GDS ran an MCP pilot with The National Archives exposing legislation and case law to AI",
+   "Weak spot unchanged: gov.uk Content API returns an HTML 404 page rather than a JSON error, which breaks agent error parsing",
+   "api.gov.uk remains an index, not a gateway — catalogue page 200, 37 publishing organisations"
+  ],
+  "method_note": "Live curl with browser UA and Origin header on 2026-08-05 against 8 UK endpoints (api.gov.uk, postcodes.io, gov.uk content + search, ONS beta, TfL, Companies House, Lex API), plus GitHub API for repo liveness and one web search. 9 of 14 dimensions directly verified and all held baseline; the 5 requiring accounts or sustained load carry the baseline with verified:false. Totals unchanged (UF 10.36 B, AI 11.82 A) — new agent-facing surface (Lex, DBT MCP) is additive rather than a shift in the 11-portal averages."
+ },
+ {
+  "country": "EU",
+  "uf_after": 11.82,
+  "ai_after": 11.82,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "hub-search, Eurostat dissemination API and the SPARQL endpoint all returned 200 with no key or account"
+   },
+   "approval_speed": {
+    "before": 1.91,
+    "after": 1.91,
+    "verified": true,
+    "evidence": "no approval step exists on the endpoints tested — immediate keyless access"
+   },
+   "data_format": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": true,
+    "evidence": "hub-search application/json, Eurostat JSON-stat 2.0, SPARQL application/sparql-results+json; RDF/SDMX still offered in parallel"
+   },
+   "doc_quality": {
+    "before": 1.91,
+    "after": 1.91,
+    "verified": true,
+    "evidence": "data.europa.eu/api/hub/search/ serves a live Redoc OpenAPI page; dataeuropa.gitlab.io/data-provider-manual 200"
+   },
+   "rate_limit": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": false,
+    "evidence": "quota generosity not measurable from spot-checks; baseline carried"
+   },
+   "error_handling": {
+    "before": 1.18,
+    "after": 1.18,
+    "verified": true,
+    "evidence": "weakest area confirmed: bad limit param returns a bare 400 'Bad Request' with no content-type and no body; unknown dataset returns 404 text/plain; repo/health returns an empty 403"
+   },
+   "sdk_samples": {
+    "before": 1.18,
+    "after": 1.18,
+    "verified": false,
+    "evidence": "R/Python library coverage not spot-checkable; baseline carried"
+   },
+   "machine_schema": {
+    "before": 1.91,
+    "after": 1.91,
+    "verified": true,
+    "evidence": "data.europa.eu/api/hub/search/openapi.yaml is live — OpenAPI 3.0.3, hub-search v5.3.9, 116KB, 30 documented paths"
+   },
+   "http_semantics": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": true,
+    "evidence": "correct status differentiation observed: 200 valid query, 400 malformed param, 404 unknown dataset, 403 protected route"
+   },
+   "json_native": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": true,
+    "evidence": "JSON default on hub-search and Eurostat; SPARQL JSON results available via format param"
+   },
+   "error_self_desc": {
+    "before": 1.27,
+    "after": 1.27,
+    "verified": true,
+    "evidence": "404 body 'dataset does-not-exist-xyz not found' is readable but plain text, not structured; 400 carries no diagnostic at all"
+   },
+   "programmatic_auth": {
+    "before": 1.91,
+    "after": 1.91,
+    "verified": true,
+    "evidence": "no authentication required on hub-search, Eurostat or SPARQL — fully keyless machine access"
+   },
+   "rate_limit_transparency": {
+    "before": 1.09,
+    "after": 1.09,
+    "verified": true,
+    "evidence": "no RateLimit or X-RateLimit headers returned by hub-search, Eurostat or the SPARQL endpoint"
+   },
+   "cors_https": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "access-control-allow-origin: * on hub-search, SPARQL and Eurostat (which also sends Allow-Methods and Allow-Headers), all HTTPS"
+   }
+  },
+  "notable": [
+   "Baseline recorded community_mcp_count 0 for the EU; that is now stale — Hack23/European-Parliament-MCP-Server is active (last push 2026-08-04, 22 stars) and wikimcp.eu 'European Open Data MCP Server' is live. Both are community projects; still no MCP published by an EU institution",
+   "hub-search API has advanced to v5.3.9 with a live 30-path OpenAPI 3.0.3 spec",
+   "Eurostat data is current — the GDP dataset returned updated: 2026-08-04",
+   "AI Act enforcement by the AI Office and national authorities began 2026-08-02; the Commission has signalled a 2026 proposal expanding the high-value dataset list to legal, judicial and administrative data",
+   "Persistent AI-readiness gap: a 400 response carries no body or content-type, so an agent gets no recoverable signal about what it sent wrong"
+  ],
+  "method_note": "Live curl with browser UA and Origin header on 2026-08-05 against data.europa.eu hub-search (valid, malformed and not-found requests), the Virtuoso SPARQL endpoint, the Eurostat dissemination API and the OpenAPI/Redoc docs, plus GitHub API checks and one web search. 11 of 14 dimensions directly verified and all held baseline; rate_limit and sdk_samples carry the baseline with verified:false. Totals unchanged at 11.82/11.82 (A/A) — the only real 2026-04 to 2026-08 movement is community MCP appearing where the baseline recorded none."
+ },
+ {
+  "country": "US",
+  "uf_after": 12.1,
+  "ai_after": 12.37,
+  "dimensions": {
+   "signup_ease": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "api.data.gov/signup/ live 200 'API Key Sign Up', email-only form; DEMO_KEY works with zero signup on NASA/GovInfo/Congress/FEC/regulations.gov/Catalog v4"
+   },
+   "approval_speed": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "DEMO_KEY instant, no approval gate; api-umbrella issues keys automatically"
+   },
+   "data_format": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "JSON on all 9 portals probed (NASA, NPS, GovInfo, Congress, FEC, openFDA, regulations.gov, Catalog v4); weather.gov application/geo+json. No evidence to move baseline"
+   },
+   "doc_quality": {
+    "before": 1.64,
+    "after": 1.55,
+    "verified": true,
+    "evidence": "DOWNGRADE: data.gov/developers/apis/ still documents retired base URL http://catalog.data.gov/api/3/ which now 404s live; new Catalog v4 has no OpenAPI (openapi.json/swagger.json/docs all 404). ~1 of 11 portals degraded"
+   },
+   "rate_limit": {
+    "before": 1.82,
+    "after": 1.82,
+    "verified": false,
+    "evidence": "only DEMO_KEY observable (x-ratelimit-limit: 10/hr, demo-specific); registered-key limits (1,000/hr) not exercisable without signup"
+   },
+   "error_handling": {
+    "before": 1.55,
+    "after": 1.55,
+    "verified": true,
+    "evidence": "api-umbrella JSON envelope {error:{code,message}} + remediation URL on NPS 403 / GovInfo 401 / Catalog v4 403; regulations.gov JSON:API errors[] with title+status; BUT api.census.gov returns HTML 'Missing Key' page. Mixed, matches baseline"
+   },
+   "sdk_samples": {
+    "before": 1.45,
+    "after": 1.45,
+    "verified": false,
+    "evidence": "not live-checkable in this pass"
+   },
+   "machine_schema": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "offsetting: Catalog v4 exposes no OpenAPI spec (404s) but returns DCAT-US 3.0 typed payloads (dcat:Dataset/vcard:Contact); GovInfo+regulations.gov specs intact. Net no change"
+   },
+   "http_semantics": {
+    "before": 1.73,
+    "after": 1.73,
+    "verified": true,
+    "evidence": "correct 200/400/401/403/404 on NASA, NPS, GovInfo, regulations.gov (400 on bad page[size]), Catalog v4; violation: api.census.gov returns HTTP 200 for a missing-key error"
+   },
+   "json_native": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "JSON native on all data paths probed; only census error path is HTML, data responses remain JSON"
+   },
+   "error_self_desc": {
+    "before": 1.55,
+    "after": 1.55,
+    "verified": true,
+    "evidence": "api-umbrella errors carry machine code (API_KEY_MISSING/API_KEY_INVALID) + human message + fix URL; census HTML error has none. Matches baseline"
+   },
+   "programmatic_auth": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "api_key query param and X-Api-Key header both accepted; Catalog v4 uses X-Api-Key header"
+   },
+   "rate_limit_transparency": {
+    "before": 1.27,
+    "after": 1.36,
+    "verified": true,
+    "evidence": "UPGRADE: x-ratelimit-limit+remaining on NASA, GovInfo, Congress, FEC, regulations.gov and now Catalog v4 (which replaced CKAN, a portal that emitted none); absent on weather.gov, openFDA. +1 portal"
+   },
+   "cors_https": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "access-control-allow-origin:* returned with Origin header on all probes incl. Catalog v4; http->https 301 on api.data.gov; HSTS preload present"
+   }
+  },
+  "notable": [
+   "data.gov retired the CKAN Action API: catalog.data.gov/api/3/action/* now returns 404 {\"detail\":{},\"message\":\"Not Found\"} on every action probed (package_search, package_list, status_show); catalog-old.data.gov does not resolve",
+   "Replacement Catalog API v4 verified live at https://api.gsa.gov/technology/datagov/v4/search?q=climate — DCAT-US 3.0 payloads, cursor pagination (after token), X-Api-Key via api.data.gov, DEMO_KEY accepted, x-ratelimit headers present",
+   "Documentation lag: data.gov/developers/apis/ and resources.data.gov still describe the CKAN endpoint as 'read-only', but it is fully 404 in practice",
+   "GovInfo MCP still operating: POST https://api.govinfo.gov/mcp?api_key=DEMO_KEY returns serverInfo govinfo-mcp-server v1.0.0, MCP protocol 2025-06-18, 2 tools (searchGovInfo, describePackageOrGranule); still labeled public preview",
+   "api.census.gov returns HTTP 200 with an HTML 'Missing Key' page instead of a JSON error — the clearest standards violation found in the US sample"
+  ],
+  "method_note": "Live-checked: api.data.gov signup page + user-creation endpoint, NASA APOD, NPS (dummy key 403), GovInfo REST + MCP initialize/tools-list, Congress.gov, FEC, regulations.gov, openFDA, weather.gov, census, catalog.data.gov CKAN paths, new Catalog API v4 (with/without key, with Origin), http->https redirects. Carried over at baseline with verified:false: rate_limit (registered-key quotas need a real signup) and sdk_samples (not probeable). Two dimensions changed on concrete evidence only: doc_quality -0.09 (stale docs pointing at a dead endpoint) and rate_limit_transparency +0.09 (Catalog v4 adds headers where CKAN had none). An initial cors_https downgrade was retracted after re-testing with an Origin header showed CORS is origin-conditional, not absent. Note: baseline per-dimension values sum to 12.19/12.28 vs the file's stated totals 12.18/12.27 (rounding); after-totals report the true dimension sums."
+ },
+ {
+  "country": "FR",
+  "uf_after": 11.45,
+  "ai_after": 12.0,
+  "dimensions": {
+   "signup_ease": {
+    "before": 1.54,
+    "after": 1.54,
+    "verified": true,
+    "evidence": "data.gouv.fr API, Tabular API, MCP, geo.api.gouv.fr, adresse, recherche-entreprises all fully keyless; INSEE Sirene returns 401 requiring credentials. Mixed picture matches baseline"
+   },
+   "approval_speed": {
+    "before": 1.69,
+    "after": 1.69,
+    "verified": false,
+    "evidence": "no signup performed; keyless portals bypass approval entirely but gated portals not measurable"
+   },
+   "data_format": {
+    "before": 1.92,
+    "after": 1.92,
+    "verified": true,
+    "evidence": "application/json on data.gouv.fr, dataservices, Tabular API, geo, adresse, recherche-entreprises, annuaire-entreprises, IGN geoplateforme"
+   },
+   "doc_quality": {
+    "before": 1.92,
+    "after": 1.92,
+    "verified": true,
+    "evidence": "swagger.json live (237,978 bytes, 24h cache); guides.data.gouv.fr 'Référence' 200; Tabular API ships Swagger UI at /api/doc; geo.api.gouv.fr publishes definition.yml (Swagger 2.0)"
+   },
+   "rate_limit": {
+    "before": 1.77,
+    "after": 1.77,
+    "verified": false,
+    "evidence": "adresse + IGN advertise 50/s; core data.gouv.fr keyless with no observable ceiling, but actual quotas not stress-tested"
+   },
+   "error_handling": {
+    "before": 1.23,
+    "after": 1.23,
+    "verified": true,
+    "evidence": "400 gives field-level {\"errors\":{\"page_size\":\"...not a valid integer\"},\"message\":\"Input payload validation failed\"}; but 401 and 404 return prose-only messages with no code. Mixed, matches baseline"
+   },
+   "sdk_samples": {
+    "before": 1.38,
+    "after": 1.38,
+    "verified": false,
+    "evidence": "not live-checkable in this pass"
+   },
+   "machine_schema": {
+    "before": 1.92,
+    "after": 1.92,
+    "verified": true,
+    "evidence": "data.gouv.fr swagger.json live; geo.api.gouv.fr definition.yml; Tabular API Swagger UI; MCP even exposes get_dataservice_openapi_spec to fetch third-party specs"
+   },
+   "http_semantics": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "correct 200/301/400/401/404 across probes; MCP endpoint correctly returns 406 Not Acceptable when Accept lacks text/event-stream; api.gouv.fr issues a proper 301"
+   },
+   "json_native": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "JSON on every endpoint probed including Tabular API data rows"
+   },
+   "error_self_desc": {
+    "before": 1.31,
+    "after": 1.31,
+    "verified": true,
+    "evidence": "400 self-describes per-field; 401/404 are human prose without machine codes (404 does suggest valid alternate routes). Matches baseline"
+   },
+   "programmatic_auth": {
+    "before": 1.85,
+    "after": 1.85,
+    "verified": false,
+    "evidence": "keyless access confirmed broadly and INSEE 401 observed, but OAuth 2.0 / API-key flows not exercised end-to-end"
+   },
+   "rate_limit_transparency": {
+    "before": 0.92,
+    "after": 0.92,
+    "verified": true,
+    "evidence": "RFC-style ratelimit-limit: 50 + x-ratelimit-limit-second: 1 on adresse.data.gouv.fr and data.geopf.fr; none on core data.gouv.fr, geo.api.gouv.fr, recherche-entreprises. ~2 of 7 probed, consistent with baseline"
+   },
+   "cors_https": {
+    "before": 2.0,
+    "after": 2.0,
+    "verified": true,
+    "evidence": "with Origin header: allow-origin:* on data.gouv.fr and dataservices, echoed origin on geo.api.gouv.fr, full expose-headers on Tabular API; http->https 302; HSTS preload"
+   }
+  },
+  "notable": [
+   "api.gouv.fr → data.gouv.fr merge is COMPLETE, not 'in progress' as the 2026-04 baseline recorded: https://api.gouv.fr/ now issues a 301 Moved Permanently to https://www.data.gouv.fr/dataservices",
+   "data.gouv.fr MCP server confirmed operating and substantially expanded: mcp.data.gouv.fr/mcp, serverInfo 'data.gouv.fr MCP server' v1.28.1, MCP protocol 2025-06-18, keyless, now exposing 10 tools (search_datasets, search_organizations, search_dataservices, get_dataservice_info, get_dataservice_openapi_spec, query_resource_data, get_dataset_info, list_dataset_resources, get_resource_info, get_metrics)",
+   "MCP tooling now reaches beyond catalog search into actual data: query_resource_data proxies the Tabular API, and get_dataservice_openapi_spec retrieves third-party OpenAPI specs",
+   "Tabular API verified live and keyless: tabular-api.data.gouv.fr/api/resources/{id}/data/ returned real rows with full CORS (allow-origin:*, expose-headers:*) and Swagger UI at /api/doc",
+   "Catalog scale as of 2026-08: 73,780 datasets and 1,160 dataservices (third-party APIs) via /api/1/",
+   "DINUM/Etalab published a retour d'expérience note clarifying that the MCP server is a discovery accelerator rather than a new data source (numerique.gouv.fr); MCP launched Feb 2026, MIT-licensed, repo datagouv/datagouv-mcp"
+  ],
+  "method_note": "Live-checked: data.gouv.fr /api/1 datasets+organizations+dataservices, swagger.json, 400/401/404 error shapes, api.gouv.fr redirect chain, mcp.data.gouv.fr initialize + tools/list, Tabular API (root, /api/doc, real CSV resource data call), geo.api.gouv.fr + definition.yml, adresse.data.gouv.fr, recherche-entreprises, annuaire-entreprises, IGN data.geopf.fr, INSEE Sirene, http->https and Origin-header CORS re-tests. No FR dimension moved — every live observation landed consistent with the 2026-04 baseline, so all 14 keep their baseline values (4 marked verified:false: approval_speed, rate_limit, sdk_samples, programmatic_auth). The genuine FR change since April is structural (api.gouv.fr merge complete, MCP grown to 10 tools) and shows up in governance/mcp_ecosystem rather than in the 14 scored dimensions. Note: baseline user_friendliness dimensions sum to 11.45 while the file states total_avg 11.62 — a 0.17 discrepancy in the source data; uf_after reports the true dimension sum."
+ }
+]

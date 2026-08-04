@@ -803,22 +803,26 @@ td{font-variant-numeric:tabular-nums;}
     <h2 id="benchmark">2. 국제 비교 벤치마크 — 9개국 중 9위, 변동 없음</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th></th><th>사용자중심성 UF (14점)</th><th>AI 적합성 (14점)</th><th>정부 공식 MCP</th></tr></thead>
-        <tbody>
-          <tr><td>🇰🇷 한국 (2026-04 기준선, 173포털 평균)</td><td>5.3 (D)</td><td>2.7 (E)</td><td>없음</td></tr>
-          <tr><td><strong>🇰🇷 한국 (2026-08 전수 215포털)</strong></td><td><strong>5.74 (D)</strong></td><td><strong>2.35 (E)</strong></td><td><strong>중앙 없음 · 서울시 파일럿 1호</strong></td></tr>
-          <tr><td>차하위국 (기준선)</td><td>🇨🇦 캐나다 7.56</td><td>🇯🇵 일본 8.0</td><td>—</td></tr>
-          <tr><td>선두그룹 (기준선)</td><td>🇺🇸 12.18 · 🇪🇺 11.82 · 🇫🇷 11.62</td><td>🇸🇬 12.45 · 🇺🇸 12.27 · 🇫🇷 12.0</td><td>🇺🇸 🇫🇷 🇬🇧 운영 중</td></tr>
-        </tbody>
+        <thead><tr><th>국가</th><th>사용자중심성 UF (14점) 04→08</th><th>AI 적합성 (14점) 04→08</th><th>정부 공식 MCP</th><th>2026-08 재측정 특기사항</th></tr></thead>
+        <tbody><tr><td>🇺🇸 미국</td><td>12.18 → <strong>12.1</strong> <span style="color:var(--warn)">▼0.08</span></td><td>12.27 → <strong>12.37</strong> <span style="color:var(--accent-strong)">▲0.1</span></td><td>공식 (GovInfo)</td><td>data.gov CKAN API 폐기(catalog API 이관)에도 게이트웨이 체계 견고 — AI 소폭 상승</td></tr>
+<tr><td>🇸🇬 싱가포르</td><td>11.0 → <strong>11.0</strong> <span style="color:var(--text-muted)">→</span></td><td>12.45 → <strong>12.3</strong> <span style="color:var(--warn)">▼0.15</span></td><td>없음</td><td>실시간 API 무인증 유지(v1·v2 모두 keyless) — 소폭 조정에도 최상위권</td></tr>
+<tr><td>🇫🇷 프랑스</td><td>11.62 → <strong>11.45</strong> <span style="color:var(--warn)">▼0.17</span></td><td>12.0 → <strong>12.0</strong> <span style="color:var(--text-muted)">→</span></td><td>공식 (datagouv-mcp)</td><td>api.gouv.fr→data.gouv.fr 통합 완료 확인, swagger·무키 호출 유지</td></tr>
+<tr><td>🇬🇧 영국</td><td>10.36 → <strong>10.36</strong> <span style="color:var(--text-muted)">→</span></td><td>11.82 → <strong>11.82</strong> <span style="color:var(--text-muted)">→</span></td><td>공식 (parliament-mcp) + i.AI Lex API 신규</td><td>정부 도메인에 OpenAPI 스펙 공개한 Lex API 등장 — AI 법제 접근 강화</td></tr>
+<tr><td>🇪🇺 EU</td><td>11.82 → <strong>11.82</strong> <span style="color:var(--text-muted)">→</span></td><td>11.82 → <strong>11.82</strong> <span style="color:var(--text-muted)">→</span></td><td>커뮤니티 존재(기준선 0 집계는 정정)</td><td>SPARQL·REST 무키 유지, DCAT-AP 연합 안정</td></tr>
+<tr><td>🇦🇺 호주</td><td>8.6 → <strong>8.5</strong> <span style="color:var(--warn)">▼0.1</span></td><td>10.2 → <strong>10.0</strong> <span style="color:var(--warn)">▼0.2</span></td><td>없음</td><td>CORS 전면 허용(와일드카드 ACAO+expose-headers)으로 실질 개선 확인</td></tr>
+<tr><td>🇨🇦 캐나다</td><td>7.56 → <strong>7.77</strong> <span style="color:var(--accent-strong)">▲0.21</span></td><td>8.44 → <strong>8.55</strong> <span style="color:var(--accent-strong)">▲0.11</span></td><td>없음</td><td>open.canada.ca가 problem+json 형식 오류 도입 — 오류 의미론 개선</td></tr>
+<tr><td>🇯🇵 일본</td><td>9.22 → <strong>9.34</strong> <span style="color:var(--accent-strong)">▲0.12</span></td><td>8.0 → <strong>8.29</strong> <span style="color:var(--accent-strong)">▲0.29</span></td><td>없음</td><td>data.go.jp 포털 이관 완료(301), CKAN API 정상 — 소폭 상승</td></tr>
+<tr style="background:var(--warn-soft)"><td><strong>🇰🇷 한국</strong></td><td>5.3 → <strong>5.74</strong> (D)</td><td>2.7 → <strong>2.35</strong> (E)</td><td><strong>중앙 없음</strong> · 서울시 파일럿 1호</td><td>9개국 중 <strong>UF·AI 모두 최하위 유지</strong> — 차상위 일본(8.29)의 28% 수준. 기준선은 173포털·이번은 전수 215포털이라 절대값 비교에는 모집단 차이 주석 필요</td></tr></tbody>
       </table>
     </div>
+    <p style="font-size:.85rem;color:var(--text-muted)">측정 방법 — 해외 8개국: 2026-08-04 대표 포털 라이브 스팟체크(더미 키 호출·헤더 검사·스펙 fetch)로 검증 가능한 차원만 갱신하고 미검증 차원은 2026-04 값을 유지(원자료 <code>evidence/lite/global_recheck_2026_08.json</code>, 차원별 verified 플래그 포함). 한국: 전수 215개 포털 재측정.</p>
     <div class="bars" aria-label="AI 적합성 국가 비교 (14점 만점)">
-      <div class="bar-row"><span class="bar-label">🇸🇬 싱가포르</span><span class="bar-track"><span class="bar-fill dim" style="width:89%"></span></span><span class="bar-val">12.45</span></div>
-      <div class="bar-row"><span class="bar-label">🇺🇸 미국</span><span class="bar-track"><span class="bar-fill dim" style="width:88%"></span></span><span class="bar-val">12.27</span></div>
+      <div class="bar-row"><span class="bar-label">🇸🇬 싱가포르</span><span class="bar-track"><span class="bar-fill dim" style="width:88%"></span></span><span class="bar-val">12.3</span></div>
+      <div class="bar-row"><span class="bar-label">🇺🇸 미국</span><span class="bar-track"><span class="bar-fill dim" style="width:88%"></span></span><span class="bar-val">12.37</span></div>
       <div class="bar-row"><span class="bar-label">🇫🇷 프랑스</span><span class="bar-track"><span class="bar-fill dim" style="width:86%"></span></span><span class="bar-val">12.0</span></div>
-      <div class="bar-row"><span class="bar-label">🇯🇵 일본 (8위)</span><span class="bar-track"><span class="bar-fill dim" style="width:57%"></span></span><span class="bar-val">8.0</span></div>
+      <div class="bar-row"><span class="bar-label">🇯🇵 일본</span><span class="bar-track"><span class="bar-fill dim" style="width:59%"></span></span><span class="bar-val">8.29</span></div>
       <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-04</span><span class="bar-track"><span class="bar-fill bad" style="width:19%"></span></span><span class="bar-val">2.7</span></div>
-      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-08</span><span class="bar-track"><span class="bar-fill mid" style="width:23%"></span></span><span class="bar-val">3.22</span></div>
+      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-08 (전수 215)</span><span class="bar-track"><span class="bar-fill bad" style="width:17%"></span></span><span class="bar-val">2.35</span></div>
     </div>
     <ul>
       <li>기준선의 "최대 격차 항목"이었던 <strong>HTTP 상태코드 의미론(한국 0.0 vs 해외 평균 1.80)</strong>은 이번에 data.go.kr가 2.0을 달성해 격차 축소를 견인했습니다.</li>

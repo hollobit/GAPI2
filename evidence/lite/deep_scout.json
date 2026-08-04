@@ -1,0 +1,172 @@
+[
+ {
+  "id": "index-nuri",
+  "endpoint_tested": "https://www.index.go.kr/unity/openApi/xml_stts.do",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" --max-time 20 'https://www.index.go.kr/unity/openApi/xml_stts.do?idntfcId=INVALID_TEST_KEY_KGAPI&statsCode=124802&ixCode=1248'",
+  "http_status": 200,
+  "content_type": "text/xml;charset=UTF-8",
+  "body_head": "<?xml version='1.0' encoding='UTF-8'?>\n<시스템>키 값이 일치하지 않습니다.</시스템>",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 1,
+   "error_self_desc": 0,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "Endpoint recovered from the 개발가이드 page (https://www.index.go.kr/unity/openApi/OpenApiGuide.do), which leaks a dev-env sample URL 'https://localhost:8443/enaraMgmt/unity/openApi/xml_stts.do' — the same path works on the production host. Auth param is idntfcId (not serviceKey). Guide documents format=xml|json|sdmx plus an alternate sttsJsonViewer.do endpoint, but format=json is ignored on the error path (still text/xml), so JSON is an option rather than the default → json_native=1. Error body is a single Korean-named element with a bare message and no machine-parseable code field → error_self_desc=0. No ACAO even with an Origin header; no RateLimit headers. The guide page also exposes what appears to be a live sample key — not used here.",
+  "evidence_ts": "2026-08-04T01:10:03Z"
+ },
+ {
+  "id": "safetydata",
+  "endpoint_tested": "https://www.safetydata.go.kr/V2/api/DSSP-IF-00247",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" --max-time 20 'https://www.safetydata.go.kr/V2/api/DSSP-IF-00247?serviceKey=INVALID_TEST_KEY_KGAPI&pageNo=1&numOfRows=1'",
+  "http_status": 200,
+  "content_type": "application/json",
+  "body_head": "{\"header\":{\"resultMsg\":\"SERVICE KEY IS NOT REGISTERED ERROR\",\"resultCode\":\"30\",\"errorMsg\":\"등록되지 않은 서비스키\"},\"body\":null}",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 2,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "Self-hosted V2 gateway on www.safetydata.go.kr (not routed through apis.data.go.kr). Returns HTTP 200 for a rejected key → http_semantics=0. JSON is the native default with no format param needed → json_native=2. Structured custom envelope with resultCode + resultMsg + localized errorMsg, but not RFC7807 → error_self_desc=1. Notably the API response sets eight session cookies (JSESSIONID, latestTouch, sessionExpiry, clientid), which is web-session behavior leaking into an API surface. No ACAO with Origin header; no RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:09:13Z"
+ },
+ {
+  "id": "e-gen",
+  "endpoint_tested": "https://apis.data.go.kr/B552657/ErmctInfoInqireService/getEgytBassInfoInqire",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 20 'https://apis.data.go.kr/B552657/ErmctInfoInqireService/getEgytBassInfoInqire?serviceKey=INVALID_TEST_KEY_KGAPI&Q0=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C&pageNo=1&numOfRows=1'",
+  "http_status": 403,
+  "content_type": "application/xml",
+  "body_head": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<OpenAPI_ServiceResponse>\n<cmmMsgHeader>\n  <errMsg>SERVICE_KEY_IS_NOT_REGISTERED_ERROR</errMsg>\n  <returnAuthMsg>등록되지 않은 서비스키</returnAuthMsg>\n  <returnReasonCode>30</returnReasonCode>\n</cmmMsgHeader>\n</OpenAPI_ServiceResponse>",
+  "scores": {
+   "http_semantics": 2,
+   "json_native": 1,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": true,
+  "note": "e-gen (중앙응급의료센터) has no own API host — it delegates to the data.go.kr gateway under agency code B552657, so what is actually measured is the gateway. Correct 403 for an unregistered key → http_semantics=2, the best result in this batch alongside hrdkorea. Default is XML but appending _type=json returns a JSON-encoded error body → json_native=1. CORS confirmed: with Origin: https://example.com the gateway echoes Access-Control-Allow-Origin: https://example.com (plus Vary: Origin) — this is invisible without an Origin header, so a naive probe would score CORS as absent. Gateway also sets a full security-header suite (HSTS, X-Frame-Options, nosniff) but no RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:09:10Z"
+ },
+ {
+  "id": "alioplus",
+  "endpoint_tested": "https://opendata.alio.go.kr/api/v1/facility",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 20 'https://opendata.alio.go.kr/api/v1/facility?apiKey=INVALID_TEST_KEY_KGAPI&pageNo=1&numOfRows=1'",
+  "http_status": 200,
+  "content_type": "application/json",
+  "body_head": "{\"resultCode\":\"7\",\"resultMsg\":\"게이트웨이 인증 실패 에러\",\"resultMsgEng\":\"GW_AUTH_FAIL_ERROR\"}",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 2,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": true,
+  "note": "The documented portal page (www.alioplus.go.kr/openapi/openAPI.do) contains no endpoint spec at all — spec and key issuance sit behind login. The live API is on a separate host, opendata.alio.go.kr, discovered via a search hit on opendata.alio.go.kr/facility; /api/v1/facility resolves while /facility 302-redirects and /api/facility/list 404s. Spring Boot backend. HTTP 200 on a gateway auth failure → http_semantics=0. JSON native → 2. Error carries resultCode + Korean resultMsg + English resultMsgEng, custom structured → 1. ACAO echoes the Origin → cors true. No RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:13:13Z"
+ },
+ {
+  "id": "bigdata-119",
+  "endpoint_tested": null,
+  "curl_repro": null,
+  "http_status": null,
+  "content_type": null,
+  "body_head": null,
+  "scores": {
+   "http_semantics": null,
+   "json_native": null,
+   "error_self_desc": null,
+   "rate_limit_transparency": null
+  },
+  "cors_api": null,
+  "note": "No callable endpoint reachable without authentication. The apiService page lists 7 APIs (전국 구급/구급상황관리/소방대상물/다중이용업소/화재/119 신고접수/구조 현황) and renders Request Header, Required Parameters and Output Results as empty templates — the actual URLs are injected client-side by an AJAX call to /apiService/getApiOutputUrls.do with {type, goods_id}. Both that endpoint and /apiService/getApiOutputUrls return the login-gated HTML shell (not JSON) for GET and POST, with and without X-Requested-With. Probed for a separate API host: api.bigdata-119.kr does not resolve (curl exit, status 000); /api, /openapi/service, /apiService/data, /api/v1/fire all return 404 text/html. Portal documents POST + JSON output generically, but nothing is verifiable without an account, so all indicators are null rather than 0.",
+  "evidence_ts": "2026-08-04T01:12:08Z"
+ },
+ {
+  "id": "vworld",
+  "endpoint_tested": "https://api.vworld.kr/req/address",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" --max-time 20 'https://api.vworld.kr/req/address?service=address&request=getcoord&version=2.0&crs=epsg:4326&address=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%84%B8%EC%A2%85%EB%8C%80%EB%A1%9C%20209&type=road&key=INVALID_TEST_KEY_KGAPI'",
+  "http_status": 200,
+  "content_type": "application/json;charset=UTF-8",
+  "body_head": "{\"response\" : {\"service\" : {\"name\" : \"address\", \"version\" : \"2.0\", \"operation\" : \"getcoord\", \"time\" : \"2(ms)\"}, \"status\" : \"ERROR\", \"error\" : {\"level\" : \"2\", \"code\" : \"INVALID_KEY\", \"text\" : \"등록되지 않은 인증키입니다.\"}}}",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 2,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "Auth param is key (not serviceKey). Returns HTTP 200 with status:\"ERROR\" in the payload for an unregistered key → http_semantics=0. JSON native default → 2. Richest error envelope in this batch: severity level + symbolic code INVALID_KEY + human text, plus a service echo block with server-side timing — custom structured, not RFC7807 → error_self_desc=1. Re-probed with Origin: https://example.com and no Access-Control-Allow-Origin was returned → cors false, meaning browser-side JS cannot call this directly despite it being a mapping API. Also emits a legacy P3P header and web session cookies (WMONID, JSESSIONID). No RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:09:10Z"
+ },
+ {
+  "id": "nosc",
+  "endpoint_tested": "https://nosc.go.kr/openapi/meta/search.do",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 25 'https://nosc.go.kr/openapi/meta/search.do?ServiceKey=INVALID_TEST_KEY_KGAPI&startDate=20260101&endDate=20260102&slot=2&ResultType=json'",
+  "http_status": 201,
+  "content_type": "application/xml",
+  "body_head": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><result><resultCode>401</resultCode><resultMsg>인증실패</resultMsg><totalCount>0</totalCount></result>",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 1,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "The most incoherent status semantics found: an authentication failure is returned as HTTP 201 Created while the body carries resultCode 401. Transport and payload contradict each other, so any client trusting the status line sees success → http_semantics=0. Auth param is capitalised ServiceKey. ResultType=json was requested but the response came back application/xml, so JSON exists per docs but is not honoured on the error path → json_native=1. resultCode + resultMsg is custom structured → 1. No ACAO with Origin; no RateLimit headers, though the guide states a documented 20,000 calls/day cap — that quota is prose-only and never surfaced in headers. Also sets Content-Disposition: inline;filename=f.txt on an API response.",
+  "evidence_ts": "2026-08-04T01:10:33Z"
+ },
+ {
+  "id": "hrdkorea-qualification",
+  "endpoint_tested": "https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 25 'https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList?serviceKey=INVALID_TEST_KEY_KGAPI&pageNo=1&numOfRows=1&implYy=2026'",
+  "http_status": 403,
+  "content_type": "application/json",
+  "body_head": "{\n  \"OpenAPI_ServiceResponse\": {\n    \"cmmMsgHeader\": {\n      \"errMsg\": \"SERVICE_KEY_IS_NOT_REGISTERED_ERROR\",\n      \"returnAuthMsg\": \"등록되지 않은 서비스키\",\n      \"returnReasonCode\": \"30\"\n    }\n  }\n}",
+  "scores": {
+   "http_semantics": 2,
+   "json_native": 2,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": true,
+  "note": "openapi.hrdkorea.or.kr is a catalogue front-end only (returns text/html and states all APIs are hosted on data.go.kr); the qualification APIs live on the data.go.kr gateway under agency code B490007, which is what was measured. Best combined result in this batch: correct 403 plus JSON. Worth flagging against e-gen — both are the same apis.data.go.kr gateway, yet this service defaults to application/json while B552657 defaults to application/xml, so json_native is a per-service registration property, not a gateway property. CORS confirmed by Origin echo. No RateLimit headers despite a documented ~10,000 calls/day developer quota.",
+  "evidence_ts": "2026-08-04T01:11:11Z"
+ },
+ {
+  "id": "mafra-agri-portal",
+  "endpoint_tested": "http://211.237.50.150:7080/openapi/{apiKey}/json/{serviceId}/1/5",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 25 'http://211.237.50.150:7080/openapi/INVALID_TEST_KEY_KGAPI/json/Grid_20151204000000000185_1/1/5'",
+  "http_status": 200,
+  "content_type": "application/json;charset=UTF-8",
+  "body_head": "{\"result\":{\"code\":\"ERROR-310\",\"message\":\"해당하는 서비스를 찾을 수 없습니다.\"}}",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 2,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "CAVEAT — the observed error is service-not-found (ERROR-310), not key-invalid: six candidate Grid_* service IDs all returned ERROR-310, so key validation was never reached and http_semantics=0 is inferred from generic error handling (an error condition returning HTTP 200 with an error body) rather than from the auth path specifically. Treat this indicator as lower-confidence than the other nine and re-test if a valid service ID is obtained. The API key is a path segment, not a query param (/openapi/{key}/{format}/{serviceId}/{start}/{end}), which puts credentials in URLs and access logs. Format is chosen by path segment json|xml with JSON first-class → json_native=2. code + message → 1. Portal host data.mafra.go.kr 307-redirects API-ish paths to its homepage and its docs pages (/caseapp/indexOpenApiIntroduce.do) 404, so no endpoint spec is published without login. Plain HTTP on a bare IP with a non-standard port — no TLS available on this endpoint. No ACAO; no RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:11:29Z"
+ },
+ {
+  "id": "kpx-electricity-api",
+  "endpoint_tested": "https://openapi.kpx.or.kr/openapi/smp1hToday/getSmp1hToday",
+  "curl_repro": "curl -si -A \"Mozilla/5.0\" -H \"Origin: https://example.com\" --max-time 25 'https://openapi.kpx.or.kr/openapi/smp1hToday/getSmp1hToday?serviceKey=INVALID_TEST_KEY_KGAPI&pageNo=1&numOfRows=1'",
+  "http_status": 200,
+  "content_type": "application/xml;charset=ISO-8859-1",
+  "body_head": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><response><header><resultCode>30</resultCode><resultMsg>SERVICE KEY IS NOT REGISTERED ERROR.</resultMsg><pageNo>1</pageNo><numOfRows>1000</numOfRows><totalCount>0</totalCount><pageSize>1</pageSize><startPage>1</startPage></header></response>",
+  "scores": {
+   "http_semantics": 0,
+   "json_native": 0,
+   "error_self_desc": 1,
+   "rate_limit_transparency": 0
+  },
+  "cors_api": false,
+  "note": "KPX runs its own gateway at openapi.kpx.or.kr rather than delegating to data.go.kr, and it is measurably weaker than the data.go.kr路 services: HTTP 200 on a rejected key → 0, and _type=json (the data.go.kr convention) is silently ignored, returning XML either way → json_native=0. Charset declaration is self-contradictory: the HTTP header says ISO-8859-1 while the XML prolog declares UTF-8, which will corrupt any non-ASCII payload for clients that trust the header. resultCode 30 + resultMsg mirrors the data.go.kr envelope shape → error_self_desc=1. Server header is blank. No ACAO with Origin; no RateLimit headers.",
+  "evidence_ts": "2026-08-04T01:11:50Z"
+ }
+]

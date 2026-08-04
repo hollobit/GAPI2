@@ -9,7 +9,8 @@
   "llms_txt": 0,
   "openapi_spec": 3,
   "openapi_partial": 3,
-  "ratelimit_headers": 0
+  "ratelimit_headers": 0,
+  "reach_recheck": "도달실패 16곳 재추적: 생존 9 / 일시장애 2 / 사망 2 / 이관·흡수 3"
  },
  "results": [
   {
@@ -372,7 +373,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.bigdata-sea.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.bigdata-sea.kr'",
+   "reach_recheck": {
+    "status": "dead",
+    "working_url": null,
+    "evidence": "DNS: bigdata-sea.kr apex NOERROR/no A record; www.bigdata-sea.kr CNAME → slb-1521136.gov-ncloudslb.com which returns NXDOMAIN on local, 8.8.8.8 and 1.1.1.1. TCP connect fails with gaierror on 3 attemp"
+   }
   },
   {
    "id": "bigdata-sme",
@@ -552,7 +558,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.crimestats.or.kr/portal/openapi/openApiIntroPage.do'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.crimestats.or.kr/portal/openapi/openApiIntroPage.do'",
+   "reach_recheck": {
+    "status": "moved_or_merged",
+    "working_url": "https://www.kicj.re.kr/stats/",
+    "evidence": "crimestats.or.kr and www.crimestats.or.kr both return NXDOMAIN on all three resolvers; WebFetch fails with ENOTFOUND. curl of https://www.kicj.re.kr/crimestats/portal/openapi/openApiIntroPage.do retur"
+   }
   },
   {
    "id": "cha",
@@ -894,7 +905,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.dpg.go.kr/'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://www.dpg.go.kr/'",
+   "reach_recheck": {
+    "status": "dead",
+    "working_url": null,
+    "evidence": "www.dpg.go.kr resolves to 139.150.86.87 but port 443 times out on 3 separate attempts from a Korean network and port 80 returns Connection refused; WebFetch from US infrastructure also gets ECONNREFUS"
+   }
   },
   {
    "id": "e-gen",
@@ -934,7 +950,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://open.eais.go.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://open.eais.go.kr'",
+   "reach_recheck": {
+    "status": "temporarily_down",
+    "working_url": null,
+    "evidence": "open.eais.go.kr resolves to 59.10.75.217; raw TCP connect to both 443 and 80 times out on 3 attempts from Korea, and WebFetch from US gets ECONNREFUSED. Sibling host www.eais.go.kr accepts TCP on 443 "
+   }
   },
   {
    "id": "ecos",
@@ -1336,7 +1357,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://gov.kr/openapi'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://gov.kr/openapi'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://www.gov.kr/openapi",
+    "evidence": "https://www.gov.kr/openapi returns HTTP 200 with title '공공서비스 활용 Open API | 정부24'. The probed bare-host form https://gov.kr/openapi returns a 301 whose Location header is malformed, producing the inva"
+   }
   },
   {
    "id": "gwangju",
@@ -1496,7 +1522,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://hf.go.kr/abc/hf-open-api-webpage/index.html'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://hf.go.kr/abc/hf-open-api-webpage/index.html'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://houstat.hf.go.kr/research/portal/openapi/openApiIntroPage.do",
+    "evidence": "https://hf.go.kr/ returns 200 (redirects to /ko/index.do), but every /abc/* path including the probed hf-open-api-webpage returns HTTP 502 and redirects to https://hf.go.kr/error.html. The actual HF O"
+   }
   },
   {
    "id": "hira",
@@ -2777,7 +2808,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://developers.utradehub.or.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://developers.utradehub.or.kr'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://developers.utradehub.or.kr",
+    "evidence": "curl -sIL with browser UA returns HTTP 200; a follow-up GET returns 200 with title 'ETIS Developers'. Reproduced successfully on two separate attempts."
+   }
   },
   {
    "id": "kvic",
@@ -2877,7 +2913,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://lofin.mois.go.kr/portal/user/openApi.do'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://lofin.mois.go.kr/portal/user/openApi.do'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://www.lofin365.go.kr/",
+    "evidence": "lofin.mois.go.kr resolves to 152.99.104.56 but returns Connection refused on both port 443 and port 80, reproduced on 3 attempts. https://www.lofin365.go.kr/ returns HTTP 200 with title '지방재정365 지방재정통"
+   }
   },
   {
    "id": "lx-land-info",
@@ -3157,7 +3198,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://openapi.nanet.go.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://openapi.nanet.go.kr'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://openapi.nanet.go.kr",
+    "evidence": "curl HEAD returns HTTP 200 and a GET returns 200 with title '국회도서관 OpenAPI 활용가이드'. Reproduced on two attempts."
+   }
   },
   {
    "id": "nanet-law",
@@ -3278,7 +3324,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://developers.nonghyup.com'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://developers.nonghyup.com'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://nhfintech.nonghyup.com/",
+    "evidence": "developers.nonghyup.com resolves to 103.244.108.149 but TCP connect to 443 times out on 3 attempts from Korea and WebFetch from US gets ECONNREFUSED. https://nhfintech.nonghyup.com/ returns HTTP 200 w"
+   }
   },
   {
    "id": "nhis",
@@ -3398,7 +3449,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://openapi.nsdi.go.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://openapi.nsdi.go.kr'",
+   "reach_recheck": {
+    "status": "moved_or_merged",
+    "working_url": "https://api.vworld.kr",
+    "evidence": "openapi.nsdi.go.kr returns NXDOMAIN on local, 8.8.8.8 and 1.1.1.1. Public announcements state the 국가공간정보포털 was discontinued and its services integrated into V-World; file datasets moved to the V-World"
+   }
   },
   {
    "id": "nsdi-portal",
@@ -3418,7 +3474,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'http://www.nsdi.go.kr/lxportal/?menuno=2790'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'http://www.nsdi.go.kr/lxportal/?menuno=2790'",
+   "reach_recheck": {
+    "status": "moved_or_merged",
+    "working_url": "https://www.vworld.kr",
+    "evidence": "www.nsdi.go.kr and nsdi.go.kr both return NXDOMAIN on all three resolvers; the candidate replacement domain nsdi.kr is also NXDOMAIN. https://www.vworld.kr returns HTTP 200 with title '브이월드'."
+   }
   },
   {
    "id": "ntis",
@@ -3498,7 +3559,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://onbid.co.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://onbid.co.kr'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://www.onbid.co.kr/",
+    "evidence": "onbid.co.kr apex resolves to 59.186.127.193 but no HTTP response (code 000); www.onbid.co.kr resolves to a different IP 61.108.83.195 and returns HTTP 200 with title '온비드'."
+   }
   },
   {
    "id": "onmydata",
@@ -3618,7 +3684,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://opinet.co.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://opinet.co.kr'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://www.opinet.co.kr/user/main/mainView.do",
+    "evidence": "opinet.co.kr apex has no A record on any of the three resolvers. https://www.opinet.co.kr returns 405 to HEAD but a GET to /user/main/mainView.do returns HTTP 200 with title '싼 주유소 찾기 오피넷'."
+   }
   },
   {
    "id": "pipc",
@@ -3678,7 +3749,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://reb.or.kr'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://reb.or.kr'",
+   "reach_recheck": {
+    "status": "alive_at_new_url",
+    "working_url": "https://www.reb.or.kr/r-one/main.do",
+    "evidence": "reb.or.kr apex has no A record; www.reb.or.kr returns 403 to HEAD but a GET to /r-one/main.do returns HTTP 200 (109KB) after redirecting to /r-one/portal/main/indexPage.do. The legacy r-one.co.kr doma"
+   }
   },
   {
    "id": "riss",
@@ -3958,7 +4034,12 @@
    "llms_txt": null,
    "openapi_spec": null,
    "openapi_spec_path": null,
-   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://data.smartfarmkorea.net'"
+   "curl_repro": "curl -sI -A 'K-GAPI-lite-probe' -H 'Origin: https://example.com' 'https://data.smartfarmkorea.net'",
+   "reach_recheck": {
+    "status": "temporarily_down",
+    "working_url": "https://www.smartfarmkorea.net/main.do",
+    "evidence": "data.smartfarmkorea.net returns HTTP 503 with a Korean error page reading '연결 오류가 발생했습니다. 잠시 후 다시 시도 부탁드립니다. ※ 오류가 지속될 경우, 서버 점검중일 수 있습니다.' The main host www.smartfarmkorea.net returns HTTP 200."
+   }
   },
   {
    "id": "smes24",

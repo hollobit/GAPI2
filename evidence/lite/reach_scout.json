@@ -1,0 +1,114 @@
+[
+ {
+  "id": "bigdata-sea",
+  "status": "dead",
+  "working_url": null,
+  "evidence": "DNS: bigdata-sea.kr apex NOERROR/no A record; www.bigdata-sea.kr CNAME → slb-1521136.gov-ncloudslb.com which returns NXDOMAIN on local, 8.8.8.8 and 1.1.1.1. TCP connect fails with gaierror on 3 attempts. KMI press coverage describes the 해양수산 빅데이터 플랫폼 project as funded through 2022.",
+  "note": "Naver Cloud load balancer behind the www CNAME has been deprovisioned; the DNS zone still exists but points nowhere."
+ },
+ {
+  "id": "ccjs",
+  "status": "moved_or_merged",
+  "working_url": "https://www.kicj.re.kr/stats/",
+  "evidence": "crimestats.or.kr and www.crimestats.or.kr both return NXDOMAIN on all three resolvers; WebFetch fails with ENOTFOUND. curl of https://www.kicj.re.kr/crimestats/portal/openapi/openApiIntroPage.do returns 200 after redirecting to https://www.kicj.re.kr/stats/ (title 'MATRIX :: BI(business Intelligence)').",
+  "note": "CCJS statistics absorbed into KICJ's own MATRIX BI system; the standalone openApiIntroPage.do path no longer exists."
+ },
+ {
+  "id": "dpg-government-ai-api",
+  "status": "dead",
+  "working_url": null,
+  "evidence": "www.dpg.go.kr resolves to 139.150.86.87 but port 443 times out on 3 separate attempts from a Korean network and port 80 returns Connection refused; WebFetch from US infrastructure also gets ECONNREFUSED 139.150.86.87:443. MOLEG published a 폐지령안 입법예고 repealing 디지털플랫폼정부위원회의 설치 및 운영에 관한 규정, and Seoul Economic Daily reported the committee is being dissolved.",
+  "note": "Presidential committee abolished under the current administration; no successor portal found (dpghub.go.kr and www.dpghub.go.kr also do not resolve)."
+ },
+ {
+  "id": "eais",
+  "status": "temporarily_down",
+  "working_url": null,
+  "evidence": "open.eais.go.kr resolves to 59.10.75.217; raw TCP connect to both 443 and 80 times out on 3 attempts from Korea, and WebFetch from US gets ECONNREFUSED. Sibling host www.eais.go.kr accepts TCP on 443 but returns HTTP 307 with a zero-byte body. No migration or shutdown notice found in search; open.eais.go.kr URLs are still actively indexed.",
+  "note": "Only the open.* subdomain is unreachable while the main 세움터 host answers, so this looks like a server-side outage rather than a decommission."
+ },
+ {
+  "id": "gov-kr-openapi",
+  "status": "alive_at_new_url",
+  "working_url": "https://www.gov.kr/openapi",
+  "evidence": "https://www.gov.kr/openapi returns HTTP 200 with title '공공서비스 활용 Open API | 정부24'. The probed bare-host form https://gov.kr/openapi returns a 301 whose Location header is malformed, producing the invalid URL http://www.gov.kropenapi/ (missing path separator).",
+  "note": "Site is fine; the apex-to-www redirect drops the slash and corrupts the path, so the www form must be used."
+ },
+ {
+  "id": "hf",
+  "status": "alive_at_new_url",
+  "working_url": "https://houstat.hf.go.kr/research/portal/openapi/openApiIntroPage.do",
+  "evidence": "https://hf.go.kr/ returns 200 (redirects to /ko/index.do), but every /abc/* path including the probed hf-open-api-webpage returns HTTP 502 and redirects to https://hf.go.kr/error.html. The actual HF Open API documentation responds 200 at houstat.hf.go.kr with title 'Open API 소개 | 주택금융통계시스템'.",
+  "note": "Main HF site is healthy; the /abc/ open-API webapp is broken and the API docs now live on the 주택금융통계시스템 (houstat) subdomain."
+ },
+ {
+  "id": "ktnet",
+  "status": "alive_at_new_url",
+  "working_url": "https://developers.utradehub.or.kr",
+  "evidence": "curl -sIL with browser UA returns HTTP 200; a follow-up GET returns 200 with title 'ETIS Developers'. Reproduced successfully on two separate attempts.",
+  "note": "URL is unchanged and the site is healthy — the original probe failure was transient."
+ },
+ {
+  "id": "lofin",
+  "status": "alive_at_new_url",
+  "working_url": "https://www.lofin365.go.kr/",
+  "evidence": "lofin.mois.go.kr resolves to 152.99.104.56 but returns Connection refused on both port 443 and port 80, reproduced on 3 attempts. https://www.lofin365.go.kr/ returns HTTP 200 with title '지방재정365 지방재정통합공개시스템'.",
+  "note": "지방재정365 has moved off the MOIS subdomain to its own lofin365.go.kr domain; the old host actively refuses connections."
+ },
+ {
+  "id": "nanet",
+  "status": "alive_at_new_url",
+  "working_url": "https://openapi.nanet.go.kr",
+  "evidence": "curl HEAD returns HTTP 200 and a GET returns 200 with title '국회도서관 OpenAPI 활용가이드'. Reproduced on two attempts.",
+  "note": "URL is unchanged and the site is healthy — the original probe failure was transient."
+ },
+ {
+  "id": "nh-dev",
+  "status": "alive_at_new_url",
+  "working_url": "https://nhfintech.nonghyup.com/",
+  "evidence": "developers.nonghyup.com resolves to 103.244.108.149 but TCP connect to 443 times out on 3 attempts from Korea and WebFetch from US gets ECONNREFUSED. https://nhfintech.nonghyup.com/ returns HTTP 200 with title 'NH오픈플랫폼'.",
+  "note": "The developer-center host is down but the NH오픈플랫폼 service itself is served from nhfintech.nonghyup.com."
+ },
+ {
+  "id": "nsdi",
+  "status": "moved_or_merged",
+  "working_url": "https://api.vworld.kr",
+  "evidence": "openapi.nsdi.go.kr returns NXDOMAIN on local, 8.8.8.8 and 1.1.1.1. Public announcements state the 국가공간정보포털 was discontinued and its services integrated into V-World; file datasets moved to the V-World open market and surviving Open APIs were transferred to V-World. https://api.vworld.kr returns 200 with title '공간정보 오픈플랫폼'.",
+  "note": "Some NSDI Open APIs were retired outright rather than migrated, so per-API remapping to V-World is required."
+ },
+ {
+  "id": "nsdi-portal",
+  "status": "moved_or_merged",
+  "working_url": "https://www.vworld.kr",
+  "evidence": "www.nsdi.go.kr and nsdi.go.kr both return NXDOMAIN on all three resolvers; the candidate replacement domain nsdi.kr is also NXDOMAIN. https://www.vworld.kr returns HTTP 200 with title '브이월드'.",
+  "note": "Entire nsdi.go.kr zone is gone; the portal now lives at vworld.kr — note that the widely cited 'nsdi.kr' successor address does not actually resolve."
+ },
+ {
+  "id": "onbid",
+  "status": "alive_at_new_url",
+  "working_url": "https://www.onbid.co.kr/",
+  "evidence": "onbid.co.kr apex resolves to 59.186.127.193 but no HTTP response (code 000); www.onbid.co.kr resolves to a different IP 61.108.83.195 and returns HTTP 200 with title '온비드'.",
+  "note": "Apex host is not serving HTTP — the www form is required."
+ },
+ {
+  "id": "opinet",
+  "status": "alive_at_new_url",
+  "working_url": "https://www.opinet.co.kr/user/main/mainView.do",
+  "evidence": "opinet.co.kr apex has no A record on any of the three resolvers. https://www.opinet.co.kr returns 405 to HEAD but a GET to /user/main/mainView.do returns HTTP 200 with title '싼 주유소 찾기 오피넷'.",
+  "note": "Apex does not exist in DNS and the server rejects HEAD requests, so probes must use GET against the www host."
+ },
+ {
+  "id": "reb",
+  "status": "alive_at_new_url",
+  "working_url": "https://www.reb.or.kr/r-one/main.do",
+  "evidence": "reb.or.kr apex has no A record; www.reb.or.kr returns 403 to HEAD but a GET to /r-one/main.do returns HTTP 200 (109KB) after redirecting to /r-one/portal/main/indexPage.do. The legacy r-one.co.kr domain resolves but does not complete TLS.",
+  "note": "R-ONE is now hosted under www.reb.or.kr/r-one/; the apex is absent from DNS and the server 403s HEAD requests."
+ },
+ {
+  "id": "smartfarm",
+  "status": "temporarily_down",
+  "working_url": "https://www.smartfarmkorea.net/main.do",
+  "evidence": "data.smartfarmkorea.net returns HTTP 503 with a Korean error page reading '연결 오류가 발생했습니다. 잠시 후 다시 시도 부탁드립니다. ※ 오류가 지속될 경우, 서버 점검중일 수 있습니다.' The main host www.smartfarmkorea.net returns HTTP 200.",
+  "note": "Only the data 데이터마트 subdomain is failing; the application server behind it is returning a maintenance-style 503 while the main 스마트팜코리아 site is up."
+ }
+]

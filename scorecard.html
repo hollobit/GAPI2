@@ -1,0 +1,269 @@
+<title>개선 스코어카드 — 2026-04 기준선 4대 분석 축 재평가 | K-GAPI Δ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="2026-04 K-GAPI 기준선의 개발자 불만 Top10, 국제 비교 벤치마크, AI 적합성 글로벌 비교, API 품질이 2026-08 현재 얼마나 개선되었는지 실측 기반으로 재평가한 스코어카드.">
+<meta property="og:title" content="개선 스코어카드 — 2026-04 기준선 4대 분석 축 재평가">
+<meta property="og:description" content="개발자 불만 Top10 중 완전 개선 1건. 국제 순위 9개국 중 9위 그대로. AI 적합성 2.83→3.22/14. 18개 포털 중 10개는 실측에서 하락.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hollobit.github.io/GAPI2/scorecard.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+<style>
+:root{
+  --bg:#f6f7f9;
+  --bg-elevated:#ffffff;
+  --text:#1b2430;
+  --text-muted:#5b6572;
+  --border:#e2e5ea;
+  --accent:#0f6e5e;
+  --accent-strong:#0a4f43;
+  --accent-soft:#e5f3ef;
+  --warn:#b3452f;
+  --warn-soft:#f9ece8;
+  --mid:#9a6b15;
+  --mid-soft:#f7efdd;
+  --link:#0b5fae;
+  --code-bg:#eef1f4;
+  --disabled-bg:#eceef1;
+  --disabled-text:#8a92a0;
+  --shadow: 0 1px 2px rgba(20,30,40,0.04), 0 8px 24px rgba(20,30,40,0.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12161c;
+    --bg-elevated:#1a2028;
+    --text:#e7ebf0;
+    --text-muted:#9aa5b1;
+    --border:#2a323d;
+    --accent:#3fcfab;
+    --accent-strong:#7fe3c8;
+    --accent-soft:#173330;
+    --warn:#e07856;
+    --warn-soft:#3a231c;
+    --mid:#d9a84e;
+    --mid-soft:#33290f;
+    --link:#6fb2f2;
+    --code-bg:#222a34;
+    --disabled-bg:#1c222b;
+    --disabled-text:#616a76;
+    --shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161c;
+  --bg-elevated:#1a2028;
+  --text:#e7ebf0;
+  --text-muted:#9aa5b1;
+  --border:#2a323d;
+  --accent:#3fcfab;
+  --accent-strong:#7fe3c8;
+  --accent-soft:#173330;
+  --warn:#e07856;
+  --warn-soft:#3a231c;
+  --mid:#d9a84e;
+  --mid-soft:#33290f;
+  --link:#6fb2f2;
+  --code-bg:#222a34;
+  --disabled-bg:#1c222b;
+  --disabled-text:#616a76;
+  --shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35);
+}
+:root[data-theme="light"]{
+  --bg:#f6f7f9;
+  --bg-elevated:#ffffff;
+  --text:#1b2430;
+  --text-muted:#5b6572;
+  --border:#e2e5ea;
+  --accent:#0f6e5e;
+  --accent-strong:#0a4f43;
+  --accent-soft:#e5f3ef;
+  --warn:#b3452f;
+  --warn-soft:#f9ece8;
+  --mid:#9a6b15;
+  --mid-soft:#f7efdd;
+  --link:#0b5fae;
+  --code-bg:#eef1f4;
+  --disabled-bg:#eceef1;
+  --disabled-text:#8a92a0;
+  --shadow: 0 1px 2px rgba(20,30,40,0.04), 0 8px 24px rgba(20,30,40,0.06);
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.7;font-size:16px;word-break:keep-all;overflow-wrap:anywhere;}
+.page{max-width:820px;margin:0 auto;padding:2.5rem 1.25rem 5rem;}
+.nav{display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem;font-size:.95rem;}
+.nav a{color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:.35rem .75rem;border-radius:999px;background:var(--bg-elevated);transition:color .15s ease, border-color .15s ease;}
+.nav a:hover{color:var(--accent-strong);border-color:var(--accent);}
+.nav a[aria-current="page"]{color:var(--accent-strong);border-color:var(--accent);font-weight:700;text-decoration:underline;}
+@media (max-width:640px){.nav{flex-wrap:wrap;}}
+header.hero{margin-bottom:2rem;}
+h1{font-size:1.85rem;line-height:1.35;margin:0 0 .6rem;letter-spacing:-.01em;}
+.subtitle{color:var(--text-muted);font-size:1.02rem;margin:0 0 1.4rem;}
+.lede{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;box-shadow:var(--shadow);color:var(--text);font-size:.98rem;}
+.lede strong{color:var(--accent-strong);}
+article h2{font-size:1.3rem;margin:2.4rem 0 .8rem;padding-top:.4rem;color:var(--accent-strong);}
+article h3{font-size:1.08rem;margin:1.7rem 0 .6rem;}
+article p{margin:.7rem 0;}
+article ul{padding-left:1.3rem;margin:.7rem 0;}
+article li{margin:.35rem 0;}
+article code{background:var(--code-bg);padding:.08rem .38rem;border-radius:5px;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;font-size:.87em;}
+article a{color:var(--link);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--link) 40%, transparent);text-underline-offset:2px;}
+article a:hover{text-decoration-color:var(--link);}
+article strong{color:var(--text);}
+article blockquote{margin:1rem 0;padding:.85rem 1.1rem;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;font-size:.94rem;color:var(--text);}
+.table-wrap{overflow-x:auto;margin:1rem 0;border:1px solid var(--border);border-radius:10px;}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:480px;}
+th,td{text-align:left;padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;}
+thead th{background:var(--code-bg);font-weight:700;white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin:1.4rem 0;}
+.kpi{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;box-shadow:var(--shadow);}
+.kpi .num{font-size:1.45rem;font-weight:800;letter-spacing:-.01em;line-height:1.25;}
+.kpi .num.bad{color:var(--warn);}
+.kpi .num.good{color:var(--accent-strong);}
+.kpi .num.mid{color:var(--mid);}
+.kpi .lbl{font-size:.8rem;color:var(--text-muted);margin-top:.15rem;line-height:1.45;}
+.v{display:inline-block;font-size:.74rem;font-weight:700;padding:.1rem .55rem;border-radius:999px;white-space:nowrap;}
+.v-good{background:var(--accent-soft);color:var(--accent-strong);border:1px solid var(--accent);}
+.v-mid{background:var(--mid-soft);color:var(--mid);border:1px solid var(--mid);}
+.v-bad{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);}
+.v-na{background:var(--disabled-bg);color:var(--disabled-text);border:1px solid var(--border);}
+.bars{margin:1rem 0;}
+.bar-row{display:grid;grid-template-columns:11.5rem 1fr 6.5rem;gap:.6rem;align-items:center;margin:.45rem 0;font-size:.87rem;}
+@media (max-width:640px){.bar-row{grid-template-columns:8rem 1fr 5rem;font-size:.8rem;}}
+.bar-track{background:var(--code-bg);border-radius:6px;height:1.05rem;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:6px;background:var(--accent);min-width:2px;}
+.bar-fill.bad{background:var(--warn);}
+.bar-fill.mid{background:var(--mid);}
+.bar-fill.dim{opacity:.45;}
+.bar-val{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-muted);white-space:nowrap;}
+.bar-label{color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+section.note{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;margin:1.75rem 0;box-shadow:var(--shadow);}
+section.note h2{font-size:1rem;margin:0 0 .6rem;color:var(--text);padding-top:0;}
+section.note ul{margin:.3rem 0 0;padding-left:1.2rem;color:var(--text-muted);font-size:.92rem;}
+section.note li{margin:.35rem 0;}
+footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:.85rem;}
+</style>
+<div class="page">
+  <nav class="nav" aria-label="사이트 내비게이션">
+    <a href="index.html">홈</a>
+    <a href="dashboard.html">대시보드</a>
+    <a href="journey.html">이용 절차</a>
+    <a href="scorecard.html" aria-current="page">스코어카드</a>
+    <a href="ecosystem.html">생태계</a>
+    <a href="guideline.html">가이드라인</a>
+    <a href="calculator.html">ID 계산기</a>
+    <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
+  </nav>
+
+  <header class="hero">
+    <h1>개선 스코어카드 — 기준선 4대 분석 축 재평가</h1>
+    <p class="subtitle">2026-04 K-GAPI 기준선이 지적한 네 가지 핵심 분석(개발자 불만 Top10 · 국제 비교 벤치마크 · AI 적합성 글로벌 비교 · API 품질)이 2026-08 현재 얼마나 개선되었는지 라이브 실측으로 재평가합니다.</p>
+  </header>
+
+  <section class="lede">
+    <p>4개월간 <strong>실질적으로 개선된 것은 사실상 하나 — "오류에도 항상 HTTP 200" 문제</strong>(현재 400 반환, 8/18 포털 개선)뿐입니다. 개발자 불만 Top10은 완전 개선 1건·부분 2건·미개선 6건, 국제 순위는 <strong>9개국 중 9위 그대로</strong>, AI 적합성 평균은 2.83→3.22/14로 소폭 상승했지만 차하위국(일본 8.0)의 절반에도 못 미치며, 18개 포털 실측 등급은 <strong>상승 5 &lt; 하락 10</strong>입니다.</p>
+  </section>
+
+  <article>
+    <div class="kpis" aria-label="핵심 지표 요약">
+      <div class="kpi"><div class="num good">1 / 10</div><div class="lbl">개발자 불만 Top10 중 완전 개선 (부분 2 · 미개선 6 · 측정불가 1)</div></div>
+      <div class="kpi"><div class="num bad">9위 / 9개국</div><div class="lbl">사용자중심성·AI 적합성 국제 순위 — 변동 없음</div></div>
+      <div class="kpi"><div class="num mid">2.83 → 3.22</div><div class="lbl">18포털 AI 적합성 평균 (14점 만점) — 게이트웨이 효과가 견인</div></div>
+      <div class="kpi"><div class="num bad">▲5 ▼10 =3</div><div class="lbl">18개 포털 실측 종합 등급 이동 방향</div></div>
+    </div>
+
+    <h2 id="top10">1. 개발자 불만 Top10 — 1개 해소, 2개 부분, 6개 그대로</h2>
+    <p>기준선은 개발자 블로그·커뮤니티·이슈 트래커 분석으로 불만 22건을 수집하고 상위 10건을 선정했습니다. 각 항목의 2026-08 판정:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>2026-04 불만 (심각도)</th><th>2026-08 판정</th><th>근거</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>serviceKey 이중 인코딩 <strong>(critical)</strong></td><td><span class="v v-bad">미개선</span></td><td>키는 여전히 URL 쿼리 파라미터, 인코딩/디코딩 키 이원 체계 유지 (doc)</td></tr>
+          <tr><td>2</td><td>CORS 미지원 → 프록시 서버 강제 <strong>(critical)</strong></td><td><span class="v v-bad">미개선</span></td><td>라이브 실측: data.go.kr CORS 헤더 없음 · 18개 중 13개 미개선</td></tr>
+          <tr><td>3</td><td>오류도 HTTP 200 반환 <strong>(critical)</strong></td><td><span class="v v-good">개선</span></td><td>라이브 실측: 잘못된 키에 400 반환 · <strong>8/18 포털 개선</strong> — 유일한 구조적 개선</td></tr>
+          <tr><td>4</td><td>XML 강제·JSON 부분 지원 (high)</td><td><span class="v v-mid">부분</span></td><td>게이트웨이 JSON 응답 실측 확인(Content-Type 정상), 단 기본값은 여전히 XML</td></tr>
+          <tr><td>5</td><td>API 문서가 HWP 파일 (high)</td><td><span class="v v-bad">미개선</span></td><td>doc_quality 18/18 미개선 — 표준 스펙 병행 게시 없음</td></tr>
+          <tr><td>6</td><td>173개 포털 파편화·계정 난립 (high)</td><td><span class="v v-bad">미개선</span></td><td>포털 통합·SSO 움직임 없음 (<a href="calculator.html">ID 계산기</a> 데이터 유효)</td></tr>
+          <tr><td>7</td><td>키 발급 후 1~2시간 대기 (medium)</td><td><span class="v v-mid">부분</span></td><td>data.go.kr 자동 즉시 승인 판정(doc 기반) · 활성화 지연 자체는 미검증</td></tr>
+          <tr><td>8</td><td>해외 IP·클라우드 IP 차단 (high)</td><td><span class="v v-na">측정불가</span></td><td>국내 측정 환경에서 재현 불가 — 개선 근거도 확인되지 않음</td></tr>
+          <tr><td>9</td><td>무공지 점검·다운타임 (high)</td><td><span class="v v-bad">미개선</span></td><td>상태 페이지·공지 API 부재 그대로</td></tr>
+          <tr><td>10</td><td>API Key 2년 만료·갱신 프로세스 부재 (high)</td><td><span class="v v-bad">미개선</span></td><td>키 회전(rotation) API 여전히 없음</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <blockquote>critical 4건(확장 목록 포함) 중 해소된 것은 #3 하나입니다. 확장 목록의 <strong>OpenAPI 스펙 미제공(critical)도 미개선</strong> — 라이브 탐색에서 표준 스키마 문서를 찾지 못했고(5/18만 개선), 이는 <a href="journey.html">이용 절차 분석</a>의 토큰 비용 문제로 직결됩니다.</blockquote>
+
+    <h2 id="benchmark">2. 국제 비교 벤치마크 — 9개국 중 9위, 변동 없음</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>사용자중심성 UF (14점)</th><th>AI 적합성 (14점)</th><th>정부 공식 MCP</th></tr></thead>
+        <tbody>
+          <tr><td>🇰🇷 한국 (2026-04 기준선, 173포털 평균)</td><td>5.3 (D)</td><td>2.7 (E)</td><td>없음</td></tr>
+          <tr><td><strong>🇰🇷 한국 (2026-08 재측정, 핵심 18포털)</strong></td><td><strong>6.44 (C−)</strong></td><td><strong>3.22 (D−)</strong></td><td><strong>중앙 없음 · 서울시 파일럿 1호</strong></td></tr>
+          <tr><td>차하위국 (기준선)</td><td>🇨🇦 캐나다 7.56</td><td>🇯🇵 일본 8.0</td><td>—</td></tr>
+          <tr><td>선두그룹 (기준선)</td><td>🇺🇸 12.18 · 🇪🇺 11.82 · 🇫🇷 11.62</td><td>🇸🇬 12.45 · 🇺🇸 12.27 · 🇫🇷 12.0</td><td>🇺🇸 🇫🇷 🇬🇧 운영 중</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bars" aria-label="AI 적합성 국가 비교 (14점 만점)">
+      <div class="bar-row"><span class="bar-label">🇸🇬 싱가포르</span><span class="bar-track"><span class="bar-fill dim" style="width:89%"></span></span><span class="bar-val">12.45</span></div>
+      <div class="bar-row"><span class="bar-label">🇺🇸 미국</span><span class="bar-track"><span class="bar-fill dim" style="width:88%"></span></span><span class="bar-val">12.27</span></div>
+      <div class="bar-row"><span class="bar-label">🇫🇷 프랑스</span><span class="bar-track"><span class="bar-fill dim" style="width:86%"></span></span><span class="bar-val">12.0</span></div>
+      <div class="bar-row"><span class="bar-label">🇯🇵 일본 (8위)</span><span class="bar-track"><span class="bar-fill dim" style="width:57%"></span></span><span class="bar-val">8.0</span></div>
+      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-04</span><span class="bar-track"><span class="bar-fill bad" style="width:19%"></span></span><span class="bar-val">2.7</span></div>
+      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-08</span><span class="bar-track"><span class="bar-fill mid" style="width:23%"></span></span><span class="bar-val">3.22</span></div>
+    </div>
+    <ul>
+      <li>기준선의 "최대 격차 항목"이었던 <strong>HTTP 상태코드 의미론(한국 0.0 vs 해외 평균 1.80)</strong>은 이번에 data.go.kr가 2.0을 달성해 격차 축소를 견인했습니다.</li>
+      <li>반면 <strong>RateLimit 헤더(0/18) · OpenAPI 스펙 · 헤더 인증(0/18)</strong>은 격차가 그대로입니다.</li>
+      <li>주의: 해외 8개국은 이번 주기에 재측정하지 않아 2026-04 값과의 비교이며, 한국도 기준선(173포털)과 이번(핵심 18포털)의 모집단이 달라 절대값보다 <strong>순위·격차 해석이 안전</strong>합니다.</li>
+    </ul>
+
+    <h2 id="ai">3. AI 적합성 — data.go.kr 3→5점(D 유지), 평균 +0.39</h2>
+    <ul>
+      <li><strong>data.go.kr: 3→5 (D→D)</strong> — http_semantics +2, json_native +1이 견인, programmatic_auth(쿼리 파라미터 키) 재채점 −1.</li>
+      <li><strong>18포털 평균: 2.83→3.22</strong> — 개선분 대부분이 <code>apis.data.go.kr</code> 게이트웨이 공유 포털에 집중된 <strong>게이트웨이 효과</strong>. 설정 한 번이 8개 포털의 http_semantics를 동시 개선 → 중앙 게이트웨이 개선의 레버리지가 크다는 실증.</li>
+      <li><strong>정부 공식 MCP — 중앙정부는 여전히 부재, 다만 서울시가 한국 최초 공공데이터 공식 MCP 파일럿을 개시</strong>(2026-07-12 발표, 선착순 100명·카카오 PlayMCP 호스팅). data.go.kr 등 측정 대상 18개 포털 기준으로는 미개선이 유효하며, 커뮤니티 MCP는 6종→79종으로 폭증 — 상세는 <a href="ecosystem.html">생태계</a> 페이지. 프랑스·미국·영국(중앙정부 운영형)과의 격차는 지속.</li>
+      <li>신규 측정 지표(llms.txt · tool_native · data_product · unified_identity)는 전부 바닥권 — llms.txt는 측정 가능한 15개 포털 모두 미발견.</li>
+    </ul>
+    <blockquote><strong>2026-08-03 신규 관찰 — "AI 기반 공공데이터포털" 시범 운영 개시.</strong> 브라우저 실측 중 data.go.kr 검색창 기본 동선이 <strong>AI 대화형 검색</strong>(파일데이터/오픈API 구분 추천 + 분석 정보)으로 바뀐 것을 확인했습니다. 사람의 발견 경험은 개선 방향이지만, 답변 생성 27.3초·채팅 UI 전용(에이전트용 표준 API 미공개)이라 <strong>AI 적합성 지표 자체는 아직 움직이지 않습니다</strong>. 상세는 <a href="journey.html#browser">이용 절차 §3-1</a>.</blockquote>
+
+    <h2 id="quality">4. API 품질 (18개 포털) — 상승 5, 하락 10, 유지 3</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>방향</th><th>포털 (AI 적합성 점수/등급 이동)</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td><span class="v v-good">▲ 상승 5</span></td><td><strong>기상청 API허브 3→6 (D→C 승급)</strong> · TAGO 대중교통 2→5 (E→D) · 경기데이터드림 3→5 · data.go.kr 3→5 · DART(UF 상승)</td><td>기상청이 이번 주기 최대 개선 (+3)</td></tr>
+          <tr><td><span class="v v-bad">▼ 하락 10</span></td><td><strong>생활안전지도 D→E · 서울 열린데이터광장 3→1 (D→E)</strong> · 건강보험 건강iN (UF 4→2) · NEIS · KOSIS · ECOS · 열린국회정보 · 국가법령정보센터 · KIPRIS · 한국도로공사</td><td>실측에서 오류 처리·포맷 문제 노출</td></tr>
+          <tr><td><span class="v v-na">= 유지 3</span></td><td>KRX · LOCALDATA · 수출입은행</td><td>LOCALDATA는 E등급 그대로</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>지표별 개선 현황 (18개 포털)</h3>
+    <div class="bars" aria-label="지표별 개선 포털 수">
+      <div class="bar-row"><span class="bar-label">http_semantics (200 문제)</span><span class="bar-track"><span class="bar-fill" style="width:44%"></span></span><span class="bar-val">8/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">json_native</span><span class="bar-track"><span class="bar-fill" style="width:50%"></span></span><span class="bar-val">9/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">machine_schema (OpenAPI)</span><span class="bar-track"><span class="bar-fill mid" style="width:28%"></span></span><span class="bar-val">5/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">cors_https</span><span class="bar-track"><span class="bar-fill mid" style="width:17%"></span></span><span class="bar-val">3/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">rate_limit_transparency</span><span class="bar-track"><span class="bar-fill bad" style="width:2%"></span></span><span class="bar-val">0/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">doc_quality (HWP 문서)</span><span class="bar-track"><span class="bar-fill bad" style="width:2%"></span></span><span class="bar-val">0/18 개선</span></div>
+      <div class="bar-row"><span class="bar-label">정부 공식 MCP</span><span class="bar-track"><span class="bar-fill bad" style="width:2%"></span></span><span class="bar-val">0 (부재)</span></div>
+    </div>
+    <blockquote><strong>패턴이 뚜렷합니다.</strong> 게이트웨이 설정 수준에서 일괄 적용 가능한 항목(HTTP 상태코드, JSON)만 움직였고, 포털별 개별 대응이 필요한 항목(HWP 문서, OpenAPI 스펙, SDK)은 0~5/18로 정체 — 영국 GDS 모델 같은 <strong>표준 의무화 없이는 움직이지 않는다</strong>는 증거입니다.</blockquote>
+  </article>
+
+  <section class="note">
+    <h2>방법론 · 해석 주의</h2>
+    <ul>
+      <li><strong>"후퇴" 판정의 상당수는 측정 교정 효과</strong> — UF 평균 하락(7.61→6.44)과 data_format(10건)·error_handling(11건)·programmatic_auth(17건)의 후퇴 판정 다수는 실제 서비스 악화가 아니라, 2026-04의 문서 기반 낙관 점수가 2026-08 라이브 실측으로 교정된 결과입니다(동일 사실이 재채점된 사례 포함). "나빠졌다"보다 <strong>"원래 이만큼 나빴다"</strong>에 가깝습니다. 반대로 http_semantics 개선은 재현 가능한 라이브 증거가 있는 진짜 개선입니다.</li>
+      <li>모든 라이브 판정의 증거(curl·응답 샘플)는 <a href="dashboard.html">대시보드</a>에서 지표별로 링크됩니다.</li>
+      <li>불만 Top10의 원천은 2026-04 기준선의 개발자 페인포인트 조사(블로그·커뮤니티·이슈 트래커, 출처 11개)입니다. doc 표기는 문서·설정 기반 판정, 그 외는 라이브 실측입니다.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>전종홍 (hollobit) · 재측정일 2026-08-04 · <a href="index.html">K-GAPI Δ 홈</a> · <a href="dashboard.html">대시보드</a> · <a href="journey.html">이용 절차</a> · <a href="ecosystem.html">생태계</a></p>
+    <p class="copyright">Copyright (c) 2026, Analyzed by Jonghong Jeon, hollobit@etri.re.kr</p>
+  </footer>
+</div>

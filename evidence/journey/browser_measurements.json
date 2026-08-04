@@ -1,0 +1,27 @@
+{
+  "measured_at": "2026-08-04T09:00+09:00",
+  "method": "Claude-in-Chrome 실브라우저 자동화. performance.getEntriesByType('navigation'|'resource') 합산. transferSize는 cross-origin Timing-Allow-Origin 미설정 리소스에서 0으로 집계될 수 있어 하한값.",
+  "steps": [
+    {
+      "step": "메인 페이지 로드 (index.do)",
+      "requests": 81,
+      "transfer_kb": 4975,
+      "dom_nodes": 897,
+      "rendered_html_kb": 185,
+      "load_ms": 2344,
+      "note": "curl 원문 HTML 169KB 대비 전체 전송량 약 30배. 첫 방문 시 공지 팝업이 떠 입력을 가로챔(추가 액션 1회 강제)."
+    },
+    {
+      "step": "검색 실행 → AI 대화형 검색 (aiAssistant.do)",
+      "requests": 45,
+      "transfer_kb": 3152,
+      "dom_nodes": 1211,
+      "rendered_html_kb": 234,
+      "ai_answer_xhr_ms": 27331,
+      "actions_counted": ["팝업 닫기 클릭", "검색창 클릭", "키워드 입력", "Enter"],
+      "note": "2026-08-03부터 검색창 기본 동선이 AI 대화형 검색으로 라우팅. 파일데이터/오픈API 구분 추천 + 분석정보 + 추천이유 제공. AI 답변 XHR 27.3초 소요."
+    }
+  ],
+  "observed_notice": "AI 기반 공공데이터포털 서비스 시범 운영 개시 (시범 기간 2026-08-03(월)~, 별도 안내 시까지). 주요 개선: (1) AI 대화형 검색 서비스 (2) 포털 사용자 환경(UI/UX) 전면 개편. 공지: 인증서 및 정부통합인증 로그인 안정화 작업 중, ID/비밀번호 로그인 및 비회원 기능은 정상.",
+  "limitations": "API 상세 페이지·활용신청·로그인 이후 구간은 측정 중 브라우저 확장 연결 종료로 이번 실측에서 제외(HTML 스냅샷 실측치로 대체). 활용신청은 계정 상태를 변경하므로 제출까지는 수행하지 않는 방침."
+}

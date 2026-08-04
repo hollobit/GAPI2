@@ -761,14 +761,14 @@ td{font-variant-numeric:tabular-nums;}
     <p class="subtitle">스코어카드가 의미하는 바, 왜 이 문제들을 해결해야 하는지, AI/Agent 준비도 18개 지표의 뜻과 측정 방법을 설명합니다.</p>
   </header>
   <article>
-    <h2>1. 대시보드의 구조 — 3개 층위</h2>
+    <h2 id="layers">1. 대시보드의 구조 — 3개 층위</h2>
     <ul>
       <li><strong>Layer 1 · 문제 개선 스코어카드</strong> — 2026-04 기준선이 지적한 7대 구조 문제가 지금 얼마나 해결됐는지. 카드의 배지(개선/부분/미개선)는 <strong>전수 215개 관점의 롤업</strong>이며, 대표 포털만 개선된 경우 "부분"으로 표기합니다(예: 항상 200 문제는 게이트웨이 8/172만 개선 → 부분).</li>
       <li><strong>Layer 2 · 등급 이동</strong> — 포털별 사용자중심성(UF)·AI적합성(AI) 합산 점수의 2026-04→2026-08 이동. 점선+"부분측정" 배지는 일부 지표가 측정불가라 잠정치라는 뜻이며, 하락이 실제 퇴보가 아니라 미측정 때문일 수 있음을 나타냅니다.</li>
       <li><strong>Layer 3 · AI/Agent 준비도 히트맵</strong> — 215개 포털 × 18개 지표. 셀 색은 0(빨강)~2(초록), 회색은 측정불가. 행 클릭 시 지표별 판정·측정방식·증거 링크가 펼쳐집니다.</li>
     </ul>
 
-    <h2>2. 7대 문제 — 무엇이고, 왜 해결해야 하나</h2>
+    <h2 id="problems">2. 7대 문제 — 무엇이고, 왜 해결해야 하나</h2>
     <div class="table-wrap"><table>
       <thead><tr><th>문제</th><th>왜 해결해야 하나</th><th>2026-08 판정</th></tr></thead>
       <tbody><tr><td><strong>항상 200 반환</strong></td><td>오류에도 성공 코드를 주면 자동화가 실패를 감지 못 한다. 모든 자동 복구의 전제.</td><td>현재 부분 — data.go.kr 게이트웨이는 400 반환으로 개선됐으나 전수 기준 8/172뿐</td></tr>
@@ -781,7 +781,7 @@ td{font-variant-numeric:tabular-nums;}
     </table></div>
     <blockquote>공통점: 일곱 문제 모두 <strong>사람은 우회할 수 있지만 기계(에이전트)는 우회하지 못하는</strong> 종류입니다. 사람은 200 속 오류 메시지를 읽고, HWP를 열고, 전화로 문의합니다. 에이전트는 그 각각에서 멈추거나 폭주합니다 — 그래서 이 문제들이 "AI 시대 준비도"의 척도가 됩니다.</blockquote>
 
-    <h2>3. AI/Agent 준비도 18개 지표 — 의미·점수 기준·측정 방법</h2>
+    <h2 id="indicators">3. AI/Agent 준비도 18개 지표 — 의미·점수 기준·측정 방법</h2>
     <h3>두 개의 합산 점수 — UF와 AI는 무엇을 재는가</h3>
     <ul>
       <li><strong>사용자중심성 UF (0~14점)</strong> — <em>사람 개발자</em>가 겪는 마찰의 총량. 가입 용이성 → 승인 속도 → 기본 포맷 → 문서 품질 → 호출 한도 → 오류 처리 → SDK·샘플, 즉 "가입부터 첫 성공 호출까지"의 7단계를 각 0~2점으로 평가해 합산합니다. 한국 전수 평균 <strong>5.74(D)</strong>.</li>
@@ -791,27 +791,27 @@ td{font-variant-numeric:tabular-nums;}
     </ul>
     <div class="table-wrap"><table>
       <thead><tr><th>지표</th><th>왜 중요한가</th><th>측정 방법</th><th>0점</th><th>1점</th><th>2점</th></tr></thead>
-      <tbody><tr><td><strong>HTTP 상태코드</strong><br><code style="font-size:.72em">http_semantics</code></td><td>오류가 나도 HTTP 200/201을 반환하면 기계는 실패를 알 수 없다. 에이전트 자동 재시도·복구의 전제 조건.</td><td>잘못된 키로 실제 호출해 상태코드 관찰 (live)</td><td>200에 오류 본문</td><td>일부 4xx</td><td>일관된 4xx</td></tr>
-<tr><td><strong>JSON 네이티브</strong><br><code style="font-size:.72em">json_native</code></td><td>XML 전용이면 모든 클라이언트가 변환 계층을 얹어야 한다. LLM·에이전트 도구는 JSON을 기본 가정.</td><td>실호출 Content-Type·본문 확인 (live/doc)</td><td>XML만</td><td>JSON 선택</td><td>JSON 기본</td></tr>
-<tr><td><strong>오류 자기설명</strong><br><code style="font-size:.72em">error_self_desc</code></td><td>오류 본문이 기계가독이어야 에이전트가 원인(키 오류 vs 파라미터 오류)을 구분해 스스로 고친다.</td><td>오류 응답 본문 구조 분석 (live)</td><td>불투명/HTML</td><td>자체 구조화</td><td>RFC 7807</td></tr>
-<tr><td><strong>기계가독 스키마</strong><br><code style="font-size:.72em">machine_schema</code></td><td>OpenAPI 명세가 있으면 에이전트가 문서를 읽지 않고 스펙 1회 취득으로 호출법을 안다 — 토큰 비용 수십 배 차이.</td><td>관용 경로(/openapi.json 등) fetch + 문서 확인 (live/doc)</td><td>없음/HWP</td><td>부분(내부 명세)</td><td>공식 OpenAPI 3.x</td></tr>
-<tr><td><strong>프로그램 인증</strong><br><code style="font-size:.72em">programmatic_auth</code></td><td>URL 쿼리의 키는 로그·Referer로 유출되고 회전이 어렵다. 헤더/OAuth2는 자동화·보안의 표준.</td><td>문서 + 실호출 (doc/live)</td><td>쿼리 키/세션</td><td>—</td><td>헤더 키/OAuth2/무인증</td></tr>
-<tr><td><strong>한도 투명성</strong><br><code style="font-size:.72em">rate_limit_transparency</code></td><td>남은 호출량을 헤더로 알려줘야 에이전트가 한도 초과 전에 속도를 조절한다.</td><td>응답 헤더 검사 (live)</td><td>헤더 없음</td><td>문서 명시</td><td>RateLimit 헤더</td></tr>
-<tr><td><strong>CORS·HTTPS</strong><br><code style="font-size:.72em">cors_https</code></td><td>CORS가 없으면 브라우저 앱은 프록시 서버를 강제로 만들어야 한다.</td><td>Origin 헤더 부착 실호출 (live)</td><td>둘 다 없음</td><td>하나만</td><td>CORS+HTTPS</td></tr>
-<tr><td><strong>가입 용이성</strong><br><code style="font-size:.72em">signup_ease</code></td><td>실명 본인인증은 에이전트가 통과할 수 없는 하드 블록이다.</td><td>가입 절차 문서 (doc)</td><td>인증서/법인</td><td>휴대폰</td><td>이메일/무가입</td></tr>
-<tr><td><strong>승인 속도</strong><br><code style="font-size:.72em">approval_speed</code></td><td>수동 심의는 예측 불가능한 대기를 만든다 — 자동화 계획 수립 불가.</td><td>절차 문서 (doc)</td><td>수동 심의</td><td>자동 지연</td><td>즉시/불요</td></tr>
-<tr><td><strong>기본 포맷</strong><br><code style="font-size:.72em">data_format</code></td><td>기본값이 XML이면 모든 신규 사용자가 같은 전환 비용을 반복 지불한다.</td><td>문서+실호출 (doc/live)</td><td>파일/기타</td><td>XML(JSON 선택)</td><td>JSON 기본</td></tr>
-<tr><td><strong>문서 품질</strong><br><code style="font-size:.72em">doc_quality</code></td><td>HWP 첨부 명세는 사람도 기계도 파싱하기 어렵다.</td><td>문서 형태 심층 평가 (doc)</td><td>HWP/DOC 첨부</td><td>HTML</td><td>인터랙티브(Swagger)</td></tr>
-<tr><td><strong>호출 한도</strong><br><code style="font-size:.72em">rate_limit</code></td><td>일 1,000회로는 실서비스가 불가능해 증량 신청(수동)이 강제된다.</td><td>문서 (doc)</td><td><1,000/일</td><td>≥1,000</td><td>≥10,000/무제한</td></tr>
-<tr><td><strong>오류 처리</strong><br><code style="font-size:.72em">error_handling</code></td><td>같은 실수에 다른 오류가 나오면 학습·자동화가 불가능하다.</td><td>실호출 표본 (live)</td><td>비일관</td><td>부분</td><td>일관</td></tr>
-<tr><td><strong>SDK·샘플</strong><br><code style="font-size:.72em">sdk_samples</code></td><td>공식 SDK 부재는 커뮤니티(비공식)에 품질·보안을 떠넘기는 것.</td><td>저장소 확인 (doc)</td><td>없음</td><td>커뮤니티</td><td>공식</td></tr>
-<tr><td><strong>도구 네이티브(MCP) †</strong><br><code style="font-size:.72em">tool_native</code></td><td>에이전트가 화면이 아닌 도구 호출로 접근하는 시대의 관문. 커뮤니티 79종이 수요를 증명.</td><td>생태계 전수 조사 (doc)</td><td>없음</td><td>커뮤니티 래퍼</td><td>정부 공식</td></tr>
-<tr><td><strong>llms.txt 제공 †</strong><br><code style="font-size:.72em">llms_txt</code></td><td>사이트가 AI에게 자기 구조를 설명하는 사실상 표준. 215개 중 0곳.</td><td>origin fetch + 오탐 수동 검증 (live)</td><td>없음</td><td>—</td><td>유효 파일</td></tr>
-<tr><td><strong>데이터 제품화 †</strong><br><code style="font-size:.72em">data_product</code></td><td>버전·신선도·SLA 메타데이터가 있어야 데이터를 '제품'으로 신뢰하고 쓴다.</td><td>문서 (doc)</td><td>없음</td><td>부분</td><td>버전·신선도·SLA</td></tr>
-<tr><td><strong>통합 계정 †</strong><br><code style="font-size:.72em">unified_identity</code></td><td>215개 포털 중 159개가 별도 가입 — 미국식 단일 키 모델과의 격차 그 자체.</td><td>절차 문서 (doc)</td><td>포털별 가입</td><td>부분 SSO</td><td>단일 정부 ID</td></tr></tbody>
+      <tbody><tr id="ind-http_semantics"><td><strong>HTTP 상태코드</strong><br><code style="font-size:.72em">http_semantics</code></td><td>오류가 나도 HTTP 200/201을 반환하면 기계는 실패를 알 수 없다. 에이전트 자동 재시도·복구의 전제 조건.</td><td>잘못된 키로 실제 호출해 상태코드 관찰 (live)</td><td>200에 오류 본문</td><td>일부 4xx</td><td>일관된 4xx</td></tr>
+<tr id="ind-json_native"><td><strong>JSON 네이티브</strong><br><code style="font-size:.72em">json_native</code></td><td>XML 전용이면 모든 클라이언트가 변환 계층을 얹어야 한다. LLM·에이전트 도구는 JSON을 기본 가정.</td><td>실호출 Content-Type·본문 확인 (live/doc)</td><td>XML만</td><td>JSON 선택</td><td>JSON 기본</td></tr>
+<tr id="ind-error_self_desc"><td><strong>오류 자기설명</strong><br><code style="font-size:.72em">error_self_desc</code></td><td>오류 본문이 기계가독이어야 에이전트가 원인(키 오류 vs 파라미터 오류)을 구분해 스스로 고친다.</td><td>오류 응답 본문 구조 분석 (live)</td><td>불투명/HTML</td><td>자체 구조화</td><td>RFC 7807</td></tr>
+<tr id="ind-machine_schema"><td><strong>기계가독 스키마</strong><br><code style="font-size:.72em">machine_schema</code></td><td>OpenAPI 명세가 있으면 에이전트가 문서를 읽지 않고 스펙 1회 취득으로 호출법을 안다 — 토큰 비용 수십 배 차이.</td><td>관용 경로(/openapi.json 등) fetch + 문서 확인 (live/doc)</td><td>없음/HWP</td><td>부분(내부 명세)</td><td>공식 OpenAPI 3.x</td></tr>
+<tr id="ind-programmatic_auth"><td><strong>프로그램 인증</strong><br><code style="font-size:.72em">programmatic_auth</code></td><td>URL 쿼리의 키는 로그·Referer로 유출되고 회전이 어렵다. 헤더/OAuth2는 자동화·보안의 표준.</td><td>문서 + 실호출 (doc/live)</td><td>쿼리 키/세션</td><td>—</td><td>헤더 키/OAuth2/무인증</td></tr>
+<tr id="ind-rate_limit_transparency"><td><strong>한도 투명성</strong><br><code style="font-size:.72em">rate_limit_transparency</code></td><td>남은 호출량을 헤더로 알려줘야 에이전트가 한도 초과 전에 속도를 조절한다.</td><td>응답 헤더 검사 (live)</td><td>헤더 없음</td><td>문서 명시</td><td>RateLimit 헤더</td></tr>
+<tr id="ind-cors_https"><td><strong>CORS·HTTPS</strong><br><code style="font-size:.72em">cors_https</code></td><td>CORS가 없으면 브라우저 앱은 프록시 서버를 강제로 만들어야 한다.</td><td>Origin 헤더 부착 실호출 (live)</td><td>둘 다 없음</td><td>하나만</td><td>CORS+HTTPS</td></tr>
+<tr id="ind-signup_ease"><td><strong>가입 용이성</strong><br><code style="font-size:.72em">signup_ease</code></td><td>실명 본인인증은 에이전트가 통과할 수 없는 하드 블록이다.</td><td>가입 절차 문서 (doc)</td><td>인증서/법인</td><td>휴대폰</td><td>이메일/무가입</td></tr>
+<tr id="ind-approval_speed"><td><strong>승인 속도</strong><br><code style="font-size:.72em">approval_speed</code></td><td>수동 심의는 예측 불가능한 대기를 만든다 — 자동화 계획 수립 불가.</td><td>절차 문서 (doc)</td><td>수동 심의</td><td>자동 지연</td><td>즉시/불요</td></tr>
+<tr id="ind-data_format"><td><strong>기본 포맷</strong><br><code style="font-size:.72em">data_format</code></td><td>기본값이 XML이면 모든 신규 사용자가 같은 전환 비용을 반복 지불한다.</td><td>문서+실호출 (doc/live)</td><td>파일/기타</td><td>XML(JSON 선택)</td><td>JSON 기본</td></tr>
+<tr id="ind-doc_quality"><td><strong>문서 품질</strong><br><code style="font-size:.72em">doc_quality</code></td><td>HWP 첨부 명세는 사람도 기계도 파싱하기 어렵다.</td><td>문서 형태 심층 평가 (doc)</td><td>HWP/DOC 첨부</td><td>HTML</td><td>인터랙티브(Swagger)</td></tr>
+<tr id="ind-rate_limit"><td><strong>호출 한도</strong><br><code style="font-size:.72em">rate_limit</code></td><td>일 1,000회로는 실서비스가 불가능해 증량 신청(수동)이 강제된다.</td><td>문서 (doc)</td><td><1,000/일</td><td>≥1,000</td><td>≥10,000/무제한</td></tr>
+<tr id="ind-error_handling"><td><strong>오류 처리</strong><br><code style="font-size:.72em">error_handling</code></td><td>같은 실수에 다른 오류가 나오면 학습·자동화가 불가능하다.</td><td>실호출 표본 (live)</td><td>비일관</td><td>부분</td><td>일관</td></tr>
+<tr id="ind-sdk_samples"><td><strong>SDK·샘플</strong><br><code style="font-size:.72em">sdk_samples</code></td><td>공식 SDK 부재는 커뮤니티(비공식)에 품질·보안을 떠넘기는 것.</td><td>저장소 확인 (doc)</td><td>없음</td><td>커뮤니티</td><td>공식</td></tr>
+<tr id="ind-tool_native"><td><strong>도구 네이티브(MCP) †</strong><br><code style="font-size:.72em">tool_native</code></td><td>에이전트가 화면이 아닌 도구 호출로 접근하는 시대의 관문. 커뮤니티 79종이 수요를 증명.</td><td>생태계 전수 조사 (doc)</td><td>없음</td><td>커뮤니티 래퍼</td><td>정부 공식</td></tr>
+<tr id="ind-llms_txt"><td><strong>llms.txt 제공 †</strong><br><code style="font-size:.72em">llms_txt</code></td><td>사이트가 AI에게 자기 구조를 설명하는 사실상 표준. 215개 중 0곳.</td><td>origin fetch + 오탐 수동 검증 (live)</td><td>없음</td><td>—</td><td>유효 파일</td></tr>
+<tr id="ind-data_product"><td><strong>데이터 제품화 †</strong><br><code style="font-size:.72em">data_product</code></td><td>버전·신선도·SLA 메타데이터가 있어야 데이터를 '제품'으로 신뢰하고 쓴다.</td><td>문서 (doc)</td><td>없음</td><td>부분</td><td>버전·신선도·SLA</td></tr>
+<tr id="ind-unified_identity"><td><strong>통합 계정 †</strong><br><code style="font-size:.72em">unified_identity</code></td><td>215개 포털 중 159개가 별도 가입 — 미국식 단일 키 모델과의 격차 그 자체.</td><td>절차 문서 (doc)</td><td>포털별 가입</td><td>부분 SSO</td><td>단일 정부 ID</td></tr></tbody>
     </table></div>
 
-    <h2>4. 측정 방법론 — 판정을 신뢰할 수 있는 이유</h2>
+    <h2 id="method">4. 측정 방법론 — 판정을 신뢰할 수 있는 이유</h2>
     <ul>
       <li><strong>측정 방식 3계층</strong> — <span class="v v-good">live</span> 실제 HTTP 호출(잘못된 키를 일부러 넣어 상태코드 정직성을 검증하는 식. 실키는 절대 노출하지 않고 더미 키 사용) · <span class="v v-mid">browser</span> 실브라우저 렌더 관측 · <span class="v v-na">doc</span> 공식 문서·구성 기반. 상세 패널의 "측정방식" 배지로 구분됩니다.</li>
       <li><strong>측정불가는 0점이 아닙니다</strong> — 인증키 부재 등으로 검증 못 한 지표는 평균 분모에서 제외해 점수를 인위적으로 누르지 않습니다.</li>

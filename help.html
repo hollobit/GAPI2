@@ -1,19 +1,13 @@
-<title>개선 스코어카드 — 2026-04 기준선 4대 분석 축 재평가 | K-GAPI Δ</title>
+<title>도움말 — 대시보드·지표·측정 방법 해설 | K-GAPI Δ</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="2026-04 K-GAPI 기준선의 개발자 불만 Top10, 국제 비교 벤치마크, AI 적합성 글로벌 비교, API 품질이 2026-08 현재 얼마나 개선되었는지 실측 기반으로 재평가한 스코어카드.">
-<meta property="og:title" content="개선 스코어카드 — 2026-04 기준선 4대 분석 축 재평가">
-<meta property="og:description" content="개발자 불만 Top10 중 완전 개선 1건. 국제 순위 9개국 중 9위 그대로. AI 적합성 전수 215개 평균 2.35/14(E). 비교가능 172개 중 상승 17·하락 10·정체 145.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://hollobit.github.io/GAPI2/scorecard.html">
-<meta name="twitter:card" content="summary">
+<meta name="description" content="K-GAPI Δ 대시보드의 스코어카드가 의미하는 바, 왜 이 문제들을 해결해야 하는지, AI/Agent 준비도 18개 지표의 의미와 측정 방법을 설명하는 도움말.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<style>
-/* ============================================================
+<style>/* ============================================================
    K-GAPI Δ — "Audit Journal" design system (2026-08)
    Editorial evidence-report aesthetic: warm paper / deep ink,
    Noto Serif KR display + Pretendard body + IBM Plex Mono data.
@@ -755,121 +749,80 @@ td{font-variant-numeric:tabular-nums;}
     <a href="index.html">홈</a>
     <a href="dashboard.html">대시보드</a>
     <a href="journey.html">이용 절차</a>
-    <a href="scorecard.html" aria-current="page">스코어카드</a>
+    <a href="scorecard.html">스코어카드</a>
     <a href="ecosystem.html">생태계</a>
     <a href="guideline.html">가이드라인</a>
     <a href="calculator.html">ID 계산기</a>
-    <a href="help.html">도움말</a><a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
+    <a href="help.html" aria-current="page">도움말</a>
+    <a href="https://hollobit.github.io/K-GAPI/" target="_blank" rel="noopener">2026-04 기준선 ↗</a>
   </nav>
-
   <header class="hero">
-    <h1>개선 스코어카드 — 기준선 4대 분석 축 재평가</h1>
-    <p class="subtitle">2026-04 K-GAPI 기준선이 지적한 네 가지 핵심 분석(개발자 불만 Top10 · 국제 비교 벤치마크 · AI 적합성 글로벌 비교 · API 품질)이 2026-08 현재 얼마나 개선되었는지 라이브 실측으로 재평가합니다.</p>
+    <h1>도움말 — 이 대시보드를 읽는 법</h1>
+    <p class="subtitle">스코어카드가 의미하는 바, 왜 이 문제들을 해결해야 하는지, AI/Agent 준비도 18개 지표의 뜻과 측정 방법을 설명합니다.</p>
   </header>
-
-  <section class="lede">
-    <p><strong>2026-08부터 평가 대상을 전체 215개 포털로 확장</strong>했습니다(심층 라이브 17 + 무인증 라이트 프로브 215 + 문서·조사 기반). 그 결과: 유일한 구조적 개선이던 <strong>"항상 HTTP 200" 문제도 전수 기준으로는 부분 개선</strong>(게이트웨이 공유 8/172, 대표 포털 data.go.kr은 개선)에 그치고, 개발자 불만 Top10은 완전 개선 0건·부분 3건, 국제 순위는 <strong>9개국 중 9위 그대로</strong>, AI 적합성 전수 평균은 <strong>2.35/14(E)</strong>로 사실상 정체(비교가능 172개 기준 2.37→2.35), 등급 이동은 <strong>상승 17 · 하락 10 · 정체 145</strong>입니다.</p>
-  </section>
-
   <article>
-    <div class="kpis" aria-label="핵심 지표 요약">
-      <div class="kpi"><div class="num bad">0 / 10</div><div class="lbl">개발자 불만 Top10 중 완전 개선 — 전수 215 기준 (부분 3 · 미개선 6 · 측정불가 1)</div></div>
-      <div class="kpi"><div class="num bad">9위 / 9개국</div><div class="lbl">사용자중심성·AI 적합성 국제 순위 — 변동 없음</div></div>
-      <div class="kpi"><div class="num bad">2.35 / 14</div><div class="lbl">전수 215개 AI 적합성 평균(E) — 비교가능 172개 기준 2.37→2.35 정체. 심층 17개만 보면 2.83→3.22</div></div>
-      <div class="kpi"><div class="num bad">▲17 ▼10 =145</div><div class="lbl">종합 점수 이동(비교가능 172개) + 신규 편입 43개 — 대다수는 정체</div></div>
-    </div>
-
-    <h2 id="top10">1. 개발자 불만 Top10 — 1개 해소, 2개 부분, 6개 그대로</h2>
-    <p>기준선은 개발자 블로그·커뮤니티·이슈 트래커 분석으로 불만 22건을 수집하고 상위 10건을 선정했습니다. 각 항목의 2026-08 판정:</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>#</th><th>2026-04 불만 (심각도)</th><th>2026-08 판정</th><th>근거</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>serviceKey 이중 인코딩 <strong>(critical)</strong></td><td><span class="v v-bad">미개선</span></td><td>키는 여전히 URL 쿼리 파라미터, 인코딩/디코딩 키 이원 체계 유지 (doc)</td></tr>
-          <tr><td>2</td><td>CORS 미지원 → 프록시 서버 강제 <strong>(critical)</strong></td><td><span class="v v-bad">미개선</span></td><td>라이브 실측: data.go.kr CORS 헤더 없음 · 전수 215 중 개선 13/172 (루트 CORS 관측 20곳뿐)</td></tr>
-          <tr><td>3</td><td>오류도 HTTP 200 반환 <strong>(critical)</strong></td><td><span class="v v-mid">부분</span></td><td>data.go.kr 게이트웨이는 400 반환으로 개선 — 단 <strong>전수 기준 8/172만 개선</strong>(게이트웨이 공유 포털 한정)이라 부분 판정</td></tr>
-          <tr><td>4</td><td>XML 강제·JSON 부분 지원 (high)</td><td><span class="v v-mid">부분</span></td><td>게이트웨이 JSON 응답 실측 확인(Content-Type 정상), 단 기본값은 여전히 XML</td></tr>
-          <tr><td>5</td><td>API 문서가 HWP 파일 (high)</td><td><span class="v v-bad">미개선</span></td><td>doc_quality 171/172 미개선(전수) — 표준 스펙 병행 게시 없음</td></tr>
-          <tr><td>6</td><td>포털 파편화·계정 난립 — 기준선 173개 (high)</td><td><span class="v v-bad">미개선</span></td><td>2026-08 통합 집계 <strong>215개 포털 중 159개가 별도 가입 요구</strong> — LOCALDATA 통합(감소 1) 대비 신규 편입이 더 많아 파편화는 오히려 확대 (<a href="calculator.html">ID 계산기</a>)</td></tr>
-          <tr><td>7</td><td>키 발급 후 1~2시간 대기 (medium)</td><td><span class="v v-mid">부분</span></td><td>data.go.kr 자동 즉시 승인 판정(doc 기반) · 활성화 지연 자체는 미검증</td></tr>
-          <tr><td>8</td><td>해외 IP·클라우드 IP 차단 (high)</td><td><span class="v v-na">측정불가</span></td><td>국내 측정 환경에서 재현 불가 — 개선 근거도 확인되지 않음</td></tr>
-          <tr><td>9</td><td>무공지 점검·다운타임 (high)</td><td><span class="v v-bad">미개선</span></td><td>상태 페이지·공지 API 부재 그대로</td></tr>
-          <tr><td>10</td><td>API Key 2년 만료·갱신 프로세스 부재 (high)</td><td><span class="v v-bad">미개선</span></td><td>키 회전(rotation) API 여전히 없음</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <blockquote>critical 4건(확장 목록 포함) 중 전수 기준 완전 해소는 0건입니다(#3은 게이트웨이 한정 부분 개선). 확장 목록의 <strong>OpenAPI 스펙 미제공(critical)도 미개선</strong> — 215개 전 포털 관용 경로 라이트 프로브에서 공공데이터 공식 OpenAPI 스펙 0건(내부 시스템 명세 3건뿐, 개선 7/172), 이는 <a href="journey.html">이용 절차 분석</a>의 토큰 비용 문제로 직결됩니다.</blockquote>
-
-    <h2 id="benchmark">2. 국제 비교 벤치마크 — 9개국 중 9위, 변동 없음</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th></th><th>사용자중심성 UF (14점)</th><th>AI 적합성 (14점)</th><th>정부 공식 MCP</th></tr></thead>
-        <tbody>
-          <tr><td>🇰🇷 한국 (2026-04 기준선, 173포털 평균)</td><td>5.3 (D)</td><td>2.7 (E)</td><td>없음</td></tr>
-          <tr><td><strong>🇰🇷 한국 (2026-08 전수 215포털)</strong></td><td><strong>5.74 (D)</strong></td><td><strong>2.35 (E)</strong></td><td><strong>중앙 없음 · 서울시 파일럿 1호</strong></td></tr>
-          <tr><td>차하위국 (기준선)</td><td>🇨🇦 캐나다 7.56</td><td>🇯🇵 일본 8.0</td><td>—</td></tr>
-          <tr><td>선두그룹 (기준선)</td><td>🇺🇸 12.18 · 🇪🇺 11.82 · 🇫🇷 11.62</td><td>🇸🇬 12.45 · 🇺🇸 12.27 · 🇫🇷 12.0</td><td>🇺🇸 🇫🇷 🇬🇧 운영 중</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="bars" aria-label="AI 적합성 국가 비교 (14점 만점)">
-      <div class="bar-row"><span class="bar-label">🇸🇬 싱가포르</span><span class="bar-track"><span class="bar-fill dim" style="width:89%"></span></span><span class="bar-val">12.45</span></div>
-      <div class="bar-row"><span class="bar-label">🇺🇸 미국</span><span class="bar-track"><span class="bar-fill dim" style="width:88%"></span></span><span class="bar-val">12.27</span></div>
-      <div class="bar-row"><span class="bar-label">🇫🇷 프랑스</span><span class="bar-track"><span class="bar-fill dim" style="width:86%"></span></span><span class="bar-val">12.0</span></div>
-      <div class="bar-row"><span class="bar-label">🇯🇵 일본 (8위)</span><span class="bar-track"><span class="bar-fill dim" style="width:57%"></span></span><span class="bar-val">8.0</span></div>
-      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-04</span><span class="bar-track"><span class="bar-fill bad" style="width:19%"></span></span><span class="bar-val">2.7</span></div>
-      <div class="bar-row"><span class="bar-label">🇰🇷 한국 2026-08</span><span class="bar-track"><span class="bar-fill mid" style="width:23%"></span></span><span class="bar-val">3.22</span></div>
-    </div>
+    <h2>1. 대시보드의 구조 — 3개 층위</h2>
     <ul>
-      <li>기준선의 "최대 격차 항목"이었던 <strong>HTTP 상태코드 의미론(한국 0.0 vs 해외 평균 1.80)</strong>은 이번에 data.go.kr가 2.0을 달성해 격차 축소를 견인했습니다.</li>
-      <li>반면 <strong>RateLimit 헤더(개선 0/172) · OpenAPI 스펙(공식 0건) · 헤더 인증(개선 0/172)</strong>은 격차가 그대로입니다.</li>
-      <li>주의: 해외 8개국은 이번 주기에 재측정하지 않아 2026-04 값과의 비교이며, 한국은 기준선(173포털)과 이번(전수 215포털, 신규 43 포함)의 모집단 차이가 있어 절대값보다 <strong>순위·격차 해석이 안전</strong>합니다.</li>
+      <li><strong>Layer 1 · 문제 개선 스코어카드</strong> — 2026-04 기준선이 지적한 7대 구조 문제가 지금 얼마나 해결됐는지. 카드의 배지(개선/부분/미개선)는 <strong>전수 215개 관점의 롤업</strong>이며, 대표 포털만 개선된 경우 "부분"으로 표기합니다(예: 항상 200 문제는 게이트웨이 8/172만 개선 → 부분).</li>
+      <li><strong>Layer 2 · 등급 이동</strong> — 포털별 사용자중심성(UF)·AI적합성(AI) 합산 점수의 2026-04→2026-08 이동. 점선+"부분측정" 배지는 일부 지표가 측정불가라 잠정치라는 뜻이며, 하락이 실제 퇴보가 아니라 미측정 때문일 수 있음을 나타냅니다.</li>
+      <li><strong>Layer 3 · AI/Agent 준비도 히트맵</strong> — 215개 포털 × 18개 지표. 셀 색은 0(빨강)~2(초록), 회색은 측정불가. 행 클릭 시 지표별 판정·측정방식·증거 링크가 펼쳐집니다.</li>
     </ul>
 
-    <h2 id="ai">3. AI 적합성 — data.go.kr 3→5점(D 유지), 평균 +0.39</h2>
-    <ul>
-      <li><strong>data.go.kr: 3→5 (D→D)</strong> — http_semantics +2, json_native +1이 견인, programmatic_auth(쿼리 파라미터 키) 재채점 −1.</li>
-      <li><strong>전수 215개 평균: 2.35(E) — 비교가능 172개 기준 2.37→2.35로 정체.</strong> 심층 재측정 17개만 보면 2.83→3.22로 오르는데, 그 개선분 대부분이 <code>apis.data.go.kr</code> 게이트웨이 공유 포털에 집중된 <strong>게이트웨이 효과</strong>. 설정 한 번이 8개 포털의 http_semantics를 동시 개선 → 중앙 게이트웨이 개선의 레버리지가 크다는 실증.</li>
-      <li><strong>정부 공식 MCP — 중앙정부는 여전히 부재, 다만 서울시가 한국 최초 공공데이터 공식 MCP 파일럿을 개시</strong>(2026-07-12 발표, 선착순 100명·카카오 PlayMCP 호스팅). data.go.kr 등 215개 전 포털 기준으로 공식 MCP 보유 0곳(미개선)이며, 커뮤니티 MCP는 6종→79종으로 폭증 — 상세는 <a href="ecosystem.html">생태계</a> 페이지. 프랑스·미국·영국(중앙정부 운영형)과의 격차는 지속.</li>
-      <li>신규 측정 지표(llms.txt · tool_native · data_product · unified_identity)는 전부 바닥권 — llms.txt는 측정 가능한 15개 포털 모두 미발견.</li>
-    </ul>
-    <blockquote><strong>2026-08-03 신규 관찰 — "AI 기반 공공데이터포털" 시범 운영 개시.</strong> 브라우저 실측 중 data.go.kr 검색창 기본 동선이 <strong>AI 대화형 검색</strong>(파일데이터/오픈API 구분 추천 + 분석 정보)으로 바뀐 것을 확인했습니다. 사람의 발견 경험은 개선 방향이지만, 답변 생성 27.3초·채팅 UI 전용(에이전트용 표준 API 미공개)이라 <strong>AI 적합성 지표 자체는 아직 움직이지 않습니다</strong>. 상세는 <a href="journey.html#browser">이용 절차 §3-1</a>.</blockquote>
+    <h2>2. 7대 문제 — 무엇이고, 왜 해결해야 하나</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>문제</th><th>왜 해결해야 하나</th><th>2026-08 판정</th></tr></thead>
+      <tbody><tr><td><strong>항상 200 반환</strong></td><td>오류에도 성공 코드를 주면 자동화가 실패를 감지 못 한다. 모든 자동 복구의 전제.</td><td>현재 부분 — data.go.kr 게이트웨이는 400 반환으로 개선됐으나 전수 기준 8/172뿐</td></tr>
+<tr><td><strong>CORS 미지원</strong></td><td>단순 조회 앱에도 프록시 서버를 강제 — 진입장벽이자 비용.</td><td>미개선 (개선 13/172)</td></tr>
+<tr><td><strong>XML 기본 응답</strong></td><td>모든 이용자가 같은 변환 비용을 반복 지불.</td><td>부분 (게이트웨이 JSON 확인, 기본값은 XML)</td></tr>
+<tr><td><strong>OpenAPI 미제공</strong></td><td>에이전트가 스펙 대신 HWP·화면을 읽어야 함 — 토큰 비용 폭증의 근원.</td><td>미개선 (공식 스펙 0곳)</td></tr>
+<tr><td><strong>RateLimit 헤더 없음</strong></td><td>한도 초과를 사후에야 알게 됨 — 안정적 자동화 불가.</td><td>미개선 (0/172)</td></tr>
+<tr><td><strong>정부 MCP 서버 없음</strong></td><td>프랑스·미국·영국은 운영 중. 커뮤니티 79종이 수요 실증.</td><td>미개선 (서울시 파일럿만, 중앙 0)</td></tr>
+<tr><td><strong>API Key in URL</strong></td><td>키가 로그·Referer로 유출, 2년 유효 + 회전 API 부재 = 장기 노출 위험.</td><td>미개선 (0/172)</td></tr></tbody>
+    </table></div>
+    <blockquote>공통점: 일곱 문제 모두 <strong>사람은 우회할 수 있지만 기계(에이전트)는 우회하지 못하는</strong> 종류입니다. 사람은 200 속 오류 메시지를 읽고, HWP를 열고, 전화로 문의합니다. 에이전트는 그 각각에서 멈추거나 폭주합니다 — 그래서 이 문제들이 "AI 시대 준비도"의 척도가 됩니다.</blockquote>
 
-    <h2 id="quality">4. API 품질 (전수 215개) — 상승 17, 하락 10, 정체 145, 신규 43</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>방향</th><th>포털 (AI 적합성 점수/등급 이동)</th><th>비고</th></tr></thead>
-        <tbody>
-          <tr><td><span class="v v-good">▲ 상승 5</span></td><td><strong>기상청 API허브 3→6 (D→C 승급)</strong> · TAGO 대중교통 2→5 (E→D) · 경기데이터드림 3→5 · data.go.kr 3→5 · DART(UF 상승)</td><td>기상청이 이번 주기 최대 개선 (+3)</td></tr>
-          <tr><td><span class="v v-bad">▼ 하락 10</span></td><td><strong>생활안전지도 D→E · 서울 열린데이터광장 3→1 (D→E)</strong> · 건강보험 건강iN (UF 4→2) · NEIS · KOSIS · ECOS · 열린국회정보 · 국가법령정보센터 · KIPRIS · 한국도로공사</td><td>실측에서 오류 처리·포맷 문제 노출</td></tr>
-          <tr><td><span class="v v-na">= 유지 3</span></td><td>KRX · LOCALDATA · 수출입은행</td><td>LOCALDATA는 E등급 그대로</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <h3>지표별 개선 현황 (비교가능 172개 포털 기준)</h3>
-    <div class="bars" aria-label="지표별 개선 포털 수">
-      <div class="bar-row"><span class="bar-label">http_semantics (200 문제)</span><span class="bar-track"><span class="bar-fill mid" style="width:5%"></span></span><span class="bar-val">8/172 개선</span></div>
-      <div class="bar-row"><span class="bar-label">json_native</span><span class="bar-track"><span class="bar-fill mid" style="width:5%"></span></span><span class="bar-val">9/172 개선</span></div>
-      <div class="bar-row"><span class="bar-label">machine_schema (OpenAPI)</span><span class="bar-track"><span class="bar-fill mid" style="width:4%"></span></span><span class="bar-val">7/172 개선</span></div>
-      <div class="bar-row"><span class="bar-label">cors_https</span><span class="bar-track"><span class="bar-fill mid" style="width:8%"></span></span><span class="bar-val">13/172 개선</span></div>
-      <div class="bar-row"><span class="bar-label">rate_limit_transparency</span><span class="bar-track"><span class="bar-fill bad" style="width:1%"></span></span><span class="bar-val">0/172 개선</span></div>
-      <div class="bar-row"><span class="bar-label">doc_quality (HWP 문서)</span><span class="bar-track"><span class="bar-fill bad" style="width:2%"></span></span><span class="bar-val">0/18 개선</span></div>
-      <div class="bar-row"><span class="bar-label">정부 공식 MCP</span><span class="bar-track"><span class="bar-fill bad" style="width:2%"></span></span><span class="bar-val">0 (부재)</span></div>
-    </div>
-    <blockquote><strong>패턴이 뚜렷합니다.</strong> 게이트웨이 설정 수준에서 일괄 적용 가능한 항목(HTTP 상태코드, JSON)만 움직였고, 포털별 개별 대응이 필요한 항목(HWP 문서, OpenAPI 스펙, SDK)은 0~5/18로 정체 — 영국 GDS 모델 같은 <strong>표준 의무화 없이는 움직이지 않는다</strong>는 증거입니다.</blockquote>
+    <h2>3. AI/Agent 준비도 18개 지표 — 의미·점수 기준·측정 방법</h2>
+    <h3>두 개의 합산 점수 — UF와 AI는 무엇을 재는가</h3>
+    <ul>
+      <li><strong>사용자중심성 UF (0~14점)</strong> — <em>사람 개발자</em>가 겪는 마찰의 총량. 가입 용이성 → 승인 속도 → 기본 포맷 → 문서 품질 → 호출 한도 → 오류 처리 → SDK·샘플, 즉 "가입부터 첫 성공 호출까지"의 7단계를 각 0~2점으로 평가해 합산합니다. 한국 전수 평균 <strong>5.74(D)</strong>.</li>
+      <li><strong>AI 적합성 AI (0~14점)</strong> — <em>기계(에이전트)</em>가 자율적으로 쓸 수 있는가. 기계가독 스키마 → HTTP 상태코드 → JSON 네이티브 → 오류 자기설명 → 프로그램 인증 → 한도 투명성 → CORS·HTTPS, 즉 "사람의 도움 없이 발견·호출·복구"가 가능한 7가지 전제를 평가합니다. 한국 전수 평균 <strong>2.35(E)</strong> — UF보다 낮은 이유는 사람용 우회로(전화·게시판·HWP 열람)가 기계에겐 없기 때문입니다.</li>
+      <li><strong>평가 방법</strong> — 지표당 0(없음/비표준)·1(부분)·2(표준 충족)의 3단 척도로 채점 후 단순 합산합니다. <strong>측정불가 지표는 0점 처리하지 않고 합산·분모에서 제외</strong>하며, 7개 중 일부만 측정된 포털은 "부분측정 (n/7)" 배지로 잠정치임을 표시합니다. 등급 구간: A(12~14) B(9~11) C(6~8) D(3~5) E(0~2). †표시 4개(도구 네이티브·llms.txt·데이터 제품화·통합 계정)는 2026-08 신설 실험 지표로 합산에서 제외하고 별도 추적합니다.</li>
+      <li><strong>Before→After 비교</strong> — 2026-04 기준선(문서·구성 조사)과 2026-08 재측정을 같은 지표 체계로 대조합니다. 측정 방식이 다른 지표(문서→실측)는 판정 주석에 명시해 "측정 교정"과 "실제 변화"를 구분합니다.</li>
+    </ul>
+    <div class="table-wrap"><table>
+      <thead><tr><th>지표</th><th>왜 중요한가</th><th>측정 방법</th><th>0점</th><th>1점</th><th>2점</th></tr></thead>
+      <tbody><tr><td><strong>HTTP 상태코드</strong><br><code style="font-size:.72em">http_semantics</code></td><td>오류가 나도 HTTP 200/201을 반환하면 기계는 실패를 알 수 없다. 에이전트 자동 재시도·복구의 전제 조건.</td><td>잘못된 키로 실제 호출해 상태코드 관찰 (live)</td><td>200에 오류 본문</td><td>일부 4xx</td><td>일관된 4xx</td></tr>
+<tr><td><strong>JSON 네이티브</strong><br><code style="font-size:.72em">json_native</code></td><td>XML 전용이면 모든 클라이언트가 변환 계층을 얹어야 한다. LLM·에이전트 도구는 JSON을 기본 가정.</td><td>실호출 Content-Type·본문 확인 (live/doc)</td><td>XML만</td><td>JSON 선택</td><td>JSON 기본</td></tr>
+<tr><td><strong>오류 자기설명</strong><br><code style="font-size:.72em">error_self_desc</code></td><td>오류 본문이 기계가독이어야 에이전트가 원인(키 오류 vs 파라미터 오류)을 구분해 스스로 고친다.</td><td>오류 응답 본문 구조 분석 (live)</td><td>불투명/HTML</td><td>자체 구조화</td><td>RFC 7807</td></tr>
+<tr><td><strong>기계가독 스키마</strong><br><code style="font-size:.72em">machine_schema</code></td><td>OpenAPI 명세가 있으면 에이전트가 문서를 읽지 않고 스펙 1회 취득으로 호출법을 안다 — 토큰 비용 수십 배 차이.</td><td>관용 경로(/openapi.json 등) fetch + 문서 확인 (live/doc)</td><td>없음/HWP</td><td>부분(내부 명세)</td><td>공식 OpenAPI 3.x</td></tr>
+<tr><td><strong>프로그램 인증</strong><br><code style="font-size:.72em">programmatic_auth</code></td><td>URL 쿼리의 키는 로그·Referer로 유출되고 회전이 어렵다. 헤더/OAuth2는 자동화·보안의 표준.</td><td>문서 + 실호출 (doc/live)</td><td>쿼리 키/세션</td><td>—</td><td>헤더 키/OAuth2/무인증</td></tr>
+<tr><td><strong>한도 투명성</strong><br><code style="font-size:.72em">rate_limit_transparency</code></td><td>남은 호출량을 헤더로 알려줘야 에이전트가 한도 초과 전에 속도를 조절한다.</td><td>응답 헤더 검사 (live)</td><td>헤더 없음</td><td>문서 명시</td><td>RateLimit 헤더</td></tr>
+<tr><td><strong>CORS·HTTPS</strong><br><code style="font-size:.72em">cors_https</code></td><td>CORS가 없으면 브라우저 앱은 프록시 서버를 강제로 만들어야 한다.</td><td>Origin 헤더 부착 실호출 (live)</td><td>둘 다 없음</td><td>하나만</td><td>CORS+HTTPS</td></tr>
+<tr><td><strong>가입 용이성</strong><br><code style="font-size:.72em">signup_ease</code></td><td>실명 본인인증은 에이전트가 통과할 수 없는 하드 블록이다.</td><td>가입 절차 문서 (doc)</td><td>인증서/법인</td><td>휴대폰</td><td>이메일/무가입</td></tr>
+<tr><td><strong>승인 속도</strong><br><code style="font-size:.72em">approval_speed</code></td><td>수동 심의는 예측 불가능한 대기를 만든다 — 자동화 계획 수립 불가.</td><td>절차 문서 (doc)</td><td>수동 심의</td><td>자동 지연</td><td>즉시/불요</td></tr>
+<tr><td><strong>기본 포맷</strong><br><code style="font-size:.72em">data_format</code></td><td>기본값이 XML이면 모든 신규 사용자가 같은 전환 비용을 반복 지불한다.</td><td>문서+실호출 (doc/live)</td><td>파일/기타</td><td>XML(JSON 선택)</td><td>JSON 기본</td></tr>
+<tr><td><strong>문서 품질</strong><br><code style="font-size:.72em">doc_quality</code></td><td>HWP 첨부 명세는 사람도 기계도 파싱하기 어렵다.</td><td>문서 형태 심층 평가 (doc)</td><td>HWP/DOC 첨부</td><td>HTML</td><td>인터랙티브(Swagger)</td></tr>
+<tr><td><strong>호출 한도</strong><br><code style="font-size:.72em">rate_limit</code></td><td>일 1,000회로는 실서비스가 불가능해 증량 신청(수동)이 강제된다.</td><td>문서 (doc)</td><td><1,000/일</td><td>≥1,000</td><td>≥10,000/무제한</td></tr>
+<tr><td><strong>오류 처리</strong><br><code style="font-size:.72em">error_handling</code></td><td>같은 실수에 다른 오류가 나오면 학습·자동화가 불가능하다.</td><td>실호출 표본 (live)</td><td>비일관</td><td>부분</td><td>일관</td></tr>
+<tr><td><strong>SDK·샘플</strong><br><code style="font-size:.72em">sdk_samples</code></td><td>공식 SDK 부재는 커뮤니티(비공식)에 품질·보안을 떠넘기는 것.</td><td>저장소 확인 (doc)</td><td>없음</td><td>커뮤니티</td><td>공식</td></tr>
+<tr><td><strong>도구 네이티브(MCP) †</strong><br><code style="font-size:.72em">tool_native</code></td><td>에이전트가 화면이 아닌 도구 호출로 접근하는 시대의 관문. 커뮤니티 79종이 수요를 증명.</td><td>생태계 전수 조사 (doc)</td><td>없음</td><td>커뮤니티 래퍼</td><td>정부 공식</td></tr>
+<tr><td><strong>llms.txt 제공 †</strong><br><code style="font-size:.72em">llms_txt</code></td><td>사이트가 AI에게 자기 구조를 설명하는 사실상 표준. 215개 중 0곳.</td><td>origin fetch + 오탐 수동 검증 (live)</td><td>없음</td><td>—</td><td>유효 파일</td></tr>
+<tr><td><strong>데이터 제품화 †</strong><br><code style="font-size:.72em">data_product</code></td><td>버전·신선도·SLA 메타데이터가 있어야 데이터를 '제품'으로 신뢰하고 쓴다.</td><td>문서 (doc)</td><td>없음</td><td>부분</td><td>버전·신선도·SLA</td></tr>
+<tr><td><strong>통합 계정 †</strong><br><code style="font-size:.72em">unified_identity</code></td><td>215개 포털 중 159개가 별도 가입 — 미국식 단일 키 모델과의 격차 그 자체.</td><td>절차 문서 (doc)</td><td>포털별 가입</td><td>부분 SSO</td><td>단일 정부 ID</td></tr></tbody>
+    </table></div>
+
+    <h2>4. 측정 방법론 — 판정을 신뢰할 수 있는 이유</h2>
+    <ul>
+      <li><strong>측정 방식 3계층</strong> — <span class="v v-good">live</span> 실제 HTTP 호출(잘못된 키를 일부러 넣어 상태코드 정직성을 검증하는 식. 실키는 절대 노출하지 않고 더미 키 사용) · <span class="v v-mid">browser</span> 실브라우저 렌더 관측 · <span class="v v-na">doc</span> 공식 문서·구성 기반. 상세 패널의 "측정방식" 배지로 구분됩니다.</li>
+      <li><strong>측정불가는 0점이 아닙니다</strong> — 인증키 부재 등으로 검증 못 한 지표는 평균 분모에서 제외해 점수를 인위적으로 누르지 않습니다.</li>
+      <li><strong>판정 규칙</strong> — 개선(점수 상승) / 유지(만점 유지) / 미개선(변화 없음) / 후퇴(하락) / 신규(2026-04 기준값 없음) / 측정불가. "후퇴" 다수는 문서 기반 낙관치가 실측으로 교정된 효과일 수 있어 별도 주석을 답니다.</li>
+      <li><strong>오탐 교정 의무</strong> — 자동 탐지 결과는 표본 수동 재검증을 거칩니다(실사례: llms.txt 자동 탐지 3건이 전부 HTML 오류 페이지로 확인돼 교정, 교정 이력 공개).</li>
+      <li><strong>재현 가능성</strong> — 모든 live 판정에 재현 curl 명령과 응답 샘플이 증거로 링크되며, serviceKey는 게시 전 마스킹됩니다.</li>
+      <li>전체 정본 명세는 <strong>루브릭 명세 v1.0</strong>(저장소 <code>output/expert_review_2026-08.md</code> 부록 A) 참조.</li>
+    </ul>
   </article>
-
-  <section class="note">
-    <h2>방법론 · 해석 주의</h2>
-    <ul>
-      <li><strong>"후퇴" 판정의 상당수는 측정 교정 효과</strong> — UF 평균 하락(7.61→6.44)과 data_format(10건)·error_handling(11건)·programmatic_auth(17건)의 후퇴 판정 다수는 실제 서비스 악화가 아니라, 2026-04의 문서 기반 낙관 점수가 2026-08 라이브 실측으로 교정된 결과입니다(동일 사실이 재채점된 사례 포함). "나빠졌다"보다 <strong>"원래 이만큼 나빴다"</strong>에 가깝습니다. 반대로 http_semantics 개선은 재현 가능한 라이브 증거가 있는 진짜 개선입니다.</li>
-      <li>모든 라이브 판정의 증거(curl·응답 샘플)는 <a href="dashboard.html">대시보드</a>에서 지표별로 링크됩니다.</li>
-      <li>불만 Top10의 원천은 2026-04 기준선의 개발자 페인포인트 조사(블로그·커뮤니티·이슈 트래커, 출처 11개)입니다. doc 표기는 문서·설정 기반 판정, 그 외는 라이브 실측입니다.</li>
-    </ul>
-  </section>
-
   <footer>
-    <p>전종홍 (hollobit) · 재측정일 2026-08-04 · <a href="index.html">K-GAPI Δ 홈</a> · <a href="dashboard.html">대시보드</a> · <a href="journey.html">이용 절차</a> · <a href="ecosystem.html">생태계</a></p>
+    <p>전종홍 (hollobit) · <a href="dashboard.html">대시보드로 돌아가기</a> · <a href="index.html">홈</a></p>
     <p class="copyright">Copyright (c) 2026, Analyzed by Jonghong Jeon, hollobit@etri.re.kr</p>
   </footer>
 </div>
